@@ -1,0 +1,149 @@
+/*-----------------------------------------------------------------------
+	FOOTER
+-----------------------------------------------------------------------*/
+.elgg-page-footer > .elgg-inner { 
+	width: 100% !important;
+	background:  #d9cfb0;
+}
+
+#footer-wrapper {
+	float:left;
+	width: 100%;
+	background:  #d9cfb0;
+}
+
+#footer { 
+	width: 960px;
+	line-height: 2em; /*centers text veritically*/
+	margin: 0 auto;
+	padding: 0;
+	display: block;
+}
+
+#footer li {
+	float: left;
+	list-style-type: none;
+	display: inline;
+	margin-right: 10px;
+}
+
+ul#footer-text-links {
+	display: block;
+	margin: 40px 0 0 180px;
+}
+
+ul#contact-list {
+	display: block;
+	float: left;
+	margin: 30px 0 0 60px;
+}
+
+#footer-text-links a,
+#contact-list li {
+	color: #555;
+	text-decoration: none;
+	padding-right: 10px;
+	border-right: 1px solid #aaa;
+}
+
+#footer-text-links li a:hover { text-decoration: underline; }
+
+ul#footer-text-links > li:last-child a,
+ul#contact-list > li:last-child { border: none; }
+
+#contact-list li a { 
+	color: #e25f17;
+	text-decoration: none;
+}
+
+#contact-list li a:hover {
+	color: #ea941a;
+	text-decoration: underline;
+}
+#contact-list li a:active {
+	color: #e25f17;
+	position: relative;
+	top: 1px;	
+}
+
+/*-----------------------------------------------------------------------
+	SOCIAL MEDIA ICONS
+-----------------------------------------------------------------------*/
+ul#social-media {
+	float: left;
+	display: block;
+	width: 250px;
+	height: 32px;
+	margin-top: 30px;
+	padding: 0;
+}
+
+ul#social-media > .social-media-icons {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	float: left;
+	margin-right: 10px;
+	padding: 0;
+}
+
+li#facebook { background: url(../graphics/sprite.png) -490px -43px no-repeat; }
+li#twitter { background: url(../graphics/sprite.png) -525px -43px no-repeat; }
+li#google { background: url(../graphics/sprite.png) -561px -43px no-repeat; }
+li#youtube { background: url(../graphics/sprite.png) -597px -43px no-repeat; }
+
+/*-----------------------------------------------------------------------
+	FOOTER LOGOS
+-----------------------------------------------------------------------*/
+ul#footer-logos {
+	float: left;
+	display: block;
+	width: 960px;
+	margin-top: 20px;
+	padding: 0;
+}
+
+ul#footer-logos li {
+	float: left;
+	display: inline-block;
+	/*width: 32px;
+	height: 32px;*/
+	margin: 0;
+	padding: 0;
+}
+
+#footer-logos > li#weatherblur {
+	display: block;
+	width: 190px;
+	height: 35px;
+	margin: 30px 30px 0 240px;
+	background: url(../graphics/sprite.png) -490px -82px no-repeat; 
+}
+
+#footer-logos > li#island-institute{
+	display: block;
+	width: 190px;
+	height: 40px;
+	margin-top: 25px;
+	background: url(../graphics/sprite.png) -490px -130px no-repeat; 
+}
+
+#footer-logos > li#nsf {
+	display: block;
+	width: 55px;
+	height: 55px;
+	margin-top: 20px;
+	background: url(../graphics/sprite.png) -490px -178px no-repeat; 
+}
+
+/*-----------------------------------------------------------------------
+	COPYRIGHT
+-----------------------------------------------------------------------*/
+.copyright {
+	color: #555;
+	font-size: .9em;
+	text-align: center;
+	float: left;
+	width: 100%;	
+	margin-top: 30px;
+}

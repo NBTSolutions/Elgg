@@ -1,0 +1,118 @@
+.profile .elgg-inner {
+	background: #fff; 
+	border-color: #efebc6;
+}
+
+#profile-details { padding: 15px; }
+
+/*-----------------------------------------------------------------------
+	OWNER BLOCK
+-----------------------------------------------------------------------*/
+.elgg-breadcrumbs { padding: 10px 0 10px 0; }
+
+#profile-owner-block {
+	border-radius: 7px;
+	background: #fff; 
+}
+
+#profile-owner-block .large {
+	margin-bottom: 10px;
+}
+
+.profile-action-menu li  { 
+	display: inline-block;
+	width: 100px;
+}
+
+#profile-owner-block a.elgg-button-action {}
+
+.profile-content-menu a {
+	color: #666;
+	border-radius: 5px !important;	
+	border: 1px solid #bbb;
+	background: #e6e6e6;
+	background-image: -moz-linear-gradient(#f8f8f8, #eee);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #f8f8f8));
+}
+
+.profile-content-menu a:hover {
+	color: #2e597b !important;
+	border: 1px solid #99c2cc;
+	background: #b4dbe3;
+	background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #b4dbe3),color-stop(1, #d0ebf3));
+}
+
+.profile-content-menu a:active {
+	border: 1px solid #fff;
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	
+	position: relative;
+	top: 1px;
+}
+
+.profile-admin-menu {
+	display: none;
+}
+
+.profile-admin-menu-wrapper a {
+	display: block;
+	border-radius: 8px;	
+	background-color: white;
+	margin: 3px 0 5px 0;
+	padding: 2px 4px 2px 8px;
+}
+
+.profile-admin-menu-wrapper {
+	background-color: white;
+	border-radius: 8px;
+}
+
+.profile-admin-menu-wrapper li a {
+	background-color: white;
+	color: red;
+	margin-bottom: 0;
+}
+
+.profile-admin-menu-wrapper a:hover { color: black; }
+
+/*-----------------------------------------------------------------------
+	PROFILE DETAILS
+-----------------------------------------------------------------------*/
+.elgg-breadcrumbs { padding: 10px 0 10px 0; }
+
+#profile-details .odd {
+	background-color: #f7f7f7;
+}
+#profile-details .even {
+	background-color:#dbd9c3;
+	border-radius: 4px;	
+	margin: 0 0 7px;
+	padding: 2px 4px;
+}
+.profile-aboutme-title {
+	background-color:#f4f4f4;
+	border-radius: 4px;	
+	margin: 0;
+	padding: 2px 4px;
+}
+.profile-aboutme-contents {
+	padding: 2px 0 0 3px;
+}
+.profile-banned-user {
+	border: 2px solid red;
+	padding: 4px 8px;
+	border-radius: 6px;
+}
+
+/***** Edit Profile page *****/
+.elgg-form-profile-edit { 
+	margin: 0 auto;
+	width: 900px; 
+}
+
+.elgg-form-profile-edit > fieldset > div > .elgg-input-text {
+	width: 900px;
+}

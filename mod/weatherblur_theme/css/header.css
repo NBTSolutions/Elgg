@@ -1,0 +1,460 @@
+/*-------------------------------------------------
+						BODY
+--------------------------------------------------*/
+html,
+body { height: 100%; }
+
+#wrapper {
+	min-height: 100%;
+	height: auto !important!;
+	height: 100%;
+	margin: 0 auto -100px;
+} 
+
+.push { height: 100px; } /*Height must match footer's height*/
+
+
+/*-------------------------------------------------
+				HEADER STUFF
+--------------------------------------------------*/
+.elgg-page-header {
+	display: block; 
+	background: #f8f8f8; 
+
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+}
+
+.elgg-page-header > .elgg-inner > .elgg-page-header { /*inner header*/
+	box-shadow: none;
+}  
+
+.header-content {
+	width: 990px;
+	margin: 0 auto;
+}
+
+/*-------------------------------------------------
+		TOP BAR (Admin, Settings, etc)
+--------------------------------------------------*/
+/*Takes out unnecessary background and border on icon*/
+.elgg-menu-topbar > .elgg-menu-item-friends a {
+	border: none;
+	background: none;
+}
+
+.elgg-menu-topbar > .elgg-menu-item-friends a:hover {
+	border: none;
+	background: none;
+}
+
+.elgg-menu-topbar > .elgg-menu-item-friends a:active {
+	border: none;
+	background: none;
+}
+
+/*-------------------------------------------------
+					TOP NAV
+--------------------------------------------------*/
+#top-nav { 
+	width: 990px;
+	line-height: 2em; /*centers text veritically*/
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 0;
+	padding: 0;
+	letter-spacing: .05em;
+	display: block;
+	list-style-type: none;
+	float: left;
+}
+
+#top-nav li {
+	float: left;
+	display: inline;
+	margin-right: 15px;
+}
+
+#top-nav li a {
+	color: #888;
+	text-decoration: none;
+	font-size: .9em;
+	float: left;
+	padding-top: 9px;
+}
+
+#top-nav li a:hover { 
+	color: #41afd7;
+	text-decoration: underline; 
+}
+#top-nav li a:active { 
+	position: relative;
+	top: 1px;
+}
+
+li#weather-widget {
+	display: block;
+	float: left;
+	width: 55px;
+	height: 35px;
+	margin: 1px 15px 0 740px;
+	background: url(../graphics/sprite.png) -660px 1px no-repeat;
+}
+
+li#avatar {
+	display: block;
+	float: left;
+	width: 35px;
+	height: 35px;
+	margin-top: 7px;
+	background: url(../graphics/sprite.png) -623px 0 no-repeat;
+}
+
+.icon-chevron-down {/*down arrow*/
+	font-size: .7em;
+	color: #888;
+	float: left;
+	margin: 15px 0 0 5px;
+}
+
+/*-------------------------------------------------
+						LOGIN
+--------------------------------------------------*/
+a.elgg-button-dropdown {
+	border: none;
+	color: #b92e2e;
+	font-size: .9em;
+	font-weight: normal;
+}
+
+a.elgg-button-dropdown:hover { background: none; }
+
+#login-dropdown > a.elgg-state-active { color: #666;}
+
+.elgg-module-dropdown > .elgg-body > .elgg-form-login > fieldset > div > label { color: #888; }
+
+/***** TEXT BOXES *****/
+.elgg-form-login > fieldset > div > input  {
+	border: 1px solid #ddd;
+	-moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset; 
+	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset; 
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .2) inset;
+}
+
+/***** LOG IN BUTTON *****/
+.elgg-foot > .elgg-button-submit {/*Normal State*/
+	/*width: 70px;*/
+	height: 30px;
+	border: 1px solid #437f96;
+	background: #1d7596;
+	background-image: -moz-linear-gradient(#379bc1, #1d7596);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #1d7596),color-stop(1, #379bc1));
+}
+
+.elgg-foot > .elgg-button-submit:hover {/*Hover State*/
+	background: #2693bd;
+	background-image: -moz-linear-gradient(#56c7f2, #2693bd);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #2693bd),color-stop(1, #56c7f2));
+}
+
+.elgg-foot > .elgg-button-submit:active {/*Pressed State*/
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	
+	position: relative;
+	top: 1px;
+}
+
+/***** REMEMBER ME *****/
+.elgg-foot > label.mtm.float-alt { margin-top: 5px; }
+
+/***** REGISTER & LOST PASSWORD LINKS *****/
+.elgg-foot > .elgg-menu-general.mtm { 
+	text-align: center;
+	padding-top: 10px;
+}
+
+.elgg-foot > .elgg-menu-general.mtm a:hover {
+	color: #41afd7;
+	text-decoration: underline; 
+}
+
+.elgg-foot > .elgg-menu-general.mtm a:active {
+	position: relative;
+	top: 1px;
+}
+
+/*----------------------------------------------------------
+  REGISTRATION & LOST PASSWORD PAGES
+----------------------------------------------------------*/
+/***********************************************************
+Registration form is currently edited in
+profile_manager plugin to include dropdown:
+mod > views > default > profile_manager > css > global.php
+***********************************************************/
+
+.elgg-form-register,
+.elgg-form-user-requestnewpassword {
+	margin: 0 auto;
+}
+
+.elgg-form-register > fieldset { margin-bottom: 70px; }
+
+.elgg-page-body > .elgg-inner > .elgg-layout > .elgg-body > h2 { /*Center H2*/
+	text-align: center; 
+	padding-top: 30px;
+	color: #46a4d5;
+} 
+
+.elgg-form-user-requestnewpassword,
+label  {
+	color: #555 !important;
+}
+
+/*-------------------------------------------------
+						LOGO
+--------------------------------------------------*/
+a.elgg-heading-site {
+	display: block;
+	width: 390px;
+	height: 100px;
+	text-indent: -9999px;
+	float: left;
+	margin: 0;
+	margin: 25px 280px 0 10px;
+	background: transparent url(../graphics/logo.png) 0 0 no-repeat;
+}
+
+/*-------------------------------------------------
+				SEARCH BOX
+--------------------------------------------------*/
+.elgg-search-header { display: none; } /*Hides duplicate search box on right side of browser*/
+
+.elgg-search > fieldset {
+	float: left;
+	margin-top: 40px;
+}
+
+.elgg-search > fieldset > input.search-input {
+	float: left;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	
+	-moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset; 
+	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset; 
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .2) inset;
+
+	margin-right: 10px;
+	padding: 3px 0 7px 10px;
+	height: 32px;
+	width: 218px;
+	border: 1px solid #ddd;
+	color: #aaa;
+	background: none; /*Hides magnifying glass or sprite*/
+}
+
+/***** SEARCH BUTTON *****/
+.elgg-search > fieldset > .search-submit-button {
+	display: block;
+	cursor: pointer;
+	float: left;
+	width: 75px;
+	height: 30px;
+	margin: 0;
+    padding: 0;
+	color: #666;
+	text-transform: uppercase;
+	font-size: .85em;
+	
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	
+	background: #cfcfcf;
+	background-image: -moz-linear-gradient(#e6e6e6, #c0c0c0);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #c0c0c0),color-stop(1, #e6e6e6));
+	
+	-moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset, 0 1px 0 rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset, 0 1px 0 rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.elgg-search > fieldset > .search-submit-button:hover {
+	background: #d3d3d3;
+	background-image: -moz-linear-gradient(#eee, #d3d3d3);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #d3d3d3),color-stop(1, #eee));
+}
+
+.elgg-search > fieldset > .search-submit-button:active{
+	background: #cfcfcf;
+	border: 0;
+	background-image: -moz-linear-gradient(#e6e6e6, #c0c0c0);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #c0c0c0),color-stop(1, #e6e6e6));
+	
+	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .3) inset, 0 1px 0 rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .3) inset, 0 1px 0 rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .3) inset, 0 1px 0 rgba(0, 0, 0, 0.3);
+
+	position: relative;
+	top: 1px; 
+}
+
+/*-------------------------------------------------
+				NAVIGATION
+--------------------------------------------------*/
+.elgg-inner > .elgg-menu-site { display: none; } /*Hides extra nav next to logo*/
+
+.elgg-more {display: none !important;} /*Hides "More" dropdown from main nav*/
+
+.header-content > .elgg-menu-site { 
+	width: 990px;
+	float: left;
+	margin: 20px auto;
+}
+
+.header-content > .elgg-menu-site li:first-child { margin: 0; }
+
+/***** NORMAL BUTTON STATE *****/
+.header-content > .elgg-menu-site li {
+	display: inline-block;
+	border: 1px solid #ddd;
+	margin-left: 5px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	
+	background: #e6e6e6;
+	background-image: -moz-linear-gradient(#f8f8f8, #eee);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #f8f8f8));
+	
+	-moz-box-shadow: 0 2px 0 rgba(255, 255, 255, 1) inset, 0 1px 0 rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 2px 0 rgba(255, 255, 255, 1) inset, 0 1px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 0 rgba(255, 255, 255, 1) inset, 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/***** HOVER BUTTON STATE *****/
+.header-content > .elgg-menu-site li:hover {
+	border: 1px solid #99c2cc;
+	background: #b4dbe3;
+	background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #b4dbe3),color-stop(1, #d0ebf3));
+	
+	-moz-box-shadow: 0 2px 0 rgba(229, 250, 255, 1) inset, 0 1px 0 rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 2px 0 rgba(229, 250, 255, 1) inset, 0 1px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 0 rgba(229, 250, 255, 1) inset, 0 1px 0 rgba(0, 0, 0, 0.2);
+} 
+
+/***** PRESSED BUTTON STATE *****/
+.header-content > .elgg-menu-site li:active {
+	border: 1px solid #fff;
+	background: #b4dbe3;
+	background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #b4dbe3),color-stop(1, #d0ebf3));
+	
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+} 
+
+/***** NORMAL TEXT LINK *****/
+.header-content > .elgg-menu-site li a { 
+	float: left; 
+	width: 120px;
+	height: 35px;
+	font-size: 1em;
+	font-weight: 700;
+	margin: 0;
+	padding:  15px 0 0 7px;
+	text-align: left;
+	color: #666;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+/***** HOVER TEXT LINK *****/
+.header-content > .elgg-menu-site li a:hover { color: #2e597b; }
+
+/***** NAVIGATION ICONS *****/
+.nav_icons {
+	display: block;
+	float: left;
+	margin-top: 7px;
+	width: 35px;
+	height: 37px;
+}
+
+#clipboard { 
+	background: url(../graphics/nav_sprite.png) 0 0 no-repeat;
+	margin-left: 20px;   
+}
+#magnifying_glass { 
+	background: url(../graphics/nav_sprite.png) -40px 0 no-repeat;
+	margin-left: 20px; 
+}
+#map { 
+	background: url(../graphics/nav_sprite.png) -79px 0 no-repeat;
+	margin-left: 10px; 
+}
+#people { 
+	background: url(../graphics/nav_sprite.png) -122px 0 no-repeat; 
+	margin-left: 50px; 
+}
+#book { 
+	background: url(../graphics/nav_sprite.png) -164px 0 no-repeat;
+	margin-left: 30px;  
+}
+
+
+/*.navigation_wrapper {
+	width: 100%;
+	height: 55px;
+	display: block;
+	float: left;
+	margin: 0 auto;
+	border: 1px solid #ddd;
+	background: #f8f8f8; 
+	
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+}
+
+.navigation {
+	border: 1px solid orange;
+	width: 960px;
+	margin: 0 auto;
+	display: block;
+	height: 55px;
+}
+
+.navigation > .elgg-menu-site li a {
+	border: 1px solid green;
+	color: #aaa;
+	margin: 0;
+	padding: 0;
+	position: relative;
+}*/
+
+/*.elgg-page-header > .elgg-page-inner > .header-content > .elgg-menu-site { 
+	border: 1px solid gray; 
+	width: 100%;
+	margin: 20px 0 0 0 !important;
+}
+
+.header-content > .elgg-menu-site li:first-child {
+	border: 2px solid red;
+	margin-left: 400px;
+	float: left;
+
+}*/
+
+
+
+
+
+
+
+

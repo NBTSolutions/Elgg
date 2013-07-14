@@ -209,8 +209,11 @@ class ElggAttributeLoader {
 			}
 		}
 
-		// Note: If there are still missing attributes, we're running on a 1.7 or earlier schema. We let
-		// this pass so the upgrades can run.
+		// loading complete: re-check missing and check type
+		if (($was_missing_primaries && $this->isMissingPrimaries($row))
+				|| ($was_missing_secondaries && $this->isMissingSecondaries($row))) {
+			throw new LogicException('Attribute loaders failed to return proper attributes');
+		}
 
 		// guid needs to be an int  http://trac.elgg.org/ticket/4111
 		$row['guid'] = (int) $row['guid'];
