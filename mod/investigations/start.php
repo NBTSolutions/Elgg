@@ -64,6 +64,31 @@ function investigations_init() {
 		false
 	);
 
+    expose_function(
+        "wb.createobservation",
+        "create_observation",
+        array(
+            'investigation_guid' => array('type' => 'int')
+        ),
+        'Create Observation for an investigation',
+        'POST',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.getobservations",
+        "get_observations",
+        array(
+            'investigation_guid' => array('type' => 'int'),
+            'token' =>array('type' => 'string')
+        ),
+        'Get observations from an investigation',
+        'POST',
+        false,
+        false
+    );
+
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
 
@@ -1108,3 +1133,105 @@ function get_investigations($username, $password) {
 
     return $investigations;
 }
+
+// create observation
+function create_observation($investigation_guid) {
+    // are you logged in?
+
+    // check if user is part of this investigation
+    $observation = new ElggObject();
+    $observation->subtype = "observation";
+    $observation->access_id = 2;
+    $observation->save();
+
+    // I can only add metadata after the initial save of a new object
+    $observation->parent_guid = $investigation_guid;
+    $observation->save();
+    return $observation;
+}
+
+function get_observations($investigation_guid, $token) {
+    // are you logged in?
+    // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
+    $user_id = validate_user_token($token, null);
+    if($user_id) {
+        $user = get_user($user_id);
+        $investigation = get_entity($investigation_guid); 
+        $is_member = $investigation->isMember($user);
+            
+        if($is_member) {
+            // check if user is part of this investigation
+            $dbprefix = elgg_get_config('dbprefix');
+
+            $results = elgg_get_entities_from_metadata(array(
+                'entity_subtype' => 'observation',
+                'parent_guid' => $investigation_guid
+            ));
+
+            $observations = array();
+
+            foreach($results as $result) {
+                $owner = get_entity($result->owner_guid);
+                
+                $observations[] = array(
+                    'id'    => $result->owner_guid,
+                    'time'  => date('F j, Y, g:i a', $result->last_action),
+                    'user'  => $owner->name,
+                    //'icon'  => 
+                );
+            }
+
+            return $observations;
+        }
+        else {
+            // not a member of this investigation
+            throw new Exception('User not a member of this investigation.');
+        }
+    }
+    else {
+        // not a valid login
+	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+    }
+}
+
+function like_observation($observation_guid) {
+    // are you logged in?
+    // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
+    $user_id = validate_user_token($token, null);
+    if($user_id) {
+    // do you have rights to comment?
+
+    }
+    else {
+        // not a valid login
+	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+    }
+}
+
+function comment_on_observation($observation_guid, $comment) {
+    // are you logged in?
+    // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
+    $user_id = validate_user_token($token, null);
+    if($user_id) {
+
+        $observation_comment = new ElggObject();
+        $observation_comment->subtype = "observation_comment";
+        $observation_comment->access_id = 2;
+        $observation_comment->save();
+
+        // I can only add metadata after the initial save of a new object
+        $observation_comment->parent_guid = $observation_guid;
+        $observation_comment->comment = $comment;
+        $observation_comment->save();
+        return $observation;
+
+    }
+    else {
+        // not a valid login
+	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+    }
+    
+}
+
+// list of observations by date/user
+
