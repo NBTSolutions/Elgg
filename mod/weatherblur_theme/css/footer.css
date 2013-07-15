@@ -35,7 +35,7 @@ ul#footer-text-links {
 ul#contact-list {
 	display: block;
 	float: left;
-	margin: 30px 0 0 60px;
+	margin: 30px 0 0 177px;
 }
 
 #footer-text-links a,
@@ -69,7 +69,7 @@ ul#contact-list > li:last-child { border: none; }
 /*-----------------------------------------------------------------------
 	SOCIAL MEDIA ICONS
 -----------------------------------------------------------------------*/
-ul#social-media {
+/*ul#social-media {
 	float: left;
 	display: block;
 	width: 250px;
@@ -90,7 +90,7 @@ ul#social-media > .social-media-icons {
 li#facebook { background: url(../graphics/sprite.png) -490px -43px no-repeat; }
 li#twitter { background: url(../graphics/sprite.png) -525px -43px no-repeat; }
 li#google { background: url(../graphics/sprite.png) -561px -43px no-repeat; }
-li#youtube { background: url(../graphics/sprite.png) -597px -43px no-repeat; }
+li#youtube { background: url(../graphics/sprite.png) -597px -43px no-repeat; }*/
 
 /*-----------------------------------------------------------------------
 	FOOTER LOGOS

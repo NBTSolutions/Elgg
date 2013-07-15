@@ -5,6 +5,8 @@
 	
 	$body = elgg_view('index.php');
 	$content = '<div class="wb-body">
+	
+
 
 	<!-----------------------------------------------
 				DATA COLLECTION
@@ -13,9 +15,12 @@
 		<div class="map_dct_container">
 			<div id="data_collection">
 				<h2>Enter Data</h2>
-			</div><!--End data collection-->			
+				<iframe src="http://weatherblur-staging.herokuapp.com/collect/" id="home_dct"></iframe>
+			</div><!--End data collection-->	
+					
 			<div id="homepage_map">
 				<h2>Explore Data</h2>
+				<iframe src="http://weatherblur-staging.herokuapp.com/map/" id="home_map"></iframe>
 			</div><!--End homepage map-->		
 		</div><!--End map_dct_container-->
 	</div><!--End green-bkgd-->
