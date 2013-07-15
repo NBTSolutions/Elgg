@@ -61,7 +61,7 @@ if (is_array($items) && count($items) > 0) {
 			$html .= "<li id=\"$id\" class=\"$item_class\">$li</li>";
 		}
 	}
-	$html .= '</ul><h1> LOL</h1>';
+	$html .= '</ul>';
 }
 
 if ($position == 'before' || $position == 'both') {
