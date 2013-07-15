@@ -76,30 +76,16 @@
 			</div><!-- End activity-->
 			
 			<!-----------------------------------------------
-							FEATURED BLOCK
+							FEATURED MEMBER
 			------------------------------------------------->
-			<div id="featured-block">
-				<div id="left-dashes" class="dashed-box"></div>
-				<h2>Featured</h2>
-				<div id="right-dashes" class="dashed-box"></div>
-				<div id="featured-school">
-					<a class="featured-pic" href="#"></a>
-					<a class="featured-category" href="#">Featured School</a>
-					<a class="featured-name" href="#">Name goes here</a>
-				</div><!--End featured school-->
+			<div id="featured-member-bkgd">
+			
+				<h2>Featured Member</h2>						
+				<a class="featured-pic" href="#"></a>
+				<a class="featured-name" href="#">Owen Stiles</a>
+				<a class="featured-teaser" href="#">For an instant in the flashing eyes of the mate, and his fiery cheeks, you would have almost thought that he had really received the blaze of the levelled tube. But, mastering his emotion, he half calmly rose, and as he quitted the cabin, paused for an instant and said: "Thou hast outraged, not insulted me, sir; but for that I ask thee not to beware of Starbuck; thou wouldst but laugh; but let Ahab beware of Ahab; beware of thyself, old man."</a>
 						
-				<div id="featured-fisherman">
-					<a class="featured-pic" href="#"></a>
-					<a class="featured-category" href="#">Featured Fisherman</a>
-					<a class="featured-name" href="#">Name goes here</a>
-				</div><!--End featured fisherman-->
-						
-				<div id="featured-scientist">
-					<a class="featured-pic" href="#"></a>
-					<a class="featured-category" href="#">Featured Scientist</a>
-					<a class="featured-name" href="#">Name goes here</a>
-				</div><!--End featured scientist-->
-			</div><!--End featured block-->
+			</div><!--End featured member bkgd-->
 
 		</div><!-- End three columns content-->
 	</div><!-- End featured three columns-->
