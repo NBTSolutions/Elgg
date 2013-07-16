@@ -1186,14 +1186,23 @@ function create_observation($investigation_guid, $token) {
         
         // check if user is part of this investigation
         if($investigation->isMember($user)) {
+
             $observation = new ElggObject();
+
             $observation->subtype = "observation";
             $observation->access_id = 2;
+            
+            //this is needed to set the owner_guid
+            $ignore = elgg_set_ignore_access(true);
+            $observation->owner_guid = $user_id;
             $observation->save();
+            elgg_set_ignore_access($ignore);
 
             // I can only add metadata after the initial save of a new object
             $observation->parent_guid = $investigation_guid;
             $observation->save();
+            
+            var_dump($observation);
             return $observation->guid;
         }
         //not part of this investigation
@@ -1222,17 +1231,17 @@ function get_observations($investigation_guid, $token) {
             $dbprefix = elgg_get_config('dbprefix');
 
             $results = elgg_get_entities(array(
-                'subtype' => 'observation'
-                //'parent_guid' => $investigation_guid
+                'type_subtype_pair'	=>	array('object' => 'observation'),
+                'parent_guid' => $investigation_guid
             ));
 
             $observations = array();
 
+            var_dump($results);
+
             foreach($results as $result) {
                 $owner = get_entity($result->owner_guid);
-               
-                var_dump($result);
-
+                 
                 $observations[] = array(
                     'guid'  => $result->guid,
                     'owner_id'  => $result->owner_guid,
@@ -1261,44 +1270,27 @@ function toggle_like_observation($observation_guid, $token) {
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
     $user_id = validate_user_token($token, null);
     if($user_id) {
+        $options = array("annotation_guid" => array());
 
-        xdebug_break();
-        // check if there is already a like on an observation
-        $results = elgg_get_entities_from_metadata(array(
-           'entity_subtype' => 'observation_comment',
-           'parent_guid' => $observation_guid,
-           'owner_guid' => $user_id
+        // have we liked this observation yet?
+        $results = elgg_get_annotations(array(
+            "annotation_guid" => $observation_id,
+            "name" => "like"
         ));
-        // if there is a like unlike it
+        var_dump($results);
+        // like this observation
         if($results) {
-            // unlike all just incase multiple likes from the same person
-            foreach($results as $result) {
-                delete_entity($result->guid);
-            }
-            return array(
-                'liked' => false
-            );
+            $observation = get_entity($observation_guid);
+
+            // need to ignore access to set owner_id
+            $ignore = elgg_set_ignore_access(true);
+            $id = $observation->annotate('like', 1, 2, $user_id, 'integer');
+            $observation->save();
+            elgg_set_ignore_access($ignore);
         }
-        // if there is no like then like it
+        // unlike this observation
         else {
-            // like
-            $observation_comment = new ElggObject();
-            $observation_comment->subtype = "observation_comment";
-            $observation_comment->owner_guid = $user_id;
-            $observation_comment->access_id = 2;
-            $observation_comment->save();
-
-            // I can only add metadata after the initial save of a new object
-            $observation_comment->parent_guid = $observation_guid;
-            $observation_comment->comment = $comment;
-            $observation_comment->save();
-
-            // stuff
-            //var_dump(get_metadata_for_entity($observation_comment->guid));
-
-            return array(
-                'liked' => true
-            );
+           return "ok";
         }
     }
     else {
@@ -1311,26 +1303,28 @@ function get_likes($observation_guid, $token) {
    
     $user_id = validate_user_token($token, null);
     if($user_id) {
-        // check if there is already a like on an observation
-        $results = elgg_get_entities_from_metadata(array(
-           'entity_subtype' => 'observation_comment',
-           'parent_guid' => $observation_guid,
-           'owner_guid' => $user_id
+
+        $ignore = elgg_set_ignore_access(true);
+        $options = array('annotation_owner_guid' => array()); 
+        $options['annotations_owner_guid'][] = $user_id;
+
+        $my_like = elgg_get_annotations(array(
+            'annotation_owner_guids' => array($user_id),
+            'guid' => $observation_guid,
+            'name' => 'like'
         ));
 
-        $number_of_likes = elgg_get_entities_from_metadata(array(
-           'entity_subtype' => 'observation_comment',
-           'parent_guid' => $observation_guid
+        $all_likes = elgg_get_annotations(array(
+            'guid' => $observation_guid,
+            'name' => 'like'
         ));
+        elgg_set_ignore_access($ignore);
 
-        var_dump($number_of_likes);
-
-        return array(
-            'likes' => count($number_of_likes), 
-            'liked' => $results ? true : false,
-            'parent_id' => $observation_guid,
-            'owner_guid' => $user_id
-        );
+        var_dump($my_like);
+        var_dump($all_likes);
+        var_dump(count($all_likes));
+        
+        return "ok";
     }
     else {
 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
