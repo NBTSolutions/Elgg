@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<link rel='stylesheet' href="tabs.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+
+		<link href="//s3.amazonaws.com/nbt-assets/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+		<link rel="stylesheet" href="//d3pch6bcnsao4c.cloudfront.net/lib/enyo/enyo-onyx-2.2.0.css"/>
+
+		<link rel="stylesheet" href="graph.css"/>
+
+
+		<script src="//d3pch6bcnsao4c.cloudfront.net/lib/enyo/enyo-onyx-2.2.0.js"></script>
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<script src="//d3pch6bcnsao4c.cloudfront.net/lib/moment.min.js"></script>
+		<script src="//d3pch6bcnsao4c.cloudfront.net/lib/underscore-1.4.4.js"></script>
+		<script src="//d3pch6bcnsao4c.cloudfront.net/lib/less-1.3.3.min.js"></script>
+
+	<script type="text/javascript" src="/elgg/vendors/jquery/jquery-1.6.4.min.js"></script>
+	<script type="text/javascript" src="/elgg/vendors/jquery/jquery-ui-1.8.16.min.js"></script>
+	<script src="jq/ui/minified/jquery.ui.widget.min.js"></script>
+	<script src="jq/ui/minified/jquery.ui.tabs.min.js"></script>
+
+	<script src="graph.js"></script>
+
+</head>
+
+<script>
+  $(function() {
+		$( "#tabs" ).tabs();
+  });
+</script>
+
+<div id="tabs">
+	<ul>
+		<li><a href="#tab_explore">Explore Observations</a></li>
+		<li><a href="#tab_graphing">Graphing</a></li>
+		<li><a href="#tab_mapping">Mapping</a></li>
+	</ul>
+	<div id="tab_explore">
+		<div>La la la</div>
+		<div>Observations grid will go here.</div>
+	</div>
+	<div id="tab_graphing">
+		<div id="graph_container"></div>
+	</div>
+	<div id="tab_mapping">
+		<div>map.</div>
+	</div>
+
+</div>
+
+</html>
