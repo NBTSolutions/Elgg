@@ -44,7 +44,7 @@
                 <li><a href="#tab_mapping">Mapping</a></li>
             </ul>
             <div id="tab_explore">
-                <div>Observations grid will go here.</div>
+                <div><img src="http://localhost:9999/elgg/mod/weatherblur_theme/graphics/observation_explorer.png"></div>
             </div>
             <div id="tab_graphing">
                 <div id="graph_container"></div>
