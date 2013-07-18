@@ -52,40 +52,53 @@ function investigations_init() {
     // expose get investigations
 	// The authentication token api
 	expose_function(
-		"wb.getinvestigations",
-		"get_investigations",
+		"wb.get_invs",
+		"get_invs",
 		array(
 			'username' => array ('type' => 'string'),
 			'password' => array ('type' => 'string')
 		),
 		'Get List of Investigations for a given user',
-		'POST',
+		'GET',
 		false,
 		false
 	);
 
     expose_function(
-        "wb.createobservation",
-        "create_observation",
+        "wb.create_obs",
+        "create_obs",
         array(
-            'investigation_guid' => array('type' => 'int'),
-            'token' =>array('type' => 'string')
+            'inv_guid' => array('type' => 'int'),
+            'token'     => array('type' => 'string'),
+            'agg_id'    => array('type' => 'int')
         ),
         'Create Observation for an investigation',
-        'POST',
+        'GET',
         false,
         false
     );
 
     expose_function(
-        "wb.getobservations",
-        "get_observations",
+        "wb.get_obs_by_user_type",
+        "get_obs_by_user_type",
+        array(
+            'user_type' => array('type' => 'string')
+        ),
+        'Get observations from an investigation',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_obs",
+        "get_obs_by_inv",
         array(
             'investigation_guid' => array('type' => 'int'),
             'token' =>array('type' => 'string')
         ),
         'Get observations from an investigation',
-        'POST',
+        'GET',
         false,
         false
     );
@@ -1133,7 +1146,7 @@ function investigations_run_upgrades() {
 	}
 }
 
-function get_investigations($username, $password) {
+function get_invs($username, $password) {
 	if (true === elgg_authenticate($username, $password)) {
 		$token = create_user_token($username);
 	}
@@ -1161,14 +1174,15 @@ function get_investigations($username, $password) {
 
     // build out our list of investigation names/ids
     $investigations = array(
-        'userId' => intval($user_id),
-        'userName' => $username,
-        'list' => array()
+        'user_guid' => intval($user_id),
+        'username' => $username,
+        'token' => $token,
+        'investigations' => array()
     );
     foreach($results as $result) {
-        $investigations['list'][] = array(
+        $investigations['investigations'][] = array(
             'name' => $result->name,
-            'id' => $result->guid
+            'guid' => $result->guid
         );
     }
 
@@ -1176,16 +1190,19 @@ function get_investigations($username, $password) {
 }
 
 // create observation
-function create_observation($investigation_guid, $token) {
+function create_obs($inv_guid, $token, $agg_id) {
     // are you logged in?
 
-    $user_id = validate_user_token($token, null);
-    if($user_id) {
-        $user = get_user($user_id);
-        $investigation = get_entity($investigation_guid);
+    $user_guid = validate_user_token($token, null);
+    if($user_guid) {
+        $user = get_user($user_guid);
+        $investigation = get_entity($inv_guid);
         
         // check if user is part of this investigation
         if($investigation->isMember($user)) {
+
+            $profile_type_guid = $user->custom_profile_type;
+            $profile_type = get_entity($profile_type_guid);
 
             $observation = new ElggObject();
 
@@ -1194,15 +1211,18 @@ function create_observation($investigation_guid, $token) {
             
             //this is needed to set the owner_guid
             $ignore = elgg_set_ignore_access(true);
-            $observation->owner_guid = $user_id;
+            $observation->owner_guid = $user_guid;
+
+            $observation->user_type = $profile_type->getTitle();
+            $observation->agg_id = $agg_id;
             $observation->save();
+
             elgg_set_ignore_access($ignore);
 
             // I can only add metadata after the initial save of a new object
-            $observation->parent_guid = $investigation_guid;
+            $observation->parent_guid = $inv_guid;
             $observation->save();
             
-            var_dump($observation);
             return $observation->guid;
         }
         //not part of this investigation
@@ -1217,7 +1237,7 @@ function create_observation($investigation_guid, $token) {
     }
 }
 
-function get_observations($investigation_guid, $token) {
+function get_obs_by_inv($investigation_guid, $token) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
     $user_id = validate_user_token($token, null);
@@ -1236,8 +1256,6 @@ function get_observations($investigation_guid, $token) {
             ));
 
             $observations = array();
-
-            var_dump($results);
 
             foreach($results as $result) {
                 $owner = get_entity($result->owner_guid);
@@ -1264,22 +1282,42 @@ function get_observations($investigation_guid, $token) {
     }
 }
 
+function get_obs_by_user_type($user_type) {
+
+    $results = elgg_get_entities_from_metadata(array(
+        'user_type' => $user_type 
+    ));
+
+    $agg_ids = array("agg_ids" => array());
+
+    foreach($results AS $result) {
+        $temp = get_metadata_byname($result->guid, 'agg_id');
+        if($temp->value != NULL) {
+            $agg_ids['agg_ids'][] = $temp->value;
+        }
+    }
+    return $agg_ids;
+}
+
 // returns true if like, false if unliked
-function toggle_like_observation($observation_guid, $token) {
+function toggle_like_obs($observation_guid, $token) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
     $user_id = validate_user_token($token, null);
     if($user_id) {
-        $options = array("annotation_guid" => array());
+        xdebug_break();
 
         // have we liked this observation yet?
         $results = elgg_get_annotations(array(
-            "annotation_guid" => $observation_id,
-            "name" => "like"
+            "annotation_owner_guid" => $user_id,
+            "annotation_guid" => $observation_guid,
+            "name" => "observation_like"
         ));
+       
         var_dump($results);
+
         // like this observation
-        if($results) {
+        if(!$results) {
             $observation = get_entity($observation_guid);
 
             // need to ignore access to set owner_id
@@ -1287,10 +1325,17 @@ function toggle_like_observation($observation_guid, $token) {
             $id = $observation->annotate('like', 1, 2, $user_id, 'integer');
             $observation->save();
             elgg_set_ignore_access($ignore);
+
+            return "liked";
         }
         // unlike this observation
         else {
-           return "ok";
+
+           // delete entity foreaching just in case the system added multiple likes from this user
+           foreach($results as $result) {
+                elgg_delete_annotation_by_id($result->id);
+           }
+           return "unliked";
         }
     }
     else {
@@ -1304,27 +1349,24 @@ function get_likes($observation_guid, $token) {
     $user_id = validate_user_token($token, null);
     if($user_id) {
 
-        $ignore = elgg_set_ignore_access(true);
-        $options = array('annotation_owner_guid' => array()); 
-        $options['annotations_owner_guid'][] = $user_id;
-
+        xdebug_break();
         $my_like = elgg_get_annotations(array(
-            'annotation_owner_guids' => array($user_id),
-            'guid' => $observation_guid,
-            'name' => 'like'
+            "annotation_owner_guid" => $user_id,
+            "annotation_guid" => $observation_guid,
+            "name" => "observation_like"
         ));
+
+        $my_like = $my_like ? 1 : 0;
 
         $all_likes = elgg_get_annotations(array(
             'guid' => $observation_guid,
-            'name' => 'like'
+            'name' => 'observation_like'
         ));
-        elgg_set_ignore_access($ignore);
-
-        var_dump($my_like);
-        var_dump($all_likes);
-        var_dump(count($all_likes));
         
-        return "ok";
+        return array(
+            "my_like"  => $my_like,
+            "all_likes" => count($all_likes)
+        );
     }
     else {
 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
@@ -1332,23 +1374,28 @@ function get_likes($observation_guid, $token) {
 
 }
 
-function comment_on_observation($observation_guid, $comment, $token) {
+function get_comments_on_obs($observation_guid) {
+    
+        $comments = elgg_get_annotations(array(
+            "annotation_owner_guid" => $user_id,
+            "annotation_guid" => $observation_guid,
+            "name" => "observation_comments"
+        ));
+
+        return $comments;
+}
+
+function comment_on_obs($observation_guid, $comment, $token) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
     $user_id = validate_user_token($token, null);
     if($user_id) {
 
-        $observation_comment = new ElggObject();
-        $observation_comment->subtype = "observation_comment";
-        $observation_comment->access_id = 2;
-        $observation_comment->save();
-
-        // I can only add metadata after the initial save of a new object
-        $observation_comment->parent_guid = $observation_guid;
-        $observation_comment->comment = $comment;
-        $observation_comment->save();
-
-        var_dump(get_metadata_for_entity($observation_comment->guid));
+        // need to ignore access to set owner_id
+        $ignore = elgg_set_ignore_access(true);
+        $id = $observation->annotate('observation_comments', $comment, 2, $user_id, 'text');
+        $observation->save();
+        elgg_set_ignore_access($ignore);
 
         return $observation_comment;
 
