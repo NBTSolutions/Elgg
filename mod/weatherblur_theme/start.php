@@ -49,6 +49,11 @@
 		//TYPOGRAPHY.CSS
 		elgg_register_css('typography', $css_dir.'typography.css');
 		elgg_load_css('typography');
+		
+		//GRAPH.CSS
+		elgg_register_css('graph', $CONFIG->url.'mod/weatherblur_theme/css/graph.css'); 
+		elgg_load_css('graph');
+
 
 		// smoothness UI from jquery, this css needs to be removed but see tabs in
 		// exploredata page, those will have to be replaced.
@@ -110,7 +115,12 @@
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/people.php';
 			return true;
 		}
-
+		if ($segments[0] == 'profile') 
+		{
+			include elgg_get_plugins_path() . 'weatherblur_theme/pages/profile.php';
+			return true;
+		}
+		
 		return false;
 	}
 ?>

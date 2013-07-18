@@ -52,6 +52,7 @@ iframe {
 -----------------------------------------------------------------------*/
 .elgg-sidebar {/*
 	background: #f0eed9;*/
+	float: left;
 }
 
 /***** Sidebar Buttons *****/
