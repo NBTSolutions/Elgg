@@ -53,7 +53,7 @@
                 <div id="graph_container"></div>
             </div>
             <div id="tab_mapping">
-                <div>map.</div>
+                <div><iframe src="http://weatherblur-staging.herokuapp.com/map/"></iframe></div>
             </div>
 
         </div>
