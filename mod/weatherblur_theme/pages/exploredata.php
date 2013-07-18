@@ -31,7 +31,33 @@
 	$content = '<div class="wb-body">
 	<h2 style="text-align:center;padding: 20px">Explore Data</h2>
 	<iframe id="explore" src="/elgg/mod/weatherblur_theme/pages/explore.html"></iframe>';
-	
+    $content = '
+        <script>
+          $(function() {
+                $( "#tabs" ).tabs();
+          });
+        </script>
+
+        <div class="wb-body">
+        <div id="tabs">
+            <ul>
+                <li><a href="#tab_explore">Explore Observations</a></li>
+                <li><a href="#tab_graphing">Graphing</a></li>
+                <li><a href="#tab_mapping">Mapping</a></li>
+            </ul>
+            <div id="tab_explore">
+                <div>La la la</div>
+                <div>Observations grid will go here.</div>
+            </div>
+            <div id="tab_graphing">
+                <div id="graph_container"></div>
+            </div>
+            <div id="tab_mapping">
+                <div>map.</div>
+            </div>
+
+        </div>
+        </div>';    
 	$canvas_area = elgg_view_layout('default', array('content' => $content));
 	echo elgg_view_page($title, $canvas_area);
 	
