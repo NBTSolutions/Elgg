@@ -20,7 +20,7 @@
 	elgg_load_js('d3');
 	elgg_load_js('moment');
 	elgg_load_js('underscore');
-	elgg_laod_js('jq-widget');
+	elgg_load_js('jq-widget');
 	elgg_load_js('jq-tabs');
 	elgg_load_js('graph');
 
