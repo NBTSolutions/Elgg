@@ -70,7 +70,8 @@ function investigations_init() {
         array(
             'inv_guid' => array('type' => 'int'),
             'token'     => array('type' => 'string'),
-            'agg_id'    => array('type' => 'int')
+            'agg_id'    => array('type' => 'int'),
+            'cb' => array('cb' => 'string')
         ),
         'Create Observation for an investigation',
         'GET',
@@ -89,6 +90,19 @@ function investigations_init() {
         false,
         false
     );
+
+    expose_function(
+        "wb.get_obs_by_inv",
+        "get_obs_by_inv",
+        array(
+            'inv_id' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
 
     expose_function(
         "wb.get_obs",
@@ -1185,7 +1199,7 @@ function get_invs($username, $password) {
             'guid' => $result->guid
         );
     }
-
+    xdebug_break();
     return $investigations;
 }
 
@@ -1237,49 +1251,21 @@ function create_obs($inv_guid, $token, $agg_id) {
     }
 }
 
-function get_obs_by_inv($investigation_guid, $token) {
+function get_obs_by_inv($investigation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
-    $user_id = validate_user_token($token, null);
-    if($user_id) {
-        $user = get_user($user_id);
-        $investigation = get_entity($investigation_guid); 
-        $is_member = $investigation->isMember($user);
-            
-        if($is_member) {
-            // check if user is part of this investigation
-            $dbprefix = elgg_get_config('dbprefix');
+    $investigation = get_entity($investigation_guid); 
 
-            $results = elgg_get_entities(array(
-                'type_subtype_pair'	=>	array('object' => 'observation'),
-                'parent_guid' => $investigation_guid
-            ));
+    $results = elgg_get_entities(array(
+        'type_subtype_pair'	=>	array('object' => 'observation'),
+        'parent_guid' => $investigation_guid
+    ));
 
-            $observations = array();
+    var_dump($results);
 
-            foreach($results as $result) {
-                $owner = get_entity($result->owner_guid);
-                 
-                $observations[] = array(
-                    'guid'  => $result->guid,
-                    'owner_id'  => $result->owner_guid,
-                    'time'  => date('F j, Y, g:i a', $result->last_action),
-                    'user'  => $owner->name,
-                    //'icon'  => 
-                );
-            }
+    $observations = array();
 
-            return $observations;
-        }
-        else {
-            // not a member of this investigation
-            throw new Exception('User not a member of this investigation.');
-        }
-    }
-    else {
-        // not a valid token
-	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
-    }
+    return $observations;
 }
 
 function get_obs_by_user_type($user_type) {
