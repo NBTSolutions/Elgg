@@ -1441,7 +1441,7 @@
 div.column {
   display: inline-block;
   vertical-align: top;
-  width: 400px;
+  width: 300px;
   margin: 20px;
   text-align: left;
 }
@@ -1461,19 +1461,31 @@ div.nbt-checkbox i {
 div.parameter-block {
   display: block;
   padding: 6px 18px;
-  border-radius: 5px;
   text-align: left;
+
 }
 div.parameter-block > div {
   position: relative;
   display: inline-block;
+  color: #666;
 }
 div.parameter-block .elgg-button {
   padding: 2px 4px;
 }
 /****** GRAPH CONTROLS ******/
-.date-display { background: #fff;
+#graph_graphControls_control3,
+#graph_graphControls_control8,
+#graph_graphControls_control10,
+#graph_graphControls_control13 {
+	margin-right: 7px;
+}
 
+.date-display { 
+	background: #fff;
+	padding: 3px;
+}
+
+.icon-calendar { 
 }
 
 #graph_graphControls_fromPicker {
