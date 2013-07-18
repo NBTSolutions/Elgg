@@ -1461,8 +1461,8 @@ div.nbt-checkbox i {
 div.parameter-block {
   display: block;
   padding: 6px 18px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 5px;
+  text-align: left;
 }
 div.parameter-block > div {
   position: relative;
@@ -1471,6 +1471,15 @@ div.parameter-block > div {
 div.parameter-block .elgg-button {
   padding: 2px 4px;
 }
+/****** GRAPH CONTROLS ******/
+.date-display { background: #fff;
+
+}
+
+#graph_graphControls_fromPicker {
+	width: 20% !important;
+}
+
 div.parameter-block .enyo-popup {
   vertical-align: top;
   position: absolute;
