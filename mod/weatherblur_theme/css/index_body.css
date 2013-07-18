@@ -84,6 +84,28 @@ iframe#home_map{
 }
 
 /*-----------------------------------------------------------------------
+	EXPLORE DATA - not working in CSS folder
+-----------------------------------------------------------------------*/
+iframe#explore {
+	width: 960px;
+	border: 2px solid red;
+}
+
+body.webkitOverflowScrolling {
+	border: 2px solid blue;
+}
+
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+	text-decoration: underline !important;
+	color: blue !important;
+}
+
+.ui-widget-header {
+	border: 2px solid red !important;
+}
+
+
+/*-----------------------------------------------------------------------
 	FEATURED: THREE COLUMNS
 -----------------------------------------------------------------------*/
 #three-columns-content {
