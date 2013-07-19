@@ -1250,7 +1250,6 @@ function get_obs() {
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'observation')
     ));
-    var_dump($results);
 }
 
 function get_obs_by_inv($investigation_guid) {
