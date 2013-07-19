@@ -91,8 +91,4 @@
 		
 			$canvas_area = elgg_view_layout('default', array('content' => $content));
 			echo elgg_view_page($title, $canvas_area);
-
 		?>
-
-
-
