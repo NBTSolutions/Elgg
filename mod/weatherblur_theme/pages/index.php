@@ -1,9 +1,9 @@
 <?php
 	// Load Elgg engine
 	include_once dirname(dirname(dirname(dirname(__FILE__)))) . "/engine/start.php";
-	
-    var_dump();
-	
+
+    $news = news_homepage();
+
 	$body = elgg_view('index.php');
 	$content = '<div class="wb-body">
 	
@@ -32,10 +32,18 @@
 		
 			<div id="latest-news">
 				<h2>Latest News</h2>
+               
 				<div id="latest-news-photo"></div>
-				<h3><a class="featured-title" href="#">Title goes here</a></h3>
-				<p class="description">Description goes here. Description goes here. Description goes here. Description goes here. Description goes here. Description goes here. Description goes here. Description goes here.</p>
-				<a class="orange-links" href="#">View more news</a>
+				<h3><a class="featured-title" href="news/view/'.$news->guid.'/'.str_replace(' ', '-', $news->title).'">'.$news->title.'</a></h3>
+				<p class="description">'.$news->description.'</p>
+				';
+                if($news->guid) {
+                    $content .= '<a class="orange-links" href="news">View more news</a>';
+                }
+                else {
+                    $content .= $news;
+                }
+            $content .= '
 			</div><!-- End lastest news-->
 			
 			<div id="featured-investigation">
