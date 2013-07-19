@@ -2,6 +2,7 @@
 	// Load Elgg engine
 	include_once dirname(dirname(dirname(dirname(__FILE__)))) . "/engine/start.php";
 	
+    var_dump();
 	
 	$body = elgg_view('index.php');
 	$content = '<div class="wb-body">
@@ -48,29 +49,9 @@
 			</div><!-- End featured investigation-->
 			
 			<div id="activity">
-				<h2>Activity</h2>
-					<div id="activity-block">
-						<div id="noel" class="avatar"></div>
-						<h3 class ="username">Noel Miciano</h3>
-						<h4 class="post-date">Posted on 12/15/2012</h4>
-						<p class="activity-description">Description goes here. Description goes here. Description goes here. Description goes here.</p>
-					</div><!--End activity block-->
-						
-					<div id="activity-block">
-						<div id="scott" class="avatar"></div>
-						<h3 class ="username">Scott Stewart</h3>
-						<h4 class="post-date">Posted on 12/15/2012</h4>
-						<p class="activity-description">Description goes here. Description goes here. Description goes here. Description goes here.</p>
-					</div><!--End activity block-->
-						
-					<div id="activity-block">
-						<div id="steph" class="avatar"></div>
-						<h3 class ="username">Stephanie Caggiano</h3>
-						<h4 class="post-date">Posted on 12/15/2012</h4>
-						<p class="activity-description">Description goes here. Description goes here. Description goes here. Description goes here.</p>
-					</div><!--End activity block-->	
-					
-						<a class="orange-links" href="#">View more activity</a>
+				<h2>Activity</h2>'.elgg_list_river().'
+
+						<a class="orange-links" href="activity">View more activity</a>
 			</div><!-- End activity-->
 			
 			<!-----------------------------------------------
