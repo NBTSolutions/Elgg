@@ -1462,7 +1462,6 @@ div.parameter-block {
   display: block;
   padding: 6px 18px;
   text-align: left;
-
 }
 div.parameter-block > div {
   position: relative;
@@ -1492,15 +1491,15 @@ div.parameter-block .elgg-button {
 	width: 20% !important;
 }
 
-div.parameter-block .enyo-popup {
+div.parameter-block #graph_graphControls_measurePopup {
   vertical-align: top;
   position: absolute;
   border-radius: 5px;
   background-color: white;
   border: 1px solid #ccc;
 }
-div.parameter-block .calendar-popup {
-  z-index: 100;
+div.parameter-block .onyx-popup {
+  position: absolute;
 }
 div.date-display {
   width: 175px;
