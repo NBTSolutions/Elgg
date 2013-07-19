@@ -49,7 +49,7 @@
 			</div><!-- End featured investigation-->
 			
 			<div id="activity">
-				<h2>Activity</h2>'.elgg_list_river().'
+				<h2>Activity</h2>'.elgg_list_river(array('limit' => 3), "page/components/homepage-activity-list").'
 
 						<a class="orange-links" href="activity">View more activity</a>
 			</div><!-- End activity-->
