@@ -1,14 +1,11 @@
 <div id="footer-wrapper">
 	<div id="footer">
 		<ul id="footer-text-links">
-			<li><a class="footer-link" href="#">Home</a></li>
-			<li><a class="footer-link" href="#">About</a></li>
-			<li><a class="footer-link" href="#">My Account</a></li>
-			<li><a class="footer-link" href="#">Enter Data</a></li>
-			<li><a class="footer-link" href="#">Investigate</a></li>
-			<li><a class="footer-link" href="#">Explore Data</a></li>
-			<li><a class="footer-link" href="#">People</a></li>
-			<li><a class="footer-link" href="#">Resources</a></li>
+			<li><a class="footer-link" href="<?php echo $CONFIG->url; ?>wbsystem/enterdata">Enter Data</a></li>
+			<li><a class="footer-link" href="/elgg/investigate">Investigate</a></li>
+			<li><a class="footer-link" href="<?php echo $CONFIG->url; ?>wbsystem/exploredata">Explore Data</a></li>
+			<li><a class="footer-link" href="<?php echo $CONFIG->url; ?>wbsystem/people">People</a></li>
+			<li><a class="footer-link" href="<?php echo $CONFIG->url; ?>wbsystem/resources">Resources</a></li>
 		</ul><!--End footer text links-->
 					
 		<ul id="contact-list">
