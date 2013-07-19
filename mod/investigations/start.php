@@ -122,33 +122,33 @@ function investigations_init() {
             'token' => array('type' => 'string')
         ),
         '',
-        'POST',
+        'GET',
         false,
         false
     );
 
     expose_function(
-        "wb.togglelikeobservation",
-        "toggle_like_observation",
+        "wb.toggle_like_obs",
+        "toggle_like_obs",
         array(
             'observation_guid' => array('type' => 'int'),
             'token' => array('type' => 'string')
         ),
         '',
-        'POST',
+        'GET',
         false,
         false
     );
 
     expose_function(
-        "wb.getlikes",
+        "wb.get_likes",
         "get_likes",
         array(
             'observation_guid' => array('type' => 'int'),
             'token' => array('type' => 'string')
         ),
         '',
-        'POST',
+        'GET',
         false,
         false
     );
@@ -1300,8 +1300,6 @@ function toggle_like_obs($observation_guid, $token) {
             "annotation_guid" => $observation_guid,
             "name" => "observation_like"
         ));
-       
-        var_dump($results);
 
         // like this observation
         if(!$results) {
@@ -1312,8 +1310,6 @@ function toggle_like_obs($observation_guid, $token) {
             $id = $observation->annotate('like', 1, 2, $user_id, 'integer');
             $observation->save();
             elgg_set_ignore_access($ignore);
-
-            return "liked";
         }
         // unlike this observation
         else {
@@ -1322,8 +1318,8 @@ function toggle_like_obs($observation_guid, $token) {
            foreach($results as $result) {
                 elgg_delete_annotation_by_id($result->id);
            }
-           return "unliked";
         }
+        return get_likes($observation_guid, $token);
     }
     else {
         // not a valid login
