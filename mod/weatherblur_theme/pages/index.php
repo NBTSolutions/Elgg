@@ -13,9 +13,14 @@
 	<div class="green-bkgd">
 		<div class="map_dct_container">
 			<div id="data_collection">
-				<h2>Enter Data</h2>
-				<iframe src="http://weatherblur-staging.herokuapp.com/collect/" id="home_dct"></iframe>
-			</div><!--End data collection-->	
+				<h2>Enter Data</h2>';
+                if(elgg_is_logged_in()) {
+                    $content .= '<iframe src="http://weatherblur-staging.herokuapp.com/collect/" id="home_dct"></iframe>';
+                 }
+                else {
+                    $content .= '<h2><a href="http://localhost:9999/elgg/login">Please Login</a></h2>';
+                }
+            $content .= '</div><!--End data collection-->	
 					
 			<div id="homepage_map">
 				<h2>Explore Data</h2>
@@ -35,16 +40,14 @@
                
 				<div id="latest-news-photo"></div>
 				<h3><a class="featured-title" href="news/view/'.$news->guid.'/'.str_replace(' ', '-', $news->title).'">'.$news->title.'</a></h3>
-				<p class="description">'.$news->description.'</p>
-				';
+				<p class="description">'.$news->description.'</p>';
                 if($news->guid) {
                     $content .= '<a class="orange-links" href="news">View more news</a>';
                 }
                 else {
                     $content .= $news;
                 }
-            $content .= '
-			</div><!-- End lastest news-->
+            $content .= '</div><!-- End lastest news-->
 			
 			<div id="featured-investigation">
 				<h2>Featured Investigation</h2>
