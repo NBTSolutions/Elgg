@@ -153,6 +153,16 @@ function investigations_init() {
         false
     );
 
+    expose_function(
+        "wb.is_logged_in",
+        "is_logged_in",
+        array(),
+        '',
+        'GET',
+        false,
+        false
+    );
+
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
 
@@ -1158,13 +1168,12 @@ function investigations_run_upgrades() {
 
 function get_invs($username, $password) {
 	if (true === elgg_authenticate($username, $password)) {
-		$token = create_user_token($username);
+		$token = create_user_token($username, PHP_INT_MAX);
 	}
     else {
 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
     }
 
-    // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
     $user_id = validate_user_token($token, null);
     $user = get_user($user_id);
 
@@ -1231,6 +1240,9 @@ function create_obs($inv_guid, $token, $agg_id) {
             // I can only add metadata after the initial save of a new object
             $observation->parent_guid = $inv_guid;
             $observation->save();
+           
+            // post notification to the river
+            add_to_river('river/object/investigation/create', 'create', $user_guid, $observation->guid);
             
             return $observation->guid;
         }
@@ -1250,6 +1262,20 @@ function get_obs() {
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'observation')
     ));
+    $obs = array();
+    foreach($results AS $result) {
+        $user = get_entity($result->owner_guid);
+        // get meta data $investigation = get_entity
+        $obs[] = array(
+            "name" => $user->name,
+            "time_created" => $result->time_created,
+        );
+    }
+
+    $results = get_entities(array(
+        'type' => 'user'
+    ));
+    
 }
 
 function get_obs_by_inv($investigation_guid) {
@@ -1261,8 +1287,6 @@ function get_obs_by_inv($investigation_guid) {
         'type_subtype_pair'	=>	array('object' => 'observation'),
         'parent_guid' => $investigation_guid
     ));
-
-    var_dump($results);
 
     $observations = array();
 
@@ -1390,3 +1414,6 @@ function comment_on_obs($observation_guid, $comment, $token) {
 
 // list of observations by date/user
 
+function is_logged_in() {
+    return elgg_is_logged_in() ? 1 : 0;
+}

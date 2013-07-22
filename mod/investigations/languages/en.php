@@ -253,7 +253,8 @@ or click below to view the group's join requests:
 	'river:join:group:default' => '%s joined the group %s',
 	'river:create:object:investigationforumtopic' => '%s added a new discussion topic %s',
 	'river:reply:object:investigationforumtopic' => '%s replied on the discussion topic %s',
-	
+    'river:create:object:observation' => "%s created an %s",	
+    'investigations:observation' => 'observation',
 	'investigations:nowidgets' => 'No widgets have been defined for this group.',
 
 

@@ -366,7 +366,9 @@ function user_remove_friend($user_guid, $friend_guid) {
  * @return bool
  */
 function user_is_friend($user_guid, $friend_guid) {
-	return check_entity_relationship($user_guid, "friend", $friend_guid) !== false;
+	// WB modification - everyone is friends with everyone.
+	return true;
+	//return check_entity_relationship($user_guid, "friend", $friend_guid) !== false;
 }
 
 /**
@@ -653,7 +655,7 @@ function find_active_users($seconds = 600, $limit = 10, $offset = 0, $count = fa
 		$time = time() - $seconds;
 
 		$data = elgg_get_entities(array(
-			'type' => 'user', 
+			'type' => 'user',
 			'limit' => $limit,
 			'offset' => $offset,
 			'count' => $count,
@@ -710,7 +712,7 @@ function force_user_password_reset($user_guid, $password) {
 		$ia = elgg_set_ignore_access();
 
 		$user->salt = generate_random_cleartext_password();
-		$hash = generate_user_password($user, $password);		
+		$hash = generate_user_password($user, $password);
 		$user->password = $hash;
 		$result = (bool)$user->save();
 
@@ -746,7 +748,7 @@ function execute_new_password_request($user_guid, $conf_code) {
 				remove_private_setting($user_guid, 'passwd_conf_code');
 				// clean the logins failures
 				reset_login_failure_count($user_guid);
-				
+
 				$email = elgg_echo('email:resetpassword:body', array($user->name, $password));
 
 				return notify_user($user->guid, $CONFIG->site->guid,
@@ -804,7 +806,7 @@ function validate_username($username) {
 		$msg = elgg_echo('registration:usernametooshort', array($CONFIG->minusername));
 		throw new RegistrationException($msg);
 	}
-	
+
 	// username in the database has a limit of 128 characters
 	if (strlen($username) > 128) {
 		$msg = elgg_echo('registration:usernametoolong', array(128));
@@ -981,7 +983,7 @@ $allow_multiple_emails = false, $friend_guid = 0, $invitecode = '') {
         global $CONFIG;
         $query = "SELECT * from {$CONFIG->dbprefix}entities e join {$CONFIG->dbprefix}groups_entity g on e.guid=g.guid WHERE name='WeatherBlur'";
         $row = get_data_row($query);
-        
+
         if($row) {
             $investigation = get_entity($row->guid);
 
@@ -1075,7 +1077,7 @@ function collections_submenu_items() {
  */
 function friends_page_handler($segments, $handler) {
 	elgg_set_context('friends');
-	
+
 	if (isset($segments[0]) && $user = get_user_by_username($segments[0])) {
 		elgg_set_page_owner_guid($user->getGUID());
 	}
@@ -1241,7 +1243,8 @@ function elgg_user_hover_menu($hook, $type, $return, $params) {
 
 	if (elgg_is_logged_in()) {
 		if (elgg_get_logged_in_user_guid() != $user->guid) {
-			if ($user->isFriend()) {
+			// WB mod: everyone is always a friend; no need for add/remove button
+			/*if ($user->isFriend()) {
 				$url = "action/friends/remove?friend={$user->guid}";
 				$text = elgg_echo('friend:remove');
 				$name = 'remove_friend';
@@ -1253,7 +1256,7 @@ function elgg_user_hover_menu($hook, $type, $return, $params) {
 			$url = elgg_add_action_tokens_to_url($url);
 			$item = new ElggMenuItem($name, $text, $url);
 			$item->setSection('action');
-			$return[] = $item;
+			$return[] = $item;*/
 		} else {
 			$url = "profile/$user->username/edit";
 			$item = new ElggMenuItem('profile:edit', elgg_echo('profile:edit'), $url);
@@ -1490,7 +1493,7 @@ function users_pagesetup() {
 			'contexts' => array('friends')
 		);
 		elgg_register_menu_item('page', $params);
-		
+
 		elgg_register_menu_item('page', array(
 			'name' => 'edit_avatar',
 			'href' => "avatar/edit/{$owner->username}",
