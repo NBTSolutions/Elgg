@@ -34,21 +34,21 @@ if (!isset($CONFIG)) {
  *
  * @global string $CONFIG->dbuser
  */
-$CONFIG->dbuser = 'heroku_dev';
+$CONFIG->dbuser = getenv('ELGG_DB_USER');
 
 /**
  * The database password
  *
  * @global string $CONFIG->dbpass
  */
-$CONFIG->dbpass = 'iamasocialnetwork';
+$CONFIG->dbpass = getenv('ELGG_DB_PASS');
 
 /**
  * The database name
  *
  * @global string $CONFIG->dbname
  */
-$CONFIG->dbname = 'heroku_elgg_test';
+$CONFIG->dbname = getenv('ELGG_DB_NAME');
 
 /**
  * The database host.
@@ -57,7 +57,7 @@ $CONFIG->dbname = 'heroku_elgg_test';
  *
  * @global string $CONFIG->dbhost
  */
-$CONFIG->dbhost = 'dev.nbtsolutions.net';
+$CONFIG->dbhost = getenv('ELGG_DB_HOST');
 
 /**
  * The database prefix
@@ -68,7 +68,7 @@ $CONFIG->dbhost = 'dev.nbtsolutions.net';
  *
  * @global string $CONFIG->dbprefix
  */
-$CONFIG->dbprefix = 'elgg_';
+$CONFIG->dbprefix = 'elgg_'.getenv('APP_ENV').'_';
 
 /**
  * Multiple database connections
