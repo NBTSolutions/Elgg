@@ -61,7 +61,15 @@ if (!include_once($path)) {
 }
 
 // Load the system settings
-if (!include_once(dirname(__FILE__) . "/settings.php")) {
+
+if (in_array(getenv('APP_ENV'), array('unstable', 'staging', 'prod'))) {
+	// if heroku, load heroku settings file
+	if (!include_once(dirname(__FILE__).'/heroku_settings.php')) {
+		throw new InstallationException('Heroku environment detected, but no heroku_settings.php file found');
+	}
+}
+else if (!include_once(dirname(__FILE__) . "/settings.php")) {
+	// otherwise behave normally
 	$msg = 'Elgg could not load the settings file. It does not exist or there is a file permissions issue.';
 	throw new InstallationException($msg);
 }
