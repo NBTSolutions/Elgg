@@ -40,7 +40,7 @@
                
 				<div id="latest-news-photo"></div>
 				<h3><a class="featured-title" href="news/view/'.$news->guid.'/'.str_replace(' ', '-', $news->title).'">'.$news->title.'</a></h3>
-				<p class="description">'.$news->description.'</p>';
+				<p class="description">'.$news->excerpt.'</p>';
                 if($news->guid) {
                     $content .= '<a class="orange-links" href="news">View more news</a>';
                 }
