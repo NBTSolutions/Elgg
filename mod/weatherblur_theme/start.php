@@ -49,9 +49,9 @@
 		//TYPOGRAPHY.CSS
 		elgg_register_css('typography', $css_dir.'typography.css');
 		elgg_load_css('typography');
-		
+
 		//GRAPH.CSS
-		elgg_register_css('graph', $CONFIG->url.'mod/weatherblur_theme/css/graph.css'); 
+		elgg_register_css('graph', $CONFIG->url.'mod/weatherblur_theme/css/graph.css');
 		elgg_load_css('graph');
 
 
@@ -79,6 +79,16 @@
 
 		elgg_register_js('graph', $js_dir . 'graph.js');
 
+		elgg_register_event_handler('pagesetup', 'system', 'kill_friends_link');
+	}
+
+	/**
+	 * Since all users are 'friends' with all other users and cannot turn that
+	 * on/off, we might as well not give them the option of viewing the list of
+	 * their 'friends'.
+	 */
+	function kill_friends_link() {
+		elgg_unregister_menu_item('topbar', 'friends');
 	}
 
 	function new_index() {
@@ -115,12 +125,12 @@
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/people.php';
 			return true;
 		}
-		if ($segments[0] == 'profile') 
+		if ($segments[0] == 'profile')
 		{
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/profile.php';
 			return true;
 		}
-		
+
 		return false;
 	}
 ?>
