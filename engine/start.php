@@ -19,7 +19,7 @@
 /*
  * No settings means a fresh install
  */
-if (!file_exists(dirname(__FILE__) . '/settings.php')) {
+if (!file_exists(dirname(__FILE__) . '/settings.php') && !file_exists(dirname(__FILE__) . '/heroku_settings.php')) {
 	header("Location: install.php");
 	exit;
 }
