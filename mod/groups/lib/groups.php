@@ -46,7 +46,8 @@ function groups_handle_all_page() {
 		default:
 			$content = elgg_list_entities(array(
 				'type' => 'group',
-				'full_view' => false,
+                'subtype' => 'wbgroup',
+				'full_view' => false
 			));
 			if (!$content) {
 				$content = elgg_echo('groups:none');
@@ -151,6 +152,8 @@ function groups_handle_mine_page() {
 	elgg_push_breadcrumb($title);
 
 	elgg_register_title_button();
+	
+	$dbprefix = elgg_get_config('dbprefix');
 
 	$content = elgg_list_entities_from_relationship(array(
 		'type' => 'group',
@@ -158,6 +161,8 @@ function groups_handle_mine_page() {
 		'relationship_guid' => elgg_get_page_owner_guid(),
 		'inverse_relationship' => false,
 		'full_view' => false,
+		'joins' => array("JOIN {$dbprefix}groups_entity ge ON e.guid = ge.guid"),
+		'order_by' => 'ge.name asc'
 	));
 	if (!$content) {
 		$content = elgg_echo('groups:none');

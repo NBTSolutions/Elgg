@@ -957,7 +957,7 @@ $allow_multiple_emails = false, $friend_guid = 0, $invitecode = '') {
 	$user->owner_guid = 0; // Users aren't owned by anyone, even if they are admin created.
 	$user->container_guid = 0; // Users aren't contained by anyone, even if they are admin created.
 	$user->language = get_current_language();
-	$user->save();
+	$result = $user->save();
 
 	// If $friend_guid has been set, make mutual friends
 	if ($friend_guid) {
@@ -975,6 +975,20 @@ $allow_multiple_emails = false, $friend_guid = 0, $invitecode = '') {
 
 	// Turn on email notifications by default
 	set_user_notification_setting($user->getGUID(), 'email', true);
+
+    if($result) {
+        // join default investigation
+        global $CONFIG;
+        $query = "SELECT * from {$CONFIG->dbprefix}entities e join {$CONFIG->dbprefix}groups_entity g on e.guid=g.guid WHERE name='WeatherBlur'";
+        $row = get_data_row($query);
+        
+        if($row) {
+            $investigation = get_entity($row->guid);
+
+            investigations_join_investigation($investigation, $user);
+        }
+    }
+
 
 	return $user->getGUID();
 }

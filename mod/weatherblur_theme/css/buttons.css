@@ -1,0 +1,226 @@
+/* Base */
+.elgg-button {
+	font-size: 14px;
+	font-weight: bold;
+	
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+
+	width: auto;
+	padding: 2px 4px;
+	cursor: pointer;
+	outline: none;
+	
+	/*-webkit-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.40);
+	-moz-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.40);
+	box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.40);*/
+}
+a.elgg-button {
+	padding: 3px 6px;
+}
+
+/* Submit: This button should convey, "you're about to take some definitive action" */
+.elgg-button-submit {
+	height: 30px;
+	color: white;
+	text-shadow: 1px 1px 0px black;
+	border: 1px solid #4690d6;
+	
+	background: #1d7596;
+	background-image: -moz-linear-gradient(#379bc1, #1d7596);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #1d7596),color-stop(1, #379bc1));
+}
+
+.elgg-button-submit:hover {
+	border: 1px solid #437f96;
+	background: #2693bd;
+	background-image: -moz-linear-gradient(#56c7f2, #2693bd);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #2693bd),color-stop(1, #56c7f2));
+}
+
+.elgg-button-submit.elgg-state-disabled {
+	background: #999;
+	border-color: #999;
+	cursor: default;
+}
+
+/* Cancel: This button should convey a negative but easily reversible action (e.g., turning off a plugin) */
+.elgg-button-cancel {
+	color: #666;
+	border: 1px solid #bbb;
+	cursor: pointer;
+	background: #e6e6e6;
+	background-image: -moz-linear-gradient(#f8f8f8, #eee);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #f8f8f8));
+}
+.elgg-button-cancel:hover {
+	color: #2e597b;
+	border: 1px solid #99c2cc;
+	background: #b4dbe3;
+	background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #b4dbe3),color-stop(1, #d0ebf3));
+}
+
+.elgg-button-cancel:active {
+	border: 1px solid #fff;
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	
+	position: relative;
+	top: 1px;
+}
+
+/* Action: This button should convey a normal, inconsequential action, such as clicking a link */
+/*.elgg-widget-add-control > .elgg-button { border: 1px solid red !important; }*/
+.elgg-button-action {
+	text-decoration: none;
+	color: #666;
+	border: 1px solid #bbb;
+	background: #e6e6e6;
+	background-image: -moz-linear-gradient(#f8f8f8, #eee);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #f8f8f8));
+	text-shadow: none;
+	cursor: pointer;
+}
+
+.elgg-button-action:hover,
+.elgg-button-action:focus {
+	color: #2e597b;
+	border: 1px solid #99c2cc;
+	background: #b4dbe3;
+	background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #b4dbe3),color-stop(1, #d0ebf3));
+}
+
+.elgg-button-action:active {
+	border: 1px solid #fff;
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
+	
+	position: relative;
+	top: 1px;
+}
+
+/* Delete: This button should convey "be careful before you click me" */
+.elgg-button-delete {
+	color: #bbb;
+	text-decoration: none;
+	border: 1px solid #333;
+	background: #555 url(<?php echo elgg_get_site_url(); ?>_graphics/button_graduation.png) repeat-x left 10px;
+	text-shadow: 1px 1px 0px black;
+}
+.elgg-button-delete:hover {
+	color: #999;
+	background-color: #333;
+	background-position: left 10px;
+	text-decoration: none;
+}
+
+.elgg-button-dropdown {
+	padding:3px 6px;
+	text-decoration:none;
+	display:block;
+	font-weight:bold;
+	position:relative;
+	margin-left:0;
+	color: white;
+	border:1px solid #71B9F7;
+	
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+	
+	-webkit-box-shadow: 0 0 0;
+	-moz-box-shadow: 0 0 0;
+	box-shadow: 0 0 0;
+	
+	/*background-image:url(<?php echo elgg_get_site_url(); ?>_graphics/elgg_sprites.png);
+	background-position:-150px -51px;
+	background-repeat:no-repeat;*/
+}
+
+.elgg-button-dropdown:after {
+	content: " \25BC ";
+	font-size:smaller;
+}
+
+.elgg-button-dropdown:hover {
+	background-color:#71B9F7;
+	text-decoration:none;
+}
+
+.elgg-button-dropdown.elgg-state-active {
+	background: #ccc;
+	outline: none;
+	color: #333;
+	border:1px solid #ccc;
+	
+	-webkit-border-radius:4px 4px 0 0;
+	-moz-border-radius:4px 4px 0 0;
+	border-radius:4px 4px 0 0;
+}
+
+/*-----------------------------------------------------------------------
+	TABS: "All", "Mine", "Friends"
+-----------------------------------------------------------------------*/
+.elgg-menu-filter {/*hides bottom border*/
+	margin-bottom: 20px;
+	border: none;
+}
+
+.elgg-menu-filter-default li,
+.elgg-menu-filter > .elgg-state-selected {
+	border: none;
+	background: none;  
+}
+
+.elgg-menu-filter-selected a
+.elgg-menu-filter > .elgg-state-selected a:hover,
+.elgg-menu-filter li:hover {
+	background: none;
+}
+
+/***** Normal Button State *****/
+.elgg-menu-filter-default a {
+	color: #666 !important;
+	border: 1px solid #dcd9bb;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+		
+	background: #f5f3db;
+	background-image: -moz-linear-gradient(#f5f3db, #e8e6cd);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #e8e6cd),color-stop(1, #f5f3db));
+}
+
+/***** Hover Button State *****/
+.elgg-menu-filter-default a:hover {
+	border: 1px solid #a5a178;
+	background: #e4e1c2;
+	background-image: -moz-linear-gradient(#e4e1c2, #c8c5a2);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #c8c5a2),color-stop(1, #e4e1c2)) !important;
+}
+
+/***** Pressed & Selected Button State *****/
+.elgg-menu-filter-default a:active,
+.elgg-menu-filter > .elgg-state-selected a {
+	background: #a09d81;
+	-moz-box-shadow: 0 1px 2px rgba(255, 255, 255, 7) inset; 
+	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset; 
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
+}
+
+/***** Pressed *****/
+.elgg-menu-filter-default a:active {
+	position: relative;
+	top: 1px;
+}
+
+/***** Selected ****/
+.elgg-menu-filter > .elgg-state-selected a {
+	color: #fff !important;
+	border: none;
+}

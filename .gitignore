@@ -27,6 +27,8 @@
 !/mod/notifications/
 !/mod/oauth_api/
 !/mod/pages/
+!/mod/investigations/
+!/mod/weatherblur_theme/
 !/mod/profile/
 !/mod/reportedcontent/
 !/mod/search/

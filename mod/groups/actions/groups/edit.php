@@ -129,6 +129,7 @@ if (!$is_new_group && $new_owner_guid && $new_owner_guid != $old_owner_guid) {
 
 $must_move_icons = ($owner_has_changed && $old_icontime);
 
+$group->subtype = 'wbgroup';
 $group->save();
 
 // Invisible group support
@@ -158,7 +159,8 @@ if ($is_new_group) {
 	elgg_set_page_owner_guid($group->guid);
 
 	$group->join($user);
-	add_to_river('river/group/create', 'create', $user->guid, $group->guid, $group->access_id);
+
+    add_to_river('river/group/create', 'create', $user->guid, $group->access_id);
 }
 
 $has_uploaded_icon = (!empty($_FILES['icon']['type']) && substr_count($_FILES['icon']['type'], 'image/'));
@@ -227,6 +229,38 @@ if ($must_move_icons) {
 		foreach ($sizes as $size) {
 			rename("$old_path/{$group_guid}{$size}.jpg", "$new_path/{$group_guid}{$size}.jpg");
 		}
+	}
+	
+	if ($owner_changed_flag && $old_icontime) { // @todo Remove this when #4683 fixed
+		
+		$filehandler = new ElggFile();
+		$filehandler->setFilename('groups');
+		
+		$filehandler->owner_guid = $old_owner_guid;
+		$old_path = $filehandler->getFilenameOnFilestore();
+		
+		$sizes = array('', 'tiny', 'small', 'medium', 'large');
+	
+		foreach($sizes as $size) {
+			unlink("$old_path/{$group_guid}{$size}.jpg");
+		}
+	}
+	
+} elseif ($owner_changed_flag && $old_icontime) { // @todo Remove this when #4683 fixed
+	
+	$filehandler = new ElggFile();
+	$filehandler->setFilename('groups');
+
+	$filehandler->owner_guid = $old_owner_guid;
+	$old_path = $filehandler->getFilenameOnFilestore();
+	
+	$filehandler->owner_guid = $group->owner_guid;
+	$new_path = $filehandler->getFilenameOnFilestore();
+	
+	$sizes = array('', 'tiny', 'small', 'medium', 'large');
+	
+	foreach($sizes as $size) {
+		rename("$old_path/{$group_guid}{$size}.jpg", "$new_path/{$group_guid}{$size}.jpg");
 	}
 }
 

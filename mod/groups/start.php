@@ -8,7 +8,7 @@
 elgg_register_event_handler('init', 'system', 'groups_init');
 
 // Ensure this runs after other plugins
-elgg_register_event_handler('init', 'system', 'groups_fields_setup', 10000);
+elgg_register_event_handler('init', 'system', 'groups_fields_setup', 10001);
 
 /**
  * Initialize the groups plugin.
@@ -74,7 +74,6 @@ function groups_init() {
 
 	// Access permissions
 	elgg_register_plugin_hook_handler('access:collections:write', 'all', 'groups_write_acl_plugin_hook');
-	//elgg_register_plugin_hook_handler('access:collections:read', 'all', 'groups_read_acl_plugin_hook');
 
 	// Register profile menu hook
 	elgg_register_plugin_hook_handler('profile_menu', 'profile', 'forum_profile_menu');
@@ -404,21 +403,23 @@ function groups_entity_menu_setup($hook, $type, $return, $params) {
 
 	// feature link
 	if (elgg_is_admin_logged_in()) {
-		if ($entity->featured_group == "yes") {
-			$url = "action/groups/featured?group_guid={$entity->guid}&action_type=unfeature";
-			$wording = elgg_echo("groups:makeunfeatured");
-		} else {
-			$url = "action/groups/featured?group_guid={$entity->guid}&action_type=feature";
-			$wording = elgg_echo("groups:makefeatured");
-		}
-		$options = array(
+		$isFeatured = $entity->featured_group == "yes";
+		
+		$return[] = ElggMenuItem::factory(array(
 			'name' => 'feature',
-			'text' => $wording,
-			'href' => $url,
+			'text' => elgg_echo("groups:makefeatured"),
+			'href' => elgg_add_action_tokens_to_url("action/groups/featured?group_guid={$entity->guid}&action_type=feature"),
 			'priority' => 300,
-			'is_action' => true
-		);
-		$return[] = ElggMenuItem::factory($options);
+			'item_class' => $isFeatured ? 'hidden' : '',
+		));
+
+		$return[] = ElggMenuItem::factory(array(
+			'name' => 'unfeature',
+			'text' => elgg_echo("groups:makeunfeatured"),
+			'href' => elgg_add_action_tokens_to_url("action/groups/featured?group_guid={$entity->guid}&action_type=unfeature"),
+			'priority' => 300,
+			'item_class' => $isFeatured ? '' : 'hidden',
+		));
 	}
 
 	return $return;
@@ -521,30 +522,6 @@ function groups_create_event_listener($event, $object_type, $object) {
 	}
 
 	return true;
-}
-
-/**
- * Hook to listen to read access control requests and return all the groups you are a member of.
- */
-function groups_read_acl_plugin_hook($hook, $entity_type, $returnvalue, $params) {
-	//error_log("READ: " . var_export($returnvalue));
-	$user = elgg_get_logged_in_user_entity();
-	if ($user) {
-		// Not using this because of recursion.
-		// Joining a group automatically add user to ACL,
-		// So just see if they're a member of the ACL.
-		//$membership = get_users_membership($user->guid);
-
-		$members = get_members_of_access_collection($group->group_acl);
-		print_r($members);
-		exit;
-
-		if ($membership) {
-			foreach ($membership as $group)
-				$returnvalue[$user->guid][$group->group_acl] = elgg_echo('groups:group') . ": " . $group->name;
-			return $returnvalue;
-		}
-	}
 }
 
 /**
@@ -688,7 +665,12 @@ function groups_join_group($group, $user) {
 		remove_entity_relationship($group->guid, 'invited', $user->guid);
 		remove_entity_relationship($user->guid, 'membership_request', $group->guid);
 
-		add_to_river('river/relationship/member/create', 'join', $user->guid, $group->guid);
+		add_to_river(array(
+			'view' => 'river/relationship/member/create',
+			'action_type' => 'join',
+			'subject_guid' => $user->guid,
+			'object_guid' => $group->guid,
+		));
 
 		return true;
 	}
@@ -717,7 +699,7 @@ function activity_profile_menu($hook, $entity_type, $return_value, $params) {
 
 	if ($params['owner'] instanceof ElggGroup) {
 		$return_value[] = array(
-			'text' => elgg_echo('Activity'),
+			'text' => elgg_echo('groups:activity'),
 			'href' => "groups/activity/{$params['owner']->getGUID()}"
 		);
 	}
