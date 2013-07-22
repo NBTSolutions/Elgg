@@ -1415,5 +1415,12 @@ function comment_on_obs($observation_guid, $comment, $token) {
 // list of observations by date/user
 
 function is_logged_in() {
-    return elgg_is_logged_in() ? 1 : 0;
+     
+    if(elgg_is_logged_in()) {
+        $token = get_user_tokens(elgg_get_logged_in_user_guid());
+        return $token ? $token['token'] : 0;
+    }
+    else {
+        return 0;
+    }
 }
