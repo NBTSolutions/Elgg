@@ -71,3 +71,6 @@ Sample URL:<br>
                 <int>
             ]
         }
+
+# Deployment
+heroku: git push unstable weatherblur:master
