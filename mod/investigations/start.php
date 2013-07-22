@@ -70,8 +70,7 @@ function investigations_init() {
         array(
             'inv_guid' => array('type' => 'int'),
             'token'     => array('type' => 'string'),
-            'agg_id'    => array('type' => 'int'),
-            'cb' => array('cb' => 'string')
+            'agg_id'    => array('type' => 'int')
         ),
         'Create Observation for an investigation',
         'GET',
@@ -106,11 +105,8 @@ function investigations_init() {
 
     expose_function(
         "wb.get_obs",
-        "get_obs_by_inv",
-        array(
-            'investigation_guid' => array('type' => 'int'),
-            'token' =>array('type' => 'string')
-        ),
+        "get_obs",
+        array(),
         'Get observations from an investigation',
         'GET',
         false,
@@ -126,33 +122,33 @@ function investigations_init() {
             'token' => array('type' => 'string')
         ),
         '',
-        'POST',
+        'GET',
         false,
         false
     );
 
     expose_function(
-        "wb.togglelikeobservation",
-        "toggle_like_observation",
+        "wb.toggle_like_obs",
+        "toggle_like_obs",
         array(
             'observation_guid' => array('type' => 'int'),
             'token' => array('type' => 'string')
         ),
         '',
-        'POST',
+        'GET',
         false,
         false
     );
 
     expose_function(
-        "wb.getlikes",
+        "wb.get_likes",
         "get_likes",
         array(
             'observation_guid' => array('type' => 'int'),
             'token' => array('type' => 'string')
         ),
         '',
-        'POST',
+        'GET',
         false,
         false
     );
@@ -1199,7 +1195,6 @@ function get_invs($username, $password) {
             'guid' => $result->guid
         );
     }
-    xdebug_break();
     return $investigations;
 }
 
@@ -1251,6 +1246,12 @@ function create_obs($inv_guid, $token, $agg_id) {
     }
 }
 
+function get_obs() {
+    $results = elgg_get_entities(array(
+        'type_subtype_pair'	=>	array('object' => 'observation')
+    ));
+}
+
 function get_obs_by_inv($investigation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
@@ -1291,7 +1292,6 @@ function toggle_like_obs($observation_guid, $token) {
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
     $user_id = validate_user_token($token, null);
     if($user_id) {
-        xdebug_break();
 
         // have we liked this observation yet?
         $results = elgg_get_annotations(array(
@@ -1299,8 +1299,6 @@ function toggle_like_obs($observation_guid, $token) {
             "annotation_guid" => $observation_guid,
             "name" => "observation_like"
         ));
-       
-        var_dump($results);
 
         // like this observation
         if(!$results) {
@@ -1311,8 +1309,6 @@ function toggle_like_obs($observation_guid, $token) {
             $id = $observation->annotate('like', 1, 2, $user_id, 'integer');
             $observation->save();
             elgg_set_ignore_access($ignore);
-
-            return "liked";
         }
         // unlike this observation
         else {
@@ -1321,8 +1317,8 @@ function toggle_like_obs($observation_guid, $token) {
            foreach($results as $result) {
                 elgg_delete_annotation_by_id($result->id);
            }
-           return "unliked";
         }
+        return get_likes($observation_guid, $token);
     }
     else {
         // not a valid login
@@ -1335,7 +1331,6 @@ function get_likes($observation_guid, $token) {
     $user_id = validate_user_token($token, null);
     if($user_id) {
 
-        xdebug_break();
         $my_like = elgg_get_annotations(array(
             "annotation_owner_guid" => $user_id,
             "annotation_guid" => $observation_guid,

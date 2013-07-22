@@ -29,13 +29,16 @@
 
 ul#footer-text-links {
 	display: block;
-	margin: 40px 0 0 180px;
+	margin: 0 auto;
+	width: 450px;
+	padding-top: 50px;
 }
 
 ul#contact-list {
 	display: block;
-	float: left;
-	margin: 30px 0 0 177px;
+	margin: 0 auto;
+	width: 640px;
+	padding-top: 40px;
 }
 
 #footer-text-links a,

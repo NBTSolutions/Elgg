@@ -424,7 +424,7 @@ function _elgg_prefetch_river_entities(array $river_items) {
  * @return string
  * @since 1.8.0
  */
-function elgg_list_river(array $options = array()) {
+function elgg_list_river(array $options = array(), $template = 'page/components/list') {
 	global $autofeed;
 	$autofeed = true;
 
@@ -445,7 +445,8 @@ function elgg_list_river(array $options = array()) {
 
 	$options['count'] = $count;
 	$options['items'] = $items;
-	return elgg_view('page/components/list', $options);
+
+	return elgg_view($template, $options);
 }
 
 /**
