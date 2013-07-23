@@ -107,6 +107,10 @@ $CONFIG->dbprefix = 'elgg_'.getenv('APP_ENV').'_';
  * Note: Multiple server support is only available on server 1.2.1
  * or higher with PECL library > 2.0.0
  */
+
+$CONFIG->dataroot = '/app/www/elgg_data'
+
+
 $CONFIG->memcache = true;
 include_once(dirname(__FILE__).'/classes/PHPMemcacheSASL/MemcacheSASL.php');
 
