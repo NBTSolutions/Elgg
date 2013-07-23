@@ -108,8 +108,7 @@ $CONFIG->dbprefix = 'elgg_'.getenv('APP_ENV').'_';
  * or higher with PECL library > 2.0.0
  */
 
-$CONFIG->dataroot = '/app/www/elgg_data'
-
+$CONFIG->dataroot = '/app/www/elgg_data';
 
 $CONFIG->memcache = true;
 include_once(dirname(__FILE__).'/classes/PHPMemcacheSASL/MemcacheSASL.php');
