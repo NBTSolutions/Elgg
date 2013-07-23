@@ -16,7 +16,7 @@
  */
 
 // Get dataroot
-if (file_exists(dirname(dirname(__FILE__)) . '/settings.php')) {
+if (file_exists(dirname(dirname(__FILE__)) . '/heroku_settings.php')) {
 	require_once(dirname(dirname(__FILE__)) . '/heroku_settings.php');
 }
 else {
