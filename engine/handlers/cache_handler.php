@@ -16,7 +16,8 @@
  */
 
 // Get dataroot
-require_once(dirname(dirname(__FILE__)) . '/settings.php');
+//require_once(dirname(dirname(__FILE__)) . '/settings.php');
+
 $mysql_dblink = mysql_connect($CONFIG->dbhost, $CONFIG->dbuser, $CONFIG->dbpass, true);
 if (!$mysql_dblink) {
 	echo 'Cache error: unable to connect to database server';
