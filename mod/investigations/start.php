@@ -38,7 +38,7 @@ function investigations_init() {
 	$action_base = elgg_get_plugins_path() . 'investigations/actions/groups';
 	elgg_register_action("investigations/edit", "$action_base/edit.php");
 	elgg_register_action("investigate/delete", "$action_base/delete.php");
-	elgg_register_action("groups/featured", "$action_base/featured.php", 'admin');
+	elgg_register_action("investigations/featured", "$action_base/featured.php", 'admin');
 
 	$action_base .= '/membership';
 	elgg_register_action("groups/invite", "$action_base/invite.php");
@@ -175,8 +175,8 @@ function investigations_init() {
 
 	// group entity menu
 	elgg_register_plugin_hook_handler('register', 'menu:entity', 'investigation_entity_menu_setup');
-	
-	// group user hover menu	
+
+	// group user hover menu
 	elgg_register_plugin_hook_handler('register', 'menu:user_hover', 'investigation_user_entity_menu_setup');
 
 	// delete and edit annotations for topic replies
@@ -202,7 +202,7 @@ function investigations_init() {
 
 	// Register a handler for delete groups
 	elgg_register_event_handler('delete', 'group', 'investigation_delete_event_listener');
-	
+
 	elgg_register_event_handler('join', 'group', 'investigation_user_join_event_listener');
 	elgg_register_event_handler('leave', 'group', 'investigation_user_leave_event_listener');
 	elgg_register_event_handler('pagesetup', 'system', 'investigation_setup_sidebar_menus');
@@ -210,7 +210,7 @@ function investigations_init() {
 	elgg_register_plugin_hook_handler('access:collections:add_user', 'collection', 'investigation_access_collection_override');
 
 	elgg_register_event_handler('upgrade', 'system', 'groups_run_upgrades');
-  
+
 }
 
 /**
@@ -292,7 +292,7 @@ function investigation_setup_sidebar_menus() {
 			$url =  "groups/owner/$user->username";
 			$item = new ElggMenuItem('investigations:owned', elgg_echo('investigations:owned'), $url);
 			elgg_register_menu_item('page', $item);
-			
+
 			$url = "groups/member/$user->username";
 			$item = new ElggMenuItem('investigations:member', elgg_echo('investigations:yours'), $url);
 			elgg_register_menu_item('page', $item);
@@ -341,7 +341,7 @@ function investigation_page_handler($page) {
 			forward($group->getURL());
 		}
 	}
-	
+
 	elgg_load_library('elgg:investigations');
 
 	if (!isset($page[0])) {
@@ -477,7 +477,7 @@ function investigation_entity_menu_setup($hook, $type, $return, $params) {
 	if (elgg_in_context('widgets')) {
 		return $return;
 	}
-    
+
 	$entity = $params['entity'];
 	$handler = elgg_extract('handler', $params, false);
 	if ($handler != 'investigate') {
@@ -519,22 +519,26 @@ function investigation_entity_menu_setup($hook, $type, $return, $params) {
 	// feature link
 	if (elgg_is_admin_logged_in()) {
 		$isFeatured = $entity->featured_group == "yes";
-		
-		$return[] = ElggMenuItem::factory(array(
-			'name' => 'feature',
-			'text' => elgg_echo("investigations:makefeatured"),
-			'href' => elgg_add_action_tokens_to_url("action/groups/featured?group_guid={$entity->guid}&action_type=feature"),
-			'priority' => 300,
-			'item_class' => $isFeatured ? 'hidden' : '',
-		));
 
-		$return[] = ElggMenuItem::factory(array(
-			'name' => 'unfeature',
-			'text' => elgg_echo("investigations:makeunfeatured"),
-			'href' => elgg_add_action_tokens_to_url("action/groups/featured?group_guid={$entity->guid}&action_type=unfeature"),
-			'priority' => 300,
-			'item_class' => $isFeatured ? '' : 'hidden',
-		));
+		if (!$isFeatured) {
+
+			$return[] = ElggMenuItem::factory(array(
+				'name' => 'feature',
+				'text' => elgg_echo("investigations:makefeatured"),
+				'href' => elgg_add_action_tokens_to_url("action/investigations/featured?group_guid={$entity->guid}&action_type=feature"),
+				'priority' => 300,
+				'item_class' => $isFeatured ? 'hidden' : '',
+			));
+		} else {
+
+			$return[] = ElggMenuItem::factory(array(
+				'name' => 'unfeature',
+				'text' => elgg_echo("investigations:makeunfeatured"),
+				'href' => elgg_add_action_tokens_to_url("action/investigations/featured?group_guid={$entity->guid}&action_type=unfeature"),
+				'priority' => 300,
+				'item_class' => $isFeatured ? '' : 'hidden',
+			));
+		}
 	}
 
 	return $return;
@@ -546,14 +550,14 @@ function investigation_entity_menu_setup($hook, $type, $return, $params) {
 function investigation_user_entity_menu_setup($hook, $type, $return, $params) {
 	if (elgg_is_logged_in()) {
 		$group = elgg_get_page_owner_entity();
-		
+
 		// Check for valid group
 		if (!elgg_instanceof($group, 'group')) {
 			return $return;
 		}
-	
+
 		$entity = $params['entity'];
-		
+
 		// Make sure we have a user and that user is a member of the group
 		if (!elgg_instanceof($entity, 'user') || !$group->isMember($entity)) {
 			return $return;
@@ -572,7 +576,7 @@ function investigation_user_entity_menu_setup($hook, $type, $return, $params) {
 				'priority' => 999,
 			);
 			$return[] = ElggMenuItem::factory($options);
-		} 
+		}
 	}
 
 	return $return;
@@ -585,7 +589,7 @@ function investigation_annotation_menu_setup($hook, $type, $return, $params) {
 	if (elgg_in_context('widgets')) {
 		return $return;
 	}
-	
+
 	$annotation = $params['annotation'];
 
 	if ($annotation->name != 'group_topic_post') {
@@ -769,10 +773,10 @@ function investigations_join_investigation($group, $user) {
 
 	// access ignore so user can be added to access collection of invisible group
 	$ia = elgg_set_ignore_access(TRUE);
-    
+
 	$result = $group->join($user);
 	elgg_set_ignore_access($ia);
-	
+
 	if ($result) {
 		// flush user's access info so the collection is added
 		get_access_list($user->guid, 0, true);
@@ -863,7 +867,7 @@ function investigation_discussion_init() {
 
 	// commenting not allowed on discussion topics (use a different annotation)
 	elgg_register_plugin_hook_handler('permissions_check:comment', 'object', 'investigation_discussion_comment_override');
-	
+
 	$action_base = elgg_get_plugins_path() . 'groups/actions/discussion';
 	elgg_register_action('discussion/save', "$action_base/save.php");
 	elgg_register_action('discussion/delete', "$action_base/delete.php");
@@ -1178,7 +1182,7 @@ function get_invs($username, $password) {
     $user = get_user($user_id);
 
     login($user, false);
-    
+
     $dbprefix = elgg_get_config('dbprefix');
 
 	$results = elgg_get_entities_from_relationship(array(
@@ -1215,7 +1219,7 @@ function create_obs($inv_guid, $token, $agg_id) {
     if($user_guid) {
         $user = get_user($user_guid);
         $investigation = get_entity($inv_guid);
-        
+
         // check if user is part of this investigation
         if($investigation->isMember($user)) {
 
@@ -1226,7 +1230,7 @@ function create_obs($inv_guid, $token, $agg_id) {
 
             $observation->subtype = "observation";
             $observation->access_id = 2;
-            
+
             //this is needed to set the owner_guid
             $ignore = elgg_set_ignore_access(true);
             $observation->owner_guid = $user_guid;
@@ -1240,10 +1244,10 @@ function create_obs($inv_guid, $token, $agg_id) {
             // I can only add metadata after the initial save of a new object
             $observation->parent_guid = $inv_guid;
             $observation->save();
-           
+
             // post notification to the river
             add_to_river('river/object/investigation/create', 'create', $user_guid, $observation->guid);
-            
+
             return $observation->guid;
         }
         //not part of this investigation
@@ -1275,13 +1279,13 @@ function get_obs() {
     $results = get_entities(array(
         'type' => 'user'
     ));
-    
+
 }
 
 function get_obs_by_inv($investigation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
-    $investigation = get_entity($investigation_guid); 
+    $investigation = get_entity($investigation_guid);
 
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'observation'),
@@ -1296,7 +1300,7 @@ function get_obs_by_inv($investigation_guid) {
 function get_obs_by_user_type($user_type) {
 
     $results = elgg_get_entities_from_metadata(array(
-        'user_type' => $user_type 
+        'user_type' => $user_type
     ));
 
     $agg_ids = array("agg_ids" => array());
@@ -1351,7 +1355,7 @@ function toggle_like_obs($observation_guid, $token) {
 }
 
 function get_likes($observation_guid, $token) {
-   
+
     $user_id = validate_user_token($token, null);
     if($user_id) {
 
@@ -1367,7 +1371,7 @@ function get_likes($observation_guid, $token) {
             'guid' => $observation_guid,
             'name' => 'observation_like'
         ));
-        
+
         return array(
             "my_like"  => $my_like,
             "all_likes" => count($all_likes)
@@ -1380,7 +1384,7 @@ function get_likes($observation_guid, $token) {
 }
 
 function get_comments_on_obs($observation_guid) {
-    
+
         $comments = elgg_get_annotations(array(
             "annotation_owner_guid" => $user_id,
             "annotation_guid" => $observation_guid,
@@ -1409,13 +1413,13 @@ function comment_on_obs($observation_guid, $comment, $token) {
         // not a valid login
 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
     }
-    
+
 }
 
 // list of observations by date/user
 
 function is_logged_in() {
-     
+
     if(elgg_is_logged_in()) {
         $token = get_user_tokens(elgg_get_logged_in_user_guid());
         return $token ? $token['token'] : 0;

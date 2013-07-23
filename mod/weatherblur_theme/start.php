@@ -133,4 +133,20 @@
 
 		return false;
 	}
+
+	function elgg_get_featured($type, $subtype, $count=1) {
+		$ents = elgg_get_entities_from_metadata(array(
+			'type' => $type,
+			'subtype' => $subtype,
+			// get most recent first: nice thing is elgg updates 'time_created' on save.
+			'order_by' => 'time_created DESC',
+			'limit' => $count,
+			'metadata_name_value_pairs' => array(
+				'name' => 'featured_group',
+				'value' => 'yes'
+			)
+		));
+
+		return $ents;
+}
 ?>
