@@ -46,7 +46,12 @@ class ElggMemcache extends ElggSharedMemoryCache {
 		}
 
 		// Create memcache object
-		$this->memcache	= new Memcache;
+		if (!isset($CONFIG->memcacheWrapper)) {
+			$this->memcache	= new Memcache;
+		} else {
+			$this->memcache = $CONFIG->memcacheWrapper;
+			return;
+		}
 
 		// Now add servers
 		if (!$CONFIG->memcache_servers) {

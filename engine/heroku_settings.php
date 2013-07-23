@@ -19,6 +19,8 @@ if (!isset($CONFIG)) {
 	$CONFIG = new stdClass;
 }
 
+$CONFIG->heroku = true;
+
 /*
  * Standard configuration
  *
@@ -105,13 +107,14 @@ $CONFIG->dbprefix = 'elgg_'.getenv('APP_ENV').'_';
  * Note: Multiple server support is only available on server 1.2.1
  * or higher with PECL library > 2.0.0
  */
-//$CONFIG->memcache = true;
-//
-//$CONFIG->memcache_servers = array (
-//	array('server1', 11211),
-//	array('server2', 11211)
-//);
+$CONFIG->memcache = true;
+include_once(dirname(__FILE__).'/classes/PHPMemcacheSASL/MemcacheSASL.php');
 
+$m = new MemcacheSASL;
+$m->addServer($_ENV["MEMCACHIER_SERVERS"], '11211');
+$m->setSaslAuthData($_ENV["MEMCACHIER_USERNAME"], $_ENV["MEMCACHIER_PASSWORD"]);
+
+$CONFIG->memcacheWrapper = $m;
 
 /**
  * Use non-standard headers for broken MTAs.

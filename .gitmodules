@@ -1,0 +1,3 @@
+[submodule "engine/classes/PHPMemcacheSASL"]
+	path = engine/classes/PHPMemcacheSASL
+	url = https://github.com/tjwebb/PHPMemcacheSASL.git
