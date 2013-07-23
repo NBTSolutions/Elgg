@@ -16,7 +16,12 @@
  */
 
 // Get dataroot
-//require_once(dirname(dirname(__FILE__)) . '/settings.php');
+if (file_exists(dirname(dirname(__FILE__)) . '/settings.php')) {
+	require_once(dirname(dirname(__FILE__)) . '/heroku_settings.php');
+}
+else {
+	require_once(dirname(dirname(__FILE__)) . '/settings.php');
+}
 
 $mysql_dblink = mysql_connect($CONFIG->dbhost, $CONFIG->dbuser, $CONFIG->dbpass, true);
 if (!$mysql_dblink) {
