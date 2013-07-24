@@ -263,6 +263,18 @@ function get_entity_relationships($guid, $inverse_relationship = FALSE) {
  * @since 1.7.0
  */
 function elgg_get_entities_from_relationship($options) {
+	// WB Mod: Friends aren't to be tracked via relationships, just returned true
+	// all the time. This basically lets me do "see all friends" easier by
+	// resetting the relationship=friend to null - all requests for friend
+	// relationships seem to come thru this function eventually.
+	// And finally, need to add the where guid != 'me'...
+	if ($options['relationship'] == 'friend') {
+		$options['relationship'] = null;
+		$options['relationship_guid'] = null;
+		$options['wheres'] = is_array($options['wheres']) ? $options['wheres'] : array();
+		$options['wheres'][] =  'guid != ' . elgg_get_logged_in_user_guid();
+	}
+
 	$defaults = array(
 		'relationship' => NULL,
 		'relationship_guid' => NULL,
