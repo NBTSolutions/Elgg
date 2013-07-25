@@ -71,16 +71,18 @@ URL:<br>
 `http://<domain>/elgg/services/api/rest/json/`
 
 URL Params:<br>
-`?method=wb.get_obs_by_user_type&user_type=Student`
+`?method=wb.get_obs_by_user_type&user_type=Student&min_date=1374690933&max_date=1374691000`
 
 Full URL:<br>
-`http://<domain>/elgg/services/api/rest/json/?method=wb.get_obs_by_user_type&user_type=Student`
+`http://<domain>/elgg/services/api/rest/json/?method=wb.get_obs_by_user_type&user_type=Student&min_date=1374690933&max_date=1374691000`
 
 **get_obs_by_user_type**
 
     parameter
     	method : wb.get_obs_by_user_type,
-        user_type : Student
+        user_type : Student,
+        min_date : <epoch>
+        max_data : <epoch>
 
     valid user_types are:
         "Student", "Teacher", "Scientist", "Fisherman", "Community Member", 
@@ -119,10 +121,14 @@ Full URL:<br>
         	"status" : <int>
         	"results" : [
 				{
-					time_created : <int>
+					"time_created" : <int>,
+					"agg_id": <int>,
+					"time_created": <epoch>
 				},
 				{
-					time_created : <int>
+					"time_created" : <int>,
+					"agg_id": <int>,
+					"time_created": <epoch>
 				}
 			]
         }

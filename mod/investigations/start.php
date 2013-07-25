@@ -82,7 +82,9 @@ function investigations_init() {
         "wb.get_obs_by_user_type",
         "get_obs_by_user_type",
         array(
-            'user_type' => array('type' => 'string')
+            'user_type' => array('type' => 'string'),
+            'min_date' => array('type' => 'int'),
+            'max_date' => array('type' => 'int')
         ),
         'Get observations from an investigation',
         'GET',
@@ -1278,18 +1280,18 @@ function get_obs() {
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'observation')
     ));
+
     $obs = array();
     foreach($results AS $result) {
         $user = get_entity($result->owner_guid);
         $obs[] = array(
             "name" => $user->name,
+            "agg_id" => $result->agg_id,
             "time_created" => $result->time_created,
         );
     }
 
-    $results = get_entities(array(
-        'type' => 'user'
-    ));
+    return $obs;
 
 }
 
@@ -1297,6 +1299,7 @@ function get_obs_by_inv($investigation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
     $investigation = get_entity($investigation_guid);
+    var_dump($investigation);
 
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'observation'),
@@ -1306,26 +1309,29 @@ function get_obs_by_inv($investigation_guid) {
     $observations = array();
 
     foreach($results as $result) {
+        
+        // get username and link
+        $user = get_entity($result->owner_guid);
+        $likes = get_likes($result->guid, 0);
+
         $observations[] = array(
+            "guid" => $result->guid,
+            "investigation_name" => $investigation->name,
+            "users_display_name" => $user->name,
+            "all_likes" => $likes['all_likes'],
             "time_created" => $result->time_created
         );
     }
 
-    /*
-    foreach($results as $result) {
-        $observation[] = array(
-            
-        );
-    }
-    */
-
     return $observations;
 }
 
-function get_obs_by_user_type($user_type) {
+function get_obs_by_user_type($user_type, $min_date, $max_date) {
 
     $results = elgg_get_entities_from_metadata(array(
-        'user_type' => $user_type
+        'user_type' => $user_type,
+        'created_time_lower' => $min_date,
+        'created_time_upper' => $max_date
     ));
 
     $agg_ids = array("agg_ids" => array());
@@ -1381,29 +1387,43 @@ function toggle_like_obs($observation_guid, $token) {
 
 function get_likes($observation_guid, $token) {
 
-    $user_id = validate_user_token($token, null);
-    if($user_id) {
+    // if we pass in a token get login users likes
+    if($token) {
+        $user_id = validate_user_token($token, null);
+        if($user_id) {
 
-        $my_like = elgg_get_annotations(array(
-            "annotation_owner_guid" => $user_id,
-            "annotation_guid" => $observation_guid,
-            "name" => "observation_like"
-        ));
+            $my_like = elgg_get_annotations(array(
+                "annotation_owner_guid" => $user_id,
+                "annotation_guid" => $observation_guid,
+                "name" => "observation_like"
+            ));
 
-        $my_like = $my_like ? 1 : 0;
+            $my_like = $my_like ? 1 : 0;
 
+            $all_likes = elgg_get_annotations(array(
+                'guid' => $observation_guid,
+                'name' => 'observation_like'
+            ));
+
+            return array(
+                "my_like"  => $my_like,
+                "all_likes" => count($all_likes)
+            );
+        }
+        else {
+            throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+        }
+    }
+    //if we pass in
+    else {
         $all_likes = elgg_get_annotations(array(
             'guid' => $observation_guid,
             'name' => 'observation_like'
         ));
 
         return array(
-            "my_like"  => $my_like,
             "all_likes" => count($all_likes)
         );
-    }
-    else {
-	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
     }
 
 }
@@ -1451,7 +1471,6 @@ function comment_on_obs($observation_guid, $comment, $token) {
 }
 
 // list of observations by date/user
-
 function is_logged_in() {
 
     if(elgg_is_logged_in()) {
