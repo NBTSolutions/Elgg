@@ -1311,8 +1311,6 @@ function get_obs_by_inv($investigation_guid) {
         );
     }
 
-    var_dump($obsevations);
-
     /*
     foreach($results as $result) {
         $observation[] = array(
