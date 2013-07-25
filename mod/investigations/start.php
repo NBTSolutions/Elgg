@@ -114,8 +114,8 @@ function investigations_init() {
     );
 
     expose_function(
-        "wb.commentonobservation",
-        "comment_on_observation",
+        "wb.comment_on_obs",
+        "comment_on_obs",
         array(
             'observation_guid' => array('type' => 'int'),
             'comment' => array('type' => 'string'),
@@ -157,6 +157,18 @@ function investigations_init() {
         "wb.is_logged_in",
         "is_logged_in",
         array(),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_comments_on_obs",
+        "get_comments_on_obs",
+        array(
+            'observation_guid' => array('type' => 'int')
+        ),
         '',
         'GET',
         false,
@@ -1269,7 +1281,6 @@ function get_obs() {
     $obs = array();
     foreach($results AS $result) {
         $user = get_entity($result->owner_guid);
-        // get meta data $investigation = get_entity
         $obs[] = array(
             "name" => $user->name,
             "time_created" => $result->time_created,
@@ -1293,6 +1304,22 @@ function get_obs_by_inv($investigation_guid) {
     ));
 
     $observations = array();
+
+    foreach($results as $result) {
+        $observations[] = array(
+            "time_created" => $result->time_created
+        );
+    }
+
+    var_dump($obsevations);
+
+    /*
+    foreach($results as $result) {
+        $observation[] = array(
+            
+        );
+    }
+    */
 
     return $observations;
 }
@@ -1386,12 +1413,20 @@ function get_likes($observation_guid, $token) {
 function get_comments_on_obs($observation_guid) {
 
         $comments = elgg_get_annotations(array(
-            "annotation_owner_guid" => $user_id,
             "annotation_guid" => $observation_guid,
             "name" => "observation_comments"
         ));
 
-        return $comments;
+        $results = array();
+
+        foreach($comments as $comment) {
+            $results[] = array(
+                "time_created" => $comment->time_created,
+                "value" => $comment->value
+            );
+        }
+
+        return $results;
 }
 
 function comment_on_obs($observation_guid, $comment, $token) {
@@ -1402,11 +1437,12 @@ function comment_on_obs($observation_guid, $comment, $token) {
 
         // need to ignore access to set owner_id
         $ignore = elgg_set_ignore_access(true);
+        $observation = get_entity($observation_guid);
         $id = $observation->annotate('observation_comments', $comment, 2, $user_id, 'text');
         $observation->save();
         elgg_set_ignore_access($ignore);
 
-        return $observation_comment;
+        return $id ? 1 : 0;
 
     }
     else {
@@ -1422,7 +1458,12 @@ function is_logged_in() {
 
     if(elgg_is_logged_in()) {
         $token = get_user_tokens(elgg_get_logged_in_user_guid());
-        return $token ? $token['token'] : 0;
+        if($token) {
+            return $token ? $token[0]->token : 0;
+        }
+        else {
+           return 0; 
+        }
     }
     else {
         return 0;

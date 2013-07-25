@@ -1,13 +1,22 @@
-# Elgg WeatherBlur API #
+# Elgg WeatherBlur REST API #
 ---
+*JSONP not supported
+
 ### Login/Get Investigations ###
 Method: GET<br>
-Sample URL: <br>
+URL: <br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_invs&username=blah&password=blah`
+
+Full URL:<br>
 `http://<domain>/elgg/services/api/rest/json/?method=wb.get_invs&username=blah&password=blah`
 
 **get_invs**
 
     parameters
+    	method : wb.get_inv,
         username : blah,
         password : blah
 
@@ -33,12 +42,19 @@ Sample URL: <br>
 
 ### Create Observation ###
 Method: GET<br>
-Sample URL:<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.create_obs&inv_guid=42&token=b8a0d67b16669580eaabf979454b93ae&agg_id=10`
+
+Full URL:<br>
 `http://<domain>/elgg/services/api/rest/json/?method=wb.create_obs&inv_guid=42&token=b8a0d67b16669580eaabf979454b93ae&agg_id=10`
 
 **create_obs**
 
     parameters
+    	method : wb.create_obs,
         inv_guid : 42,
         agg_id : 10,
         token : b8a0d67b16669580eaabf979454b93ae
@@ -49,14 +65,21 @@ Sample URL:<br>
             results : <obs_id>
         }
 
-### Get Observation by User Type
+### Get Observation by User Type ###
 Method: GET<br>
-Sample URL:<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_obs_by_user_type&user_type=Student`
+
+Full URL:<br>
 `http://<domain>/elgg/services/api/rest/json/?method=wb.get_obs_by_user_type&user_type=Student`
 
 **get_obs_by_user_type**
 
     parameter
+    	method : wb.get_obs_by_user_type,
         user_type : Student
 
     valid user_types are:
@@ -64,10 +87,164 @@ Sample URL:<br>
 
     returns 
         {
-            status: <int>,
-            agg_ids : [
-                <int>,
-                <int>,
-                <int>
-            ]
+            "status" : <int>,
+            "results" : {
+            	"agg_ids" : [
+                	<int>,
+                	<int>,
+                	<int>
+            	]
+            }
         }
+
+### Get Observation by Investigation ###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_obs_by_inv&inv_id=43`
+
+Full URL:<br>
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_obs_by_inv&inv_id=43`
+
+**get_obs_by_user_type**
+
+    parameter
+    	method : wb.get_obs_by_inv,
+        inv_id : 43
+
+    returns 
+        {
+			
+        }
+
+### Toggle Like on Observation ###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.toggle_like_obs&observation_guid=50&token=614ad70385f0fbda481adb4b32c1bf3a`
+
+Full URL:<br>
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.toggle_like_obs&observation_guid=50&token=614ad70385f0fbda481adb4b32c1bf3a`
+
+**toggle_like_obs**
+
+    parameter
+        method : wb.toggle_like_obs,
+        observation_guid : 50,
+        token : 614ad70385f0fbda481adb4b32c1bf3a 
+
+	returns
+		{
+    		"status": <int>,
+    		"result": {
+        		"my_like": <0 or 1>,
+        		"all_likes": <int>
+    		}
+		}
+
+### Get Likes on Observation ###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_likes&observation_guid=52&token=f286d4fbc37593d2d7a18d96a56fa066`
+
+Full URL:<br>
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_likes&observation_guid=52&token=f286d4fbc37593d2d7a18d96a56fa066`
+
+**get_likes**
+
+	parameter
+		method : wb.get_likes,
+		observation_guid : 50,
+		token : f286d4fbc37593d2d7a18d96a56fa066
+	
+	returns
+		{
+    		"status": 0,
+    		"result": {
+        		"my_like": <0 or 1>,
+        		"all_likes": <int>
+    		}
+		}
+
+### Comment on Observation ###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.comment_on_obs&observation_guid=50&token=614ad70385f0fbda481adb4b32c1bf3a&comment=LOL`
+
+Full URL:<br>
+`http://<domain>/elgg/services/api/rest/json/?method=wb.comment_on_obs&observation_guid=50&token=614ad70385f0fbda481adb4b32c1bf3a&comment=LOL`
+
+**comment_on_obs**
+
+	parameter
+		method : wb.comment_on_obs,
+		observation_guid : 50,
+		token : 614ad70385f0fbda481adb4b32c1bf3a
+	
+	returns
+		{
+			{
+    			"status": <int>,
+    			"result": <0 or 1>
+			}
+		}
+
+### Get Comments on Observation ###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_comments_on_obs&observation_guid=50`
+
+Full URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+**get_comments_on_obs**
+
+	parameter
+		method : wb.get_comments_on_obs,
+		observation_guid : 50
+		
+	returns
+		{
+		   "status": 0,
+    		"result": [
+        		{
+            		"time_created": <int>,
+            		"value": <string>
+        		}
+    		]
+		}
+
+### Is Logged In ###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.is_logged_in`
+
+Full URL:<br>
+`http://<domain>/elgg/services/api/rest/json/?method=wb.is_logged_in`
+
+**is_logged_in**
+
+	parameter
+		method : wb.is_loggend_in
+	
+	returns
+		{
+    		"status": 0,
+    		"result": "614ad70385f0fbda481adb4b32c1bf3a"
+		}
