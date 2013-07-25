@@ -14,7 +14,7 @@
 		<div class="map_dct_container">
 			<div id="data_collection">
 				<h2>Enter Data</h2>
-                    <iframe src="http://weatherblur-staging.herokuapp.com/collect/" id="home_dct"></iframe>
+                    <a href="wbsystem/enterdata"><img src="mod/weatherblur_theme/graphics/dct.png" width="328" height="519"></a>
             </div><!--End data collection-->
 
 			<div id="homepage_map">
