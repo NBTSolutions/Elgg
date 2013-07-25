@@ -97,7 +97,7 @@ Full URL:<br>
             }
         }
 
-### Get Observation by Investigation ###
+### Get Observation by Investigation (work in progress)###
 Method: GET<br>
 URL:<br>
 `http://<domain>/elgg/services/api/rest/json/`
@@ -116,7 +116,15 @@ Full URL:<br>
 
     returns 
         {
-			
+        	"status" : <int>
+        	"results" : [
+				{
+					time_created : <int>
+				},
+				{
+					time_created : <int>
+				}
+			]
         }
 
 ### Toggle Like on Observation ###
@@ -208,7 +216,7 @@ URL Params:<br>
 `?method=wb.get_comments_on_obs&observation_guid=50`
 
 Full URL:<br>
-`http://<domain>/elgg/services/api/rest/json/`
+`http://<domain>/elgg/services/api/rest/json/?method=wb.get_comments_on_obs&observation_guid=50`
 
 **get_comments_on_obs**
 
@@ -243,7 +251,7 @@ Full URL:<br>
 	parameter
 		method : wb.is_loggend_in
 	
-	returns
+	returns (result is the user's token)
 		{
     		"status": 0,
     		"result": "614ad70385f0fbda481adb4b32c1bf3a"
