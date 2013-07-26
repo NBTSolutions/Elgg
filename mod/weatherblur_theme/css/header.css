@@ -67,39 +67,61 @@ body { height: 100%; }
 	letter-spacing: .05em;
 	display: block;
 	list-style-type: none;
-	float: left;
 }
 
-#top-nav li {
-	float: left;
-	display: inline;
-	margin-right: 15px;
-}
-
-#top-nav li a {
+#top-nav a {
 	color: #888;
 	text-decoration: none;
 	font-size: .9em;
-	float: left;
-	padding-top: 9px;
+	padding: 10px 7px 0 0;
+	display: inline-block;
+	margin: 0;
+	vertical-align: top;
 }
 
-#top-nav li a:hover { 
+#top-nav a:hover { 
 	color: #41afd7;
 	text-decoration: underline; 
 }
-#top-nav li a:active { 
+#top-nav a:active { 
 	position: relative;
 	top: 1px;
 }
 
-li#weather-widget {
-	display: block;
-	float: left;
-	width: 55px;
-	height: 35px;
-	margin: 1px 15px 0 740px;
-	background: url(../graphics/sprite.png) -660px 1px no-repeat;
+/***** WEATHER WIDGET *****/
+#wxWrap {
+    padding: 3px 13px 2px 11px;
+    margin-left: 655px;
+    display: inline-block;
+}
+#wxIntro {
+    display: inline-block;
+    font: 14px/20px Arial,Verdana,sans-serif;
+    color: #666;
+    vertical-align: top;
+    padding-top: 9px;
+}
+#wxIcon {
+    display: inline-block;
+    width: 61px;
+    height: 34px;
+    margin: 2px 0 -1px 1px;
+    overflow: hidden;
+}
+#wxIcon2 {
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    margin: 1px 6px 0 8px;
+    overflow: hidden;
+}
+#wxTemp {
+    display: inline-block;
+    font: 14px/20px Arial,Verdana,sans-serif;
+    color: #333;
+    vertical-align: top;
+    padding-top: 9px;
+    margin-left: 0;
 }
 
 li#avatar {
