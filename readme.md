@@ -90,13 +90,20 @@ Full URL:<br>
     returns 
         {
             "status" : <int>,
-            "results" : {
-            	"agg_ids" : [
-                	<int>,
-                	<int>,
-                	<int>
-            	]
-            }
+            "results" : [
+            	{
+            		"agg_ids" : <int>, 
+                	"user_display_name" : <string>,
+                	"username" : <string>,
+                	"user_id" : <int>
+            	},
+            	{
+            		"agg_ids" : <int>, 
+                	"user_display_name" : <string>,
+                	"username" : <string>,
+                	"user_id" : <int>	
+            	}
+            ]
         }
 
 ### Get Observation by Investigation (work in progress)###
@@ -261,4 +268,33 @@ Full URL:<br>
 		{
     		"status": 0,
     		"result": "614ad70385f0fbda481adb4b32c1bf3a"
+		}
+
+### get_user_info ###
+Method: GET<br>
+URL:<br>
+`http://localhost:9999/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_user_info&user_id=49`
+
+FULL URL:<br>
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_user_info&user_id=49`
+
+**get_user_info**
+
+	parameter
+		method : wb.get_user_info,
+		user_id : 49
+		
+	returns (image append tiny, topbar, small, medium, large, or master to the url for image size)
+		{
+			"status": 0,
+    		"result": {
+        		"users_display_name": "name",
+        		"username": "john",
+        		"image": "http://localhost:9999/elgg/mod/profile/icondirect.php?lastcache=1374841270&joindate=1374680200&guid=49&size=",
+        		"email": "john.longanecker@nbtsolutions.com",
+        		"profile_type": "Student"
+    		}
 		}

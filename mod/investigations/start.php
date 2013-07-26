@@ -177,6 +177,18 @@ function investigations_init() {
         false
     );
 
+    expose_function(
+        "wb.get_user_info",
+        "get_user_info",
+        array(
+            'user_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
 
@@ -1334,15 +1346,21 @@ function get_obs_by_user_type($user_type, $min_date, $max_date) {
         'created_time_upper' => $max_date
     ));
 
-    $agg_ids = array("agg_ids" => array());
+    $return = array();
 
     foreach($results AS $result) {
         $temp = get_metadata_byname($result->guid, 'agg_id');
+        $user = get_entity($result->owner_guid);
         if($temp->value != NULL) {
-            $agg_ids['agg_ids'][] = $temp->value;
+            $return[] = array(
+                "agg_ids" => $temp->value,
+                "user_display_name" => $user->name,
+                "username" => $user->username,
+                "user_id" => $user->guid
+            );
         }
     }
-    return $agg_ids;
+    return $return;
 }
 
 // returns true if like, false if unliked
@@ -1485,4 +1503,30 @@ function is_logged_in() {
     else {
         return 0;
     }
+}
+
+/*
+tiny
+topbar
+small
+medium
+large
+master
+*/
+
+function get_user_info($user_id) {
+    //get user by user name
+    $user = get_user($user_id);
+    $site = elgg_get_site_entity();
+
+    $profile_type_guid = $user->custom_profile_type;
+    $profile_type = get_entity($profile_type_guid);
+
+    return array(
+        "users_display_name" => name,
+        "username" => $user->username,
+        "image" => $site->url."mod/profile/icondirect.php?lastcache=".time()."&joindate=".$user->time_created."&guid=".$user_id."&size=",
+        "email" => $user->email,
+        "profile_type" => $profile_type->getTitle()
+    );
 }
