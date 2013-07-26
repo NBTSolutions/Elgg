@@ -28,7 +28,7 @@ echo elgg_view('core/account/login_dropdown');
 				<!--<li id="avatar"></li>-->					
 				<!--<li><a href="#">My Account</a><i class="icon-chevron-down"></i></li>-->	
 				
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+				
 <script type="text/javascript">
 // javascript will go here
 $(function(){
