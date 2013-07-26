@@ -189,6 +189,18 @@ function investigations_init() {
         false
     );
 
+    expose_function(
+        "wb.get_user_info_by_agg_id",
+        "get_user_info_by_agg_id",
+        array(
+            'agg_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
 
@@ -1506,13 +1518,24 @@ function is_logged_in() {
 }
 
 /*
-tiny
-topbar
-small
-medium
-large
-master
+tiny, topbar, small, medium, large, master
 */
+
+function get_user_info_by_agg_id($agg_id) {
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    //$results = elgg_get_entity_metadata_where_sql("e", "metadata", null, null, array('name' => 'agg_id', 'value' => '10'));
+
+    if($results) {
+        return get_user_info($results[0]->owner_guid);
+    }
+    else {
+        return 0;
+    }
+}
 
 function get_user_info($user_id) {
     //get user by user name
@@ -1530,3 +1553,5 @@ function get_user_info($user_id) {
         "profile_type" => $profile_type->getTitle()
     );
 }
+
+
