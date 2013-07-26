@@ -287,7 +287,36 @@ FULL URL:<br>
 		method : wb.get_user_info,
 		user_id : 49
 		
-	returns (image append tiny, topbar, small, medium, large, or master to the url for image size)
+	returns (image url append tiny, topbar, small, medium, large, or master to the url for image size)
+		{
+			"status": 0,
+    		"result": {
+        		"users_display_name": "name",
+        		"username": "john",
+        		"image": "http://localhost:9999/elgg/mod/profile/icondirect.php?lastcache=1374841270&joindate=1374680200&guid=49&size=",
+        		"email": "john.longanecker@nbtsolutions.com",
+        		"profile_type": "Student"
+    		}
+		}
+		
+### get_user_info_by_agg_id ###
+Method: GET<br>
+URL:<br>
+`http://localhost:9999/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_user_info_by_agg_id&agg_id=11`
+
+FULL URL:<br>
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_user_info_by_agg_id&agg_id=11`
+
+**get_user_info_by_agg_id**
+
+	parameter
+		method : wb.get_user_info_by_agg_id,
+		agg_id : 11
+		
+	returns (image url append tiny, topbar, small, medium, large, or master to the url for image size)
 		{
 			"status": 0,
     		"result": {
