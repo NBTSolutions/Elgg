@@ -1,9 +1,21 @@
 /*-----------------------------------------------------------------------
 	BODY
 -----------------------------------------------------------------------*/
+html,
+body { height: 100%; }
+
 body {
 	background: #fffde8;
 }
+
+#wrapper {
+	min-height: 100%;
+	height: auto !important!;
+	height: 100%;
+	margin: 0 auto -100px;
+} 
+
+.push { height: 100px; } /*Height must match footer's height*/
 
 .wb-body {
 	width: 100%;
