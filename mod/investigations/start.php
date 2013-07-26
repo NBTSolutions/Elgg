@@ -82,7 +82,9 @@ function investigations_init() {
         "wb.get_obs_by_user_type",
         "get_obs_by_user_type",
         array(
-            'user_type' => array('type' => 'string')
+            'user_type' => array('type' => 'string'),
+            'min_date' => array('type' => 'int'),
+            'max_date' => array('type' => 'int')
         ),
         'Get observations from an investigation',
         'GET',
@@ -114,8 +116,8 @@ function investigations_init() {
     );
 
     expose_function(
-        "wb.commentonobservation",
-        "comment_on_observation",
+        "wb.comment_on_obs",
+        "comment_on_obs",
         array(
             'observation_guid' => array('type' => 'int'),
             'comment' => array('type' => 'string'),
@@ -157,6 +159,42 @@ function investigations_init() {
         "wb.is_logged_in",
         "is_logged_in",
         array(),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_comments_on_obs",
+        "get_comments_on_obs",
+        array(
+            'observation_guid' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_user_info",
+        "get_user_info",
+        array(
+            'user_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_user_info_by_agg_id",
+        "get_user_info_by_agg_id",
+        array(
+            'agg_id' => array('type' => 'string')
+        ),
         '',
         'GET',
         false,
@@ -1266,19 +1304,18 @@ function get_obs() {
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'observation')
     ));
+
     $obs = array();
     foreach($results AS $result) {
         $user = get_entity($result->owner_guid);
-        // get meta data $investigation = get_entity
         $obs[] = array(
             "name" => $user->name,
+            "agg_id" => $result->agg_id,
             "time_created" => $result->time_created,
         );
     }
 
-    $results = get_entities(array(
-        'type' => 'user'
-    ));
+    return $obs;
 
 }
 
@@ -1286,6 +1323,7 @@ function get_obs_by_inv($investigation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
     $investigation = get_entity($investigation_guid);
+    var_dump($investigation);
 
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'observation'),
@@ -1294,24 +1332,47 @@ function get_obs_by_inv($investigation_guid) {
 
     $observations = array();
 
+    foreach($results as $result) {
+        
+        // get username and link
+        $user = get_entity($result->owner_guid);
+        $likes = get_likes($result->guid, 0);
+
+        $observations[] = array(
+            "guid" => $result->guid,
+            "investigation_name" => $investigation->name,
+            "users_display_name" => $user->name,
+            "all_likes" => $likes['all_likes'],
+            "time_created" => $result->time_created
+        );
+    }
+
     return $observations;
 }
 
-function get_obs_by_user_type($user_type) {
+function get_obs_by_user_type($user_type, $min_date, $max_date) {
 
     $results = elgg_get_entities_from_metadata(array(
-        'user_type' => $user_type
+        'user_type' => $user_type,
+        'created_time_lower' => $min_date,
+        'created_time_upper' => $max_date
     ));
 
-    $agg_ids = array("agg_ids" => array());
+    $return = array();
 
     foreach($results AS $result) {
         $temp = get_metadata_byname($result->guid, 'agg_id');
+        $user = get_entity($result->owner_guid);
         if($temp->value != NULL) {
-            $agg_ids['agg_ids'][] = $temp->value;
+            $return[] = array(
+                "agg_ids" => $temp->value,
+                "user_display_name" => $user->name,
+                "username" => $user->username,
+                "user_id" => $user->guid
+            );
         }
     }
-    return $agg_ids;
+    return $return;
 }
 
 // returns true if like, false if unliked
@@ -1356,29 +1417,43 @@ function toggle_like_obs($observation_guid, $token) {
 
 function get_likes($observation_guid, $token) {
 
-    $user_id = validate_user_token($token, null);
-    if($user_id) {
+    // if we pass in a token get login users likes
+    if($token) {
+        $user_id = validate_user_token($token, null);
+        if($user_id) {
 
-        $my_like = elgg_get_annotations(array(
-            "annotation_owner_guid" => $user_id,
-            "annotation_guid" => $observation_guid,
-            "name" => "observation_like"
-        ));
+            $my_like = elgg_get_annotations(array(
+                "annotation_owner_guid" => $user_id,
+                "annotation_guid" => $observation_guid,
+                "name" => "observation_like"
+            ));
 
-        $my_like = $my_like ? 1 : 0;
+            $my_like = $my_like ? 1 : 0;
 
+            $all_likes = elgg_get_annotations(array(
+                'guid' => $observation_guid,
+                'name' => 'observation_like'
+            ));
+
+            return array(
+                "my_like"  => $my_like,
+                "all_likes" => count($all_likes)
+            );
+        }
+        else {
+            throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+        }
+    }
+    //if we pass in
+    else {
         $all_likes = elgg_get_annotations(array(
             'guid' => $observation_guid,
             'name' => 'observation_like'
         ));
 
         return array(
-            "my_like"  => $my_like,
             "all_likes" => count($all_likes)
         );
-    }
-    else {
-	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
     }
 
 }
@@ -1386,12 +1461,20 @@ function get_likes($observation_guid, $token) {
 function get_comments_on_obs($observation_guid) {
 
         $comments = elgg_get_annotations(array(
-            "annotation_owner_guid" => $user_id,
             "annotation_guid" => $observation_guid,
             "name" => "observation_comments"
         ));
 
-        return $comments;
+        $results = array();
+
+        foreach($comments as $comment) {
+            $results[] = array(
+                "time_created" => $comment->time_created,
+                "value" => $comment->value
+            );
+        }
+
+        return $results;
 }
 
 function comment_on_obs($observation_guid, $comment, $token) {
@@ -1402,11 +1485,12 @@ function comment_on_obs($observation_guid, $comment, $token) {
 
         // need to ignore access to set owner_id
         $ignore = elgg_set_ignore_access(true);
+        $observation = get_entity($observation_guid);
         $id = $observation->annotate('observation_comments', $comment, 2, $user_id, 'text');
         $observation->save();
         elgg_set_ignore_access($ignore);
 
-        return $observation_comment;
+        return $id ? 1 : 0;
 
     }
     else {
@@ -1417,14 +1501,57 @@ function comment_on_obs($observation_guid, $comment, $token) {
 }
 
 // list of observations by date/user
-
 function is_logged_in() {
 
     if(elgg_is_logged_in()) {
         $token = get_user_tokens(elgg_get_logged_in_user_guid());
-        return $token ? $token['token'] : 0;
+        if($token) {
+            return $token ? $token[0]->token : 0;
+        }
+        else {
+           return 0; 
+        }
     }
     else {
         return 0;
     }
 }
+
+/*
+tiny, topbar, small, medium, large, master
+*/
+
+function get_user_info_by_agg_id($agg_id) {
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    //$results = elgg_get_entity_metadata_where_sql("e", "metadata", null, null, array('name' => 'agg_id', 'value' => '10'));
+
+    if($results) {
+        return get_user_info($results[0]->owner_guid);
+    }
+    else {
+        return 0;
+    }
+}
+
+function get_user_info($user_id) {
+    //get user by user name
+    $user = get_user($user_id);
+    $site = elgg_get_site_entity();
+
+    $profile_type_guid = $user->custom_profile_type;
+    $profile_type = get_entity($profile_type_guid);
+
+    return array(
+        "users_display_name" => name,
+        "username" => $user->username,
+        "image" => $site->url."mod/profile/icondirect.php?lastcache=".time()."&joindate=".$user->time_created."&guid=".$user_id."&size=",
+        "email" => $user->email,
+        "profile_type" => $profile_type->getTitle()
+    );
+}
+
+

@@ -13,14 +13,9 @@
 	<div class="green-bkgd">
 		<div class="map_dct_container">
 			<div id="data_collection">
-				<h2>Enter Data</h2>';
-                if(elgg_is_logged_in()) {
-                    $content .= '<iframe src="http://weatherblur-staging.herokuapp.com/collect/" id="home_dct"></iframe>';
-                 }
-                else {
-                    $content .= '<h2><a href="http://localhost:9999/elgg/login">Please Login</a></h2>';
-                }
-            $content .= '</div><!--End data collection-->
+				<h2>Enter Data</h2>
+                    <a href="wbsystem/enterdata"><img src="mod/weatherblur_theme/graphics/dct.png" width="328" height="519"></a>
+            </div><!--End data collection-->
 
 			<div id="homepage_map">
 				<h2>Explore Data</h2>
