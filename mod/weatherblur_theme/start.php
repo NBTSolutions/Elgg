@@ -14,6 +14,10 @@
 		$css_dir = $CONFIG->url . 'mod/weatherblur_theme/css/';
 		$js_dir = $CONFIG->url . 'mod/weatherblur_theme/js/';
 
+		// include font-awesome's css
+		elgg_register_css('font-awesome', '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css');
+		elgg_load_css('font-awesome');
+
 		//HEADER.CSS
 		elgg_register_css('header', $css_dir.'header.css');
 		elgg_load_css('header');
@@ -63,8 +67,10 @@
 		elgg_register_css('enyo-css',
 			'//d3pch6bcnsao4c.cloudfront.net/lib/enyo/enyo-onyx-2.2.0.css');
 		elgg_register_css('graph-css', $css_dir.'graph.css');
-		elgg_register_css('font-awesome',
-			'//s3.amazonaws.com/nbt-assets/lib/fontawesome/css/font-awesome.css');
+
+		elgg_register_js('less',
+			'http://d3pch6bcnsao4c.cloudfront.net/lib/less-1.3.3.min.js');
+		elgg_load_js('less');
 
 		elgg_register_js('enyo-js',
 			'//d3pch6bcnsao4c.cloudfront.net/lib/enyo/enyo-onyx-2.2.0.js');
@@ -76,6 +82,9 @@
 
 		elgg_register_js('jq-widget', $js_dir . 'jquery.ui.widget.min.js');
 		elgg_register_js('jq-tabs', $js_dir . 'jquery.ui.tabs.min.js');
+
+		elgg_register_js('require', '//d3pch6bcnsao4c.cloudfront.net/lib/require.js');
+		elgg_register_js('wb-api', '//s3.amazonaws.com/nbt-assets/weatherblur/wb.api.js');
 
 		elgg_register_js('graph', $js_dir . 'graph.js');
 
