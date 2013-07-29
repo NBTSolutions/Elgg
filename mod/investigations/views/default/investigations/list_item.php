@@ -12,6 +12,16 @@ if (count($e) > 0) {
 	$advisor = $e[0]->get('name');
 }
 
+// this is not ideal, since here we are again adding in more external bits,
+// but it's pretty basic and I just need to get thru it....
+$metadata = elgg_view_menu('entity', array(
+	'entity' => $inv,
+	'handler' => 'investigate',
+	'sort_by' => 'priority',
+	'class' => 'elgg-menu-hz',
+));
+
+
 // weird css issue if there's not description.
 $desc = $inv->get('description');
 if (strlen(trim($desc)) == 0) { $desc = '<p>This investigation has yet to be described</p>'; }
@@ -23,6 +33,7 @@ if (strlen(trim($desc)) == 0) { $desc = '<p>This investigation has yet to be des
 	</div>
 
 	<h3><a href="<?php print $inv->getURL(); ?>"><?php print $inv->get('name'); ?></a></h3>
+	<?php print $metadata; ?>
 
 	<div class="desc"><?php print $desc; ?></div>
 

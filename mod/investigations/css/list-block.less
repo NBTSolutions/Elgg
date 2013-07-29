@@ -8,19 +8,18 @@ div.elgg-layout-one-column {
 
 ul.inv-listing {
 
-	li {
+	> li.inv {
 		float: left;
 		width: 478px;
-		min-height: 250px;
+		height: 250px;
 		margin: 15px 5px;
-
 
 		div.notebook {
 			float: left;
 			background-image: url('../graphics/notebook.png');
 			width: 223px;
 			height: 249px;
-			margin-right: 20px;
+			margin: 0 20px 10px 0;
 
 			img {
 				display: inline-block;
@@ -35,6 +34,21 @@ ul.inv-listing {
 		h3 {
 			margin-top: 5px;
 			font-size: 18px;
+		}
+
+		ul {
+			margin: 0;
+			width: 230px;
+			float: none;
+			font-size: 10px;
+			display: inline-block;
+
+			li {
+				margin: 0 4px;
+			}
+			li.elgg-menu-item-feature a {
+				color: #c00;
+			}
 		}
 
 		div.desc {
