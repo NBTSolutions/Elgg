@@ -16,13 +16,13 @@ elgg_make_sticky_form('topic');
 
 // validation of inputs
 if (!$title || !$desc) {
-	register_error(elgg_echo('investigation_discussion:error:missing'));
+	register_error(elgg_echo('discussion:error:missing'));
 	forward(REFERER);
 }
 
 $container = get_entity($container_guid);
 if (!$container || !$container->canWriteToContainer(0, 'object', 'investigationforumtopic')) {
-	register_error(elgg_echo('investigation_discussion:error:permissions'));
+	register_error(elgg_echo('discussion:error:permissions'));
 	forward(REFERER);
 }
 
@@ -39,7 +39,7 @@ if ($new_topic) {
 	// load original file object
 	$topic = new ElggObject($guid);
 	if (!$topic || !$topic->canEdit()) {
-		register_error(elgg_echo('investigation_discussion:topic:notfound'));
+		register_error(elgg_echo('discussion:topic:notfound'));
 		forward(REFERER);
 	}
 }
@@ -56,7 +56,7 @@ $topic->tags = $tags;
 $result = $topic->save();
 
 if (!$result) {
-	register_error(elgg_echo('investigation_discussion:error:notsaved'));
+	register_error(elgg_echo('discussion:error:notsaved'));
 	forward(REFERER);
 }
 
@@ -66,15 +66,15 @@ elgg_clear_sticky_form('topic');
 
 // handle results differently for new topics and topic edits
 if ($new_topic) {
-	system_message(elgg_echo('investigation_discussion:topic:created'));
-	elgg_create_river_item(array(
-		'view' => 'river/object/investigationforumtopic/create',
+	system_message(elgg_echo('discussion:topic:created'));
+	add_to_river(array(
+		'view' => 'river/object/groupforumtopic/create',
 		'action_type' => 'create',
 		'subject_guid' => elgg_get_logged_in_user_guid(),
 		'object_guid' => $topic->guid,
 	));
 } else {
-	system_message(elgg_echo('investigation_discussion:topic:updated'));
+	system_message(elgg_echo('discussion:topic:updated'));
 }
 
 forward($topic->getURL());

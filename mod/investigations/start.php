@@ -207,7 +207,7 @@ function investigations_init() {
 
 	// add group activity tool option
 	//add_group_tool_option('activity', elgg_echo('investigations:enableactivity'), true);
-	elgg_extend_view('groups/tool_latest', 'groups/profile/activity_module');
+	elgg_extend_view('investigations/tool_latest', 'investigations/profile/activity_module');
 
 	// add link to owner block
 	elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'investigation_activity_owner_block_menu');
@@ -294,9 +294,9 @@ function investigation_setup_sidebar_menus() {
 	// Get the page owner entity
 	$page_owner = elgg_get_page_owner_entity();
 
-	if (elgg_in_context('group_profile')) {
+	if (elgg_in_context('investigation_profile')) {
 		if (elgg_is_logged_in() && $page_owner->canEdit() && !$page_owner->isPublicMembership()) {
-			$url = elgg_get_site_url() . "groups/requests/{$page_owner->getGUID()}";
+			$url = elgg_get_site_url() . "investigate/requests/{$page_owner->getGUID()}";
 
 			$count = elgg_get_entities_from_relationship(array(
 				'type' => 'user',
@@ -319,7 +319,7 @@ function investigation_setup_sidebar_menus() {
 			));
 		}
 	}
-	if (elgg_get_context() == 'groups' && !elgg_instanceof($page_owner, 'group')) {
+	if (elgg_get_context() == 'investigations' && !elgg_instanceof($page_owner, 'group')) {
 		elgg_register_menu_item('page', array(
 			'name' => 'investigations:all',
 			'text' => elgg_echo('investigations:all'),
@@ -328,15 +328,15 @@ function investigation_setup_sidebar_menus() {
 
 		$user = elgg_get_logged_in_user_entity();
 		if ($user) {
-			$url =  "groups/owner/$user->username";
+			$url =  "investigate/owner/$user->username";
 			$item = new ElggMenuItem('investigations:owned', elgg_echo('investigations:owned'), $url);
 			elgg_register_menu_item('page', $item);
 
-			$url = "groups/member/$user->username";
+			$url = "investigate/member/$user->username";
 			$item = new ElggMenuItem('investigations:member', elgg_echo('investigations:yours'), $url);
 			elgg_register_menu_item('page', $item);
 
-			$url = "groups/invitations/$user->username";
+			$url = "investigate/invitations/$user->username";
 			$invitations = investigation_get_invited_groups($user->getGUID());
 			if (is_array($invitations) && !empty($invitations)) {
 				$invitation_count = count($invitations);
@@ -904,9 +904,9 @@ elgg_register_event_handler('init', 'system', 'investigation_discussion_init');
  */
 function investigation_discussion_init() {
 
-	elgg_register_library('elgg:investigation_discussion', elgg_get_plugins_path() . 'groups/lib/investigation_discussion.php');
+	elgg_register_library('elgg:investigation_discussion', elgg_get_plugins_path() . 'investigations/lib/investigation_discussion.php');
 
-	elgg_register_page_handler('discussion', 'investigation_discussion_page_handler');
+	elgg_register_page_handler('investigation_discussion', 'investigation_discussion_page_handler');
 	elgg_register_page_handler('forum', 'investigation_discussion_forum_page_handler');
 
 	elgg_register_entity_url_handler('object', 'investigationforumtopic', 'investigation_discussion_override_topic_url');
@@ -914,11 +914,11 @@ function investigation_discussion_init() {
 	// commenting not allowed on discussion topics (use a different annotation)
 	elgg_register_plugin_hook_handler('permissions_check:comment', 'object', 'investigation_discussion_comment_override');
 
-	$action_base = elgg_get_plugins_path() . 'groups/actions/discussion';
-	elgg_register_action('discussion/save', "$action_base/save.php");
-	elgg_register_action('discussion/delete', "$action_base/delete.php");
-	elgg_register_action('discussion/reply/save', "$action_base/reply/save.php");
-	elgg_register_action('discussion/reply/delete', "$action_base/reply/delete.php");
+	$action_base = elgg_get_plugins_path() . 'investigations/actions/discussion';
+	elgg_register_action('investigation_discussion/save', "$action_base/save.php");
+	elgg_register_action('investigation_discussion/delete', "$action_base/delete.php");
+	elgg_register_action('investigation_discussion/reply/save', "$action_base/reply/save.php");
+	elgg_register_action('investigation_discussion/reply/delete', "$action_base/reply/delete.php");
 
 	// add link to owner block
 	elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'investigation_discussion_owner_block_menu');
@@ -927,11 +927,11 @@ function investigation_discussion_init() {
 	elgg_register_entity_type('object', 'investigationforumtopic');
 
 	// because replies are not comments, need of our menu item
-	elgg_register_plugin_hook_handler('register', 'menu:river', 'discussion_add_to_river_menu');
+	elgg_register_plugin_hook_handler('register', 'menu:river', 'investigation_discussion_add_to_river_menu');
 
 	// add the forum tool option
 	//add_group_tool_option('forum', elgg_echo('investigations:enableforum'), true);
-	elgg_extend_view('groups/tool_latest', 'discussion/group_module');
+	elgg_extend_view('investigations/tool_latest', 'discussion/group_module');
 
 	// notifications
 	register_notification_object('object', 'investigationforumtopic', elgg_echo('investigation_discussion:notification:topic:subject'));
@@ -947,7 +947,7 @@ function investigation_discussion_forum_page_handler($page) {
 	switch ($page[0]) {
 		case 'topic':
 			header('Status: 301 Moved Permanently');
-			forward("/discussion/view/{$page[1]}/{$page[2]}");
+			forward("/investigation_discussion/view/{$page[1]}/{$page[2]}");
 			break;
 		default:
 			return false;
@@ -958,11 +958,11 @@ function investigation_discussion_forum_page_handler($page) {
  * Discussion page handler
  *
  * URLs take the form of
- *  All topics in site:    discussion/all
- *  List topics in forum:  discussion/owner/<guid>
- *  View discussion topic: discussion/view/<guid>
- *  Add discussion topic:  discussion/add/<guid>
- *  Edit discussion topic: discussion/edit/<guid>
+ *  All topics in site:    investigation_discussion/all
+ *  List topics in forum:  investigation_discussion/owner/<guid>
+ *  View discussion topic: investigation_discussion/view/<guid>
+ *  Add discussion topic:  investigation_discussion/add/<guid>
+ *  Edit discussion topic: investigation_discussion/edit/<guid>
  *
  * @param array $page Array of url segments for routing
  * @return bool
@@ -975,23 +975,23 @@ function investigation_discussion_page_handler($page) {
 		$page[0] = 'all';
 	}
 
-	elgg_push_breadcrumb(elgg_echo('discussion'), 'discussion/all');
+	elgg_push_breadcrumb(elgg_echo('discussion'), 'investigation_discussion/all');
 
 	switch ($page[0]) {
 		case 'all':
-			discussion_handle_all_page();
+			investigation_discussion_handle_all_page();
 			break;
 		case 'owner':
-			discussion_handle_list_page($page[1]);
+			investigation_discussion_handle_list_page($page[1]);
 			break;
 		case 'add':
-			discussion_handle_edit_page('add', $page[1]);
+			investigation_discussion_handle_edit_page('add', $page[1]);
 			break;
 		case 'edit':
-			discussion_handle_edit_page('edit', $page[1]);
+			investigation_discussion_handle_edit_page('edit', $page[1]);
 			break;
 		case 'view':
-			discussion_handle_view_page($page[1]);
+			investigation_discussion_handle_view_page($page[1]);
 			break;
 		default:
 			return false;
@@ -1006,7 +1006,7 @@ function investigation_discussion_page_handler($page) {
  * @return string
  */
 function investigation_discussion_override_topic_url($entity) {
-	return 'discussion/view/' . $entity->guid . '/' . elgg_get_friendly_title($entity->title);
+	return 'investigation_discussion/view/' . $entity->guid . '/' . elgg_get_friendly_title($entity->title);
 }
 
 /**
@@ -1024,8 +1024,8 @@ function investigation_discussion_comment_override($hook, $type, $return, $param
 function investigation_discussion_owner_block_menu($hook, $type, $return, $params) {
 	if (elgg_instanceof($params['entity'], 'group')) {
 		if ($params['entity']->forum_enable != "no") {
-			$url = "discussion/owner/{$params['entity']->guid}";
-			$item = new ElggMenuItem('discussion', elgg_echo('investigation_discussion:group'), $url);
+			$url = "investigation_discussion/owner/{$params['entity']->guid}";
+			$item = new ElggMenuItem('investigation_discussion', elgg_echo('investigation_discussion:group'), $url);
 			$return[] = $item;
 		}
 	}
@@ -1062,7 +1062,7 @@ function investigation_discussion_add_to_river_menu($hook, $type, $return, $para
 }
 
 /**
- * Create discussion notification body
+ * Create investigation_discussion notification body
  *
  * @todo namespace method with 'discussion'
  *
@@ -1197,6 +1197,8 @@ function investigations_can_edit_discussion($entity, $group_owner) {
 
 	//logged in user
 	$user = elgg_get_logged_in_user_guid();
+
+    return true;
 
 	if (($entity->owner_guid == $user) || $group_owner == $user || elgg_is_admin_logged_in()) {
 		return true;

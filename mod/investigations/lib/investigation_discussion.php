@@ -6,7 +6,7 @@
 /**
  * List all discussion topics
  */
-function discussion_handle_all_page() {
+function investigation_discussion_handle_all_page() {
 
 	elgg_pop_breadcrumb();
 	elgg_push_breadcrumb(elgg_echo('discussion'));
@@ -34,7 +34,7 @@ function discussion_handle_all_page() {
  *
  * @param int $guid Group entity GUID
  */
-function discussion_handle_list_page($guid) {
+function investigation_discussion_handle_list_page($guid) {
 
 	elgg_set_page_owner_guid($guid);
 
@@ -82,49 +82,49 @@ function discussion_handle_list_page($guid) {
  * @param string $type 'add' or 'edit'
  * @param int    $guid GUID of group or topic
  */
-function discussion_handle_edit_page($type, $guid) {
+function investigation_discussion_handle_edit_page($type, $guid) {
 	gatekeeper();
 
 	if ($type == 'add') {
-		$group = get_entity($guid);
-		if (!$group) {
+		$investigation = get_entity($guid);
+		if (!$investigation) {
 			register_error(elgg_echo('investigation:notfound'));
 			forward();
 		}
 
 		// make sure user has permissions to add a topic to container
-		if (!$group->canWriteToContainer(0, 'object', 'investigationforumtopic')) {
+		if (!$investigation->canWriteToContainer(0, 'object', 'investigationforumtopic')) {
 			register_error(elgg_echo('investigations:permissions:error'));
-			forward($group->getURL());
+			forward($investigation->getURL());
 		}
 
 		$title = elgg_echo('investigations:addtopic');
 
-		elgg_push_breadcrumb($group->name, "discussion/owner/$group->guid");
+		elgg_push_breadcrumb($investigation->name, "investigation_discussion/owner/$investigation->guid");
 		elgg_push_breadcrumb($title);
 
-		$body_vars = discussion_prepare_form_vars();
-		$content = elgg_view_form('discussion/save', array(), $body_vars);
+		$body_vars = investigation_discussion_prepare_form_vars();
+		$content = elgg_view_form('investigation_discussion/save', array(), $body_vars);
 	} else {
 		$topic = get_entity($guid);
 		if (!$topic || !$topic->canEdit()) {
 			register_error(elgg_echo('investigation_discussion:topic:notfound'));
 			forward();
 		}
-		$group = $topic->getContainerEntity();
-		if (!$group) {
+		$investigation = $topic->getContainerEntity();
+		if (!$investigation) {
 			register_error(elgg_echo('investigation:notfound'));
 			forward();
 		}
 
 		$title = elgg_echo('investigations:edittopic');
 
-		elgg_push_breadcrumb($group->name, "discussion/owner/$group->guid");
+		elgg_push_breadcrumb($investigation->name, "investigation_discussion/owner/$investigation->guid");
 		elgg_push_breadcrumb($topic->title, $topic->getURL());
 		elgg_push_breadcrumb($title);
 
-		$body_vars = discussion_prepare_form_vars($topic);
-		$content = elgg_view_form('discussion/save', array(), $body_vars);
+		$body_vars = investigation_discussion_prepare_form_vars($topic);
+		$content = elgg_view_form('investigation_discussion/save', array(), $body_vars);
 	}
 
 	$params = array(
@@ -142,7 +142,7 @@ function discussion_handle_edit_page($type, $guid) {
  *
  * @param int $guid GUID of topic
  */
-function discussion_handle_view_page($guid) {
+function investigation_discussion_handle_view_page($guid) {
 	// We now have RSS on topics
 	global $autofeed;
 	$autofeed = true;
@@ -150,7 +150,8 @@ function discussion_handle_view_page($guid) {
 	$topic = get_entity($guid);
 	if (!$topic) {
 		register_error(elgg_echo('noaccess'));
-		elgg_get_session()->set('last_forward_from', current_page_url());
+		$_SESSION['last_forward_from'] = current_page_url();
+		//elgg_get_session()->set('last_forward_from', current_page_url());
 		forward('');
 	}
 
@@ -164,7 +165,7 @@ function discussion_handle_view_page($guid) {
 
 	group_gatekeeper();
 
-	elgg_push_breadcrumb($group->name, "discussion/owner/$group->guid");
+	elgg_push_breadcrumb($group->name, "investigation_discussion/owner/$group->guid");
 	elgg_push_breadcrumb($topic->title);
 
 	$content = elgg_view_entity($topic, array('full_view' => true));
@@ -202,7 +203,7 @@ function discussion_handle_view_page($guid) {
  * @param ElggObject $topic Topic object if editing
  * @return array
  */
-function discussion_prepare_form_vars($topic = NULL) {
+function investigation_discussion_prepare_form_vars($topic = NULL) {
 	// input names => defaults
 	$values = array(
 		'title' => '',

@@ -13,7 +13,7 @@ $group = $vars['entity'];
 
 
 $all_link = elgg_view('output/url', array(
-	'href' => "discussion/owner/$group->guid",
+	'href' => "investigation_discussion/owner/$group->guid",
 	'text' => elgg_echo('link:view:all'),
 	'is_trusted' => true,
 ));
@@ -35,12 +35,12 @@ if (!$content) {
 }
 
 $new_link = elgg_view('output/url', array(
-	'href' => "discussion/add/" . $group->getGUID(),
+	'href' => "investigation_discussion/add/" . $group->getGUID(),
 	'text' => elgg_echo('investigations:addtopic'),
 	'is_trusted' => true,
 ));
 
-echo elgg_view('groups/profile/module', array(
+echo elgg_view('investigations/profile/module', array(
 	'title' => elgg_echo('investigation_discussion:group'),
 	'content' => $content,
 	'all_link' => $all_link,
