@@ -26,6 +26,7 @@ function investigations_init() {
 
 	// Register a page handler, so we can have nice URLs
 	elgg_register_page_handler('investigate', 'investigation_page_handler');
+	elgg_register_page_handler('observation', 'observation_page_handler');
 
 	// Register URL handlers for groups
 	elgg_register_entity_url_handler('group', 'investigation', 'investigation_url');
@@ -431,6 +432,13 @@ function investigation_page_handler($page) {
 			return false;
 	}
 	return true;
+}
+
+function observation_page_handler($page) {
+	elgg_load_library('elgg:investigations');
+
+    observation_page($page[0]);
+    return true;
 }
 
 /**
