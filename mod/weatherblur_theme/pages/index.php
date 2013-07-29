@@ -44,13 +44,13 @@
                 }
 	$content .= '</div><!-- End lastest news-->';
 
-$featured_inv = elgg_get_featured('group', 'investigation', 1);
+	$featured_inv = elgg_get_featured('group', 'investigation', 1);
 if ($featured_inv[0]) {
 	$content .= '
 			<div id="featured-investigation">
 			<h2>Featured Investigation</h2>
 				<div id="notebook-background">
-					<div id="featured-investigation-photo"></div>
+					<img src="' . $featured_inv[0]->getIconURL('large') . '" alt="' . $featured_inv[0]->get('name') . '">
 				</div><!--End notebook background-->
 				<h3><a class="featured-title" href="investigate/profile/' . $featured_inv[0]->guid . '">' . $featured_inv[0]->name . '</a></h3>
 				' . $featured_inv[0]->description . '
