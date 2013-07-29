@@ -14,7 +14,8 @@
 
 $entity = $vars['entity'];
 
-$sizes = array('small', 'medium', 'large', 'tiny', 'master', 'topbar');
+$icon_sizes = elgg_get_config('icon_sizes');
+$sizes = array_keys($icon_sizes); // hardcoded sizes was a really stupid idea.
 // Get size
 if (!in_array($vars['size'], $sizes)) {
 	$vars['size'] = "medium";
@@ -34,7 +35,6 @@ if (isset($vars['href'])) {
 	$url = $vars['href'];
 }
 
-$icon_sizes = elgg_get_config('icon_sizes');
 $size = $vars['size'];
 
 if (!isset($vars['width'])) {
@@ -46,7 +46,7 @@ if (!isset($vars['height'])) {
 
 $img_params = array(
 	'src' => $entity->getIconURL($vars['size']),
-	'alt' => $title,	
+	'alt' => $title,
 );
 
 if (!empty($class)) {

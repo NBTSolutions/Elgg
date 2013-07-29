@@ -17,7 +17,7 @@ $owner = $group->getOwnerEntity();
 
 if (!$owner) {
 	// not having an owner is very bad so we throw an exception
-	$msg = "Sorry, '" . 'group owner' . "' does not exist for guid:" . $group->guid;
+	$msg = "Sorry, 'group owner' does not exist for guid:" . $group->guid;
 	throw new InvalidParameterException($msg);
 }
 
@@ -31,7 +31,7 @@ if (!$owner) {
 					'href' => '',
 					'width' => '',
 					'height' => '',
-				)); 
+				));
 			?>
 		</div>
 		<div class="groups-stats">
