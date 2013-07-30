@@ -38,6 +38,36 @@ function investigation_discussion_handle_list_page($guid) {
 
 	elgg_set_page_owner_guid($guid);
 
+    $subtype_get = get_input('discussion_subtype');
+
+    switch($subtype_get) {
+        case "map":
+            $subtype = array("object" => "investigationforumtopic_map");
+            break;
+        case "graph":
+            $subtype = array("object" => "investigationforumtopic_graph");
+            break;
+        case "image":
+            $subtype = array("object" => "investigationforumtopic_image");
+            break;
+        case "video":
+            $subtype = array("object" => "investigationforumtopic_video");
+            break;
+        case "text":
+            $subtype = array("object" => "investigationforumtopic_text");
+            break;
+        default:
+            $subtype = array(
+                        "object" => "investigationforumtopic_map",
+                        "object" => "investigationforumtopic_graph",
+                        "object" => "investigationforumtopic_image",
+                        "object" => "investigationforumtopic_video",
+                        "object" => "investigationforumtopic_text"
+                       );
+    }
+
+    var_dump($subtype);
+
 	$group = get_entity($guid);
 	if (!$group) {
 		register_error(elgg_echo('investigation:notfound'));
@@ -52,8 +82,7 @@ function investigation_discussion_handle_list_page($guid) {
 	$title = elgg_echo('item:object:investigationforumtopic');
 	
 	$options = array(
-		'type' => 'object',
-		'subtype' => 'investigationforumtopic',
+		'type_subtype_pairs' => $subtype,
 		'limit' => 20,
 		'order_by' => 'e.last_action desc',
 		'container_guid' => $guid,
@@ -63,7 +92,6 @@ function investigation_discussion_handle_list_page($guid) {
 	if (!$content) {
 		$content = elgg_echo('investigation_discussion:none');
 	}
-
 
 	$params = array(
 		'content' => $content,
@@ -91,6 +119,11 @@ function investigation_discussion_handle_edit_page($type, $guid) {
 			register_error(elgg_echo('investigation:notfound'));
 			forward();
 		}
+        
+        $subtype = get_input("discussion_subtype");
+        if($subtype == "image" OR $subtype == "graph" OR $subtype == "map") {
+            forward('file/add/'.$investigation->getGUID());
+        }
 
 		// make sure user has permissions to add a topic to container
 		if (!$investigation->canWriteToContainer(0, 'object', 'investigationforumtopic')) {

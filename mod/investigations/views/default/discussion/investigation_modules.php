@@ -53,11 +53,9 @@ $options = array(
 	'container_guid' => $group->getGUID()
 );
 
-var_dump(elgg_get_entities($options));
-
 ?>
+<h1>Create Discussions</h1>
 <form method="GET" action="<?php echo $site->url."investigation_discussion/add/".$group->getGUID(); ?>">
-add/<?php echo $group->getGUID(); ?>">
     <select name="discussion_subtype">
       <option value="text">Text</option>
       <option value="image">Image</option>
@@ -67,3 +65,11 @@ add/<?php echo $group->getGUID(); ?>">
     </select>
     <button type="submit" value="Create Discussion"></button>
 </form>
+
+<h2>See Discussions:</h2>
+<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=text">text</a>
+<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=image">image</a>
+<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=video">video</a>
+<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=graph">graph</a>
+<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=map">map</a>
+
