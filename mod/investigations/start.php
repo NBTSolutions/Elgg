@@ -207,7 +207,9 @@ function investigations_init() {
 
 	// add group activity tool option
 	//add_group_tool_option('activity', elgg_echo('investigations:enableactivity'), true);
-	elgg_extend_view('investigations/tool_latest', 'investigations/profile/activity_module');
+
+    //elgg investigation entity
+	//elgg_extend_view('investigations/tool_latest', 'investigations/profile/activity_module');
 
 	// add link to owner block
 	elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'investigation_activity_owner_block_menu');
@@ -931,7 +933,9 @@ function investigation_discussion_init() {
 
 	// add the forum tool option
 	//add_group_tool_option('forum', elgg_echo('investigations:enableforum'), true);
-	elgg_extend_view('investigations/tool_latest', 'discussion/group_module');
+
+	//elgg_extend_view('investigations/tool_latest', 'discussion/group_module');
+	elgg_extend_view('investigations/tool_latest', 'discussion/investigation_modules');
 
 	// notifications
 	register_notification_object('object', 'investigationforumtopic', elgg_echo('investigation_discussion:notification:topic:subject'));

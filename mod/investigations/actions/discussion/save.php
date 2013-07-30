@@ -4,6 +4,29 @@
  */
 
 // Get variables
+$discussion_subtype = get_input('discussion_subtype');
+
+
+	switch ($discussion_subtype) {
+		case 'graph':
+            $discussion_subtype = "investigationforumtopic_graph"
+			break;
+		case 'image':
+            $discussion_subtype = "investigationforumtopic_graph"
+			break;
+		case 'map':
+            $discussion_subtype = "investigationforumtopic_graph"
+			break;
+		case 'video':
+            $discussion_subtype = "investigationforumtopic_graph"
+			break;
+		default:
+            $discussion_subtype = "investigationforumtopic_graph"
+			return false;
+	}
+
+$discussion_subtype = $discussion_subtype ? $discussion_subtype : "investigationforumtopic";
+
 $title = htmlspecialchars(get_input('title', '', false), ENT_QUOTES, 'UTF-8');
 $desc = get_input("description");
 $status = get_input("status");
@@ -21,7 +44,7 @@ if (!$title || !$desc) {
 }
 
 $container = get_entity($container_guid);
-if (!$container || !$container->canWriteToContainer(0, 'object', 'investigationforumtopic')) {
+if (!$container || !$container->canWriteToContainer(0, 'object', $dicussion_subtype)) {
 	register_error(elgg_echo('discussion:error:permissions'));
 	forward(REFERER);
 }
@@ -34,7 +57,7 @@ if ($guid > 0) {
 
 if ($new_topic) {
 	$topic = new ElggObject();
-	$topic->subtype = 'investigationforumtopic';
+	$topic->subtype = $discussion_subtype;
 } else {
 	// load original file object
 	$topic = new ElggObject($guid);
