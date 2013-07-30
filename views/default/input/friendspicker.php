@@ -202,8 +202,10 @@ if (!isset($vars['replacement'])) {
 				?>
 
 				<td>
-
-					<input type="checkbox" <?php echo $checked; ?> name="<?php echo $name; ?>[]" value="<?php echo $options[$label]; ?>" />
+<?php
+				$check_type = (isset($vars['radio_buttons'])) ? 'radio' : 'checkbox';
+?>
+					<input type="<?php echo $check_type; ?>" <?php echo $checked; ?> name="<?php echo $name; ?>[]" value="<?php echo $options[$label]; ?>" />
 
 				</td>
 

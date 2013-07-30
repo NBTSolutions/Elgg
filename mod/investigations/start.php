@@ -5,6 +5,10 @@
  * @package ElggGroups
  */
 
+// this is a lame way to do this but I can't think of anything better at this time.
+$GLOBALS['WB_USER_TYPES'] = array("Student", "Teacher", "Scientist", "Fisherman", "Community Member");
+$GLOBALS['WB_ADVISOR_TYPES'] = array_diff($GLOBALS['WB_USER_TYPES'], array('Student'));
+
 elgg_register_event_handler('init', 'system', 'investigations_init');
 
 // Ensure this runs after other plugins
