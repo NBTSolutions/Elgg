@@ -53,6 +53,15 @@ body { height: 100%; }
 	border: none;
 	background: none;
 }
+/*Hides ELGG logo*/
+.elgg-menu-topbar > li > a.elgg-topbar-logo { display: none; }
+
+/*Top bar*/
+.elgg-page-topbar {
+	background: #004712;
+	border-bottom: none;
+	/*height: 48px;*/
+}
 
 /*-------------------------------------------------
 					TOP NAV
