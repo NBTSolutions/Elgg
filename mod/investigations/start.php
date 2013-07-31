@@ -379,8 +379,10 @@ function investigation_page_handler($page) {
 	elgg_load_css('bodywork');
 	elgg_register_css('button', $CONFIG->url . 'mod/investigations/css/button.less');
 	elgg_load_css('button');
-	elgg_register_css('test', $CONFIG->url . 'mod/investigations/css/list-block.less');
-	elgg_load_css('test');
+	elgg_register_css('list-block', $CONFIG->url . 'mod/investigations/css/list-block.less');
+	elgg_load_css('list-block');
+	elgg_register_css('sidebar', $CONFIG->url . 'mod/investigations/css/sidebar.less');
+	elgg_load_css('sidebar');
 
 	// forward old profile urls
 	if (is_numeric($page[0])) {
