@@ -1,57 +1,44 @@
 <?php
 // look at group_modules for original
 
-/*
-if ($vars['entity']->forum_enable == 'no') {
-	return true;
-}
-
-$group = $vars['entity'];
-
-
-$all_link = elgg_view('output/url', array(
-	'href' => "investigation_discussion/owner/$group->guid",
-	'text' => elgg_echo('link:view:all'),
-	'is_trusted' => true,
-));
-
-elgg_push_context('widgets');
-$options = array(
-	'type' => 'object',
-	'subtype' => 'investigationforumtopic',
-	'container_guid' => $group->getGUID(),
-	'limit' => 6,
-	'full_view' => false,
-	'pagination' => false,
-);
-$content = elgg_list_entities($options);
-elgg_pop_context();
-
-if (!$content) {
-	$content = '<p>' . elgg_echo('investigation_discussion:none') . '</p>';
-}
-
-$new_link = elgg_view('output/url', array(
-	'href' => "investigation_discussion/add/" . $group->getGUID(),
-	'text' => elgg_echo('investigations:addtopic'),
-	'is_trusted' => true,
-));
-
-echo elgg_view('investigations/profile/module', array(
-	'title' => elgg_echo('investigation_discussion:group'),
-	'content' => $content,
-	'all_link' => $all_link,
-	'add_link' => $new_link,
-));
-*/
 $group = $vars['entity'];
 $site = elgg_get_site_entity();
 
+elgg_load_library('elgg:investigation_discussion');
+
+$subtype_get = get_input('discussion_subtype');
+
+switch ($subtype_get) {
+    case 'map':
+        $subtype = array("investigationforumtopic_map");
+        break;
+    case 'graph':
+        $subtype = array("investigationforumtopic_graph");
+        break;
+    case 'image':
+        $subtype = array("investigationforumtopic_image");
+        break;
+    case 'text':
+        $subtype = array("investigationforumtopic_text");
+        break;
+    case 'video':
+        $subtype = array("investigationforumtopic_video");
+        break;
+    default:
+        $subtype = array('investigationforumtopic_map', 'investigationforumtopic_graph', 'investigationforumtopic_image', 'investigationforumtopic_video', 'investigationforumtopic_text');
+}
 $options = array(
-	'type' => 'object',
-	'subtype' => 'investigationforumtopic',
-	'container_guid' => $group->getGUID()
+    'type' => 'object',
+    'subtypes' => $subtype,
+    'limit' => 2,
+    'order_by' => 'e.last_action desc',
+    'container_guid' => $guid,
+    'full_view' => false,
 );
+$discussions = elgg_list_entities($options, 'elgg_get_entities', 'elgg_view_investigation_discussion_list');
+if (!$discussions) {
+    $discussions = elgg_echo('investigation_discussion:none');
+}
 
 ?>
 <h1>Create Discussions</h1>
@@ -66,12 +53,12 @@ $options = array(
     <input type="submit" value="Create Discussion"></input>
 </form>
 
-<br>
 <h2>See Discussions:</h2>
-<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=text">text</a>
-<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=image">image</a>
-<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=video">video</a>
-<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=graph">graph</a>
-<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=map">map</a>
-<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=all">all</a>
+<a href="?discussion_subtype=text">Text</a>
+<a href="?discussion_subtype=image">Image</a>
+<a href="?discussion_subtype=video">Video</a>
+<a href="?discussion_subtype=graph">Graph</a>
+<a href="?discussion_subtype=map">Map</a>
+<a href="?discussion_subtype=all">All</a>
 
+<?php echo $discussions; ?>
