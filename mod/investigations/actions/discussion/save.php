@@ -8,24 +8,12 @@ $discussion_subtype = get_input('discussion_subtype');
 
 
 	switch ($discussion_subtype) {
-		case 'graph':
-            $discussion_subtype = "investigationforumtopic_graph"
-			break;
-		case 'image':
-            $discussion_subtype = "investigationforumtopic_graph"
-			break;
-		case 'map':
-            $discussion_subtype = "investigationforumtopic_graph"
-			break;
 		case 'video':
-            $discussion_subtype = "investigationforumtopic_graph"
+            $discussion_subtype = "investigationforumtopic_video";
 			break;
 		default:
-            $discussion_subtype = "investigationforumtopic_graph"
-			return false;
+            $discussion_subtype = "investigationforumtopic_text";
 	}
-
-$discussion_subtype = $discussion_subtype ? $discussion_subtype : "investigationforumtopic";
 
 $title = htmlspecialchars(get_input('title', '', false), ENT_QUOTES, 'UTF-8');
 $desc = get_input("description");

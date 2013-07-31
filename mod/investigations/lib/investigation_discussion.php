@@ -40,33 +40,25 @@ function investigation_discussion_handle_list_page($guid) {
 
     $subtype_get = get_input('discussion_subtype');
 
-    switch($subtype_get) {
-        case "map":
-            $subtype = array("object" => "investigationforumtopic_map");
+    switch ($subtype_get) {
+        case 'map':
+            $subtype = array("investigationforumtopic_map");
             break;
-        case "graph":
-            $subtype = array("object" => "investigationforumtopic_graph");
+        case 'graph':
+            $subtype = array("investigationforumtopic_graph");
             break;
-        case "image":
-            $subtype = array("object" => "investigationforumtopic_image");
+        case 'image':
+            $subtype = array("investigationforumtopic_image");
             break;
-        case "video":
-            $subtype = array("object" => "investigationforumtopic_video");
+        case 'text':
+            $subtype = array("investigationforumtopic_text");
             break;
-        case "text":
-            $subtype = array("object" => "investigationforumtopic_text");
+        case 'video':
+            $subtype = array("investigationforumtopic_video");
             break;
         default:
-            $subtype = array(
-                        "object" => "investigationforumtopic_map",
-                        "object" => "investigationforumtopic_graph",
-                        "object" => "investigationforumtopic_image",
-                        "object" => "investigationforumtopic_video",
-                        "object" => "investigationforumtopic_text"
-                       );
+            $subtype = array('investigationforumtopic_map', 'investigationforumtopic_graph', 'investigationforumtopic_image', 'investigationforumtopic_video', 'investigationforumtopic_text');
     }
-
-    var_dump($subtype);
 
 	$group = get_entity($guid);
 	if (!$group) {
@@ -82,7 +74,8 @@ function investigation_discussion_handle_list_page($guid) {
 	$title = elgg_echo('item:object:investigationforumtopic');
 	
 	$options = array(
-		'type_subtype_pairs' => $subtype,
+        'type' => 'object',
+		'subtypes' => $subtype,
 		'limit' => 20,
 		'order_by' => 'e.last_action desc',
 		'container_guid' => $guid,
@@ -122,7 +115,7 @@ function investigation_discussion_handle_edit_page($type, $guid) {
         
         $subtype = get_input("discussion_subtype");
         if($subtype == "image" OR $subtype == "graph" OR $subtype == "map") {
-            forward('file/add/'.$investigation->getGUID());
+            forward('file/add/'.$investigation->getGUID()."?discussion_subtype=".$subtype);
         }
 
 		// make sure user has permissions to add a topic to container

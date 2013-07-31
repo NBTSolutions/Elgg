@@ -63,13 +63,15 @@ $options = array(
       <option value="graph">Graph</option>
       <option value="map">Map</option>
     </select>
-    <button type="submit" value="Create Discussion"></button>
+    <input type="submit" value="Create Discussion"></input>
 </form>
 
+<br>
 <h2>See Discussions:</h2>
-<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=text">text</a>
-<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=image">image</a>
-<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=video">video</a>
-<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=graph">graph</a>
-<a href="<?php echo $site->url."/investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=map">map</a>
+<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=text">text</a>
+<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=image">image</a>
+<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=video">video</a>
+<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=graph">graph</a>
+<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=map">map</a>
+<a href="<?php echo $site->url."investigation_discussion/owner/".$group->getGUID(); ?>?discussion_subtype=all">all</a>
 
