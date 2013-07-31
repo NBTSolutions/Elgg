@@ -16,7 +16,7 @@ $english = array(
 	'investigations:yours' => "My groups",
 	'investigations:user' => "%s's groups",
 	'investigations:all' => "All investigations",
-	'investigate:add' => "Create a new investigation",
+	'investigate:add' => "<i class='icon-plus'></i> Create a new investigation",
 	'investigations:edit' => "Edit investigation",
 	'investigations:delete' => 'Delete Investigation',
 	'investigations:membershiprequests' => 'Manage join requests',
@@ -68,8 +68,8 @@ $english = array(
 	'investigations:nofriends' => "You have no friends left who have not been invited to this group.",
 	'investigations:nofriendsatall' => 'You have no friends to invite!',
 	'investigations:viagroups' => "via groups",
-	'investigations:group' => "Investigation",
-	'investigations:search:tags' => "tag",
+	'investigations:group' => "Group",
+	'investigations:search:tags' => "Search for Investigations",
 	'investigations:search:title' => "Search for groups tagged with '%s'",
 	'investigations:search:none' => "No matching groups were found",
 	'investigations:search_in_group' => "Search this investigation",
@@ -77,23 +77,23 @@ $english = array(
 
 	'investigation_discussion:notification:topic:subject' => 'New group discussion post',
 	'investigations:notification' =>
-'%s added a new discussion topic to %s:
+	'%s added a new discussion topic to %s:
 
-%s
-%s
+	%s
+	%s
 
-View and reply to the investigation_discussion:
-%s
-',
+	View and reply to the investigation_discussion:
+	%s
+	',
 
 	'investigation_discussion:notification:reply:body' =>
-'%s replied to the discussion topic %s in the group %s:
+	'%s replied to the discussion topic %s in the group %s:
 
-%s
+	%s
 
-View and reply to the investigation_discussion:
-%s
-',
+	View and reply to the investigation_discussion:
+	%s
+	',
 
 	'investigations:activity' => "Investigation activity",
 	'investigations:enableactivity' => 'Enable investigation activity',
@@ -132,7 +132,7 @@ View and reply to the investigation_discussion:
 
 	/*
 	Group tools
-	*/
+	 */
 	'investigations:enableforum' => 'Enable investigation discussion',
 	'investigations:yes' => 'yes',
 	'investigations:no' => 'no',
@@ -141,7 +141,7 @@ View and reply to the investigation_discussion:
 
 	/*
 	Group discussion
-	*/
+	 */
 	'discussion' => 'Discussion',
 	'investigation_discussion:add' => 'Add discussion topic',
 	'investigation_discussion:latest' => 'Latest discussion',
@@ -223,38 +223,38 @@ View and reply to the investigation_discussion:
 	'investigations:invite:remove:check' => 'Are you sure you want to remove this invitation?',
 	'investigations:invite:body' => "Hi %s,
 
-%s invited you to join the '%s' group. Click below to view your invitations:
+	%s invited you to join the '%s' group. Click below to view your invitations:
 
-%s",
+	%s",
 
 	'investigations:welcome:subject' => "Welcome to the %s group!",
 	'investigations:welcome:body' => "Hi %s!
 
-You are now a member of the '%s' group! Click below to begin posting!
+	You are now a member of the '%s' group! Click below to begin posting!
 
-%s",
+	%s",
 
 	'investigations:request:subject' => "%s has requested to join %s",
 	'investigations:request:body' => "Hi %s,
 
-%s has requested to join the '%s' group. Click below to view their profile:
+	%s has requested to join the '%s' group. Click below to view their profile:
 
-%s
+	%s
 
-or click below to view the group's join requests:
+	or click below to view the group's join requests:
 
-%s",
+	%s",
 
 	/*
 		Forum river items
-	*/
+	 */
 
 	'river:create:group:default' => '%s created the group %s',
 	'river:join:group:default' => '%s joined the group %s',
 	'river:create:object:investigationforumtopic' => '%s added a new discussion topic %s',
 	'river:reply:object:investigationforumtopic' => '%s replied on the discussion topic %s',
-    'river:create:object:observation' => "%s created an %s",	
-    'investigations:observation' => 'observation',
+	'river:create:object:observation' => "%s created an %s",
+	'investigations:observation' => 'observation',
 	'investigations:nowidgets' => 'No widgets have been defined for this group.',
 
 

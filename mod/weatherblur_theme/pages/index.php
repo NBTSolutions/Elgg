@@ -44,13 +44,13 @@
                 }
 	$content .= '</div><!-- End lastest news-->';
 
-$featured_inv = elgg_get_featured('group', 'investigation', 1);
+	$featured_inv = elgg_get_featured('group', 'investigation', 1);
 if ($featured_inv[0]) {
 	$content .= '
 			<div id="featured-investigation">
 			<h2>Featured Investigation</h2>
 				<div id="notebook-background">
-					<div id="featured-investigation-photo"></div>
+					<img src="' . $featured_inv[0]->getIconURL('large') . '" alt="' . $featured_inv[0]->get('name') . '">
 				</div><!--End notebook background-->
 				<h3><a class="featured-title" href="investigate/profile/' . $featured_inv[0]->guid . '">' . $featured_inv[0]->name . '</a></h3>
 				' . $featured_inv[0]->description . '
@@ -62,20 +62,11 @@ $content .= '<div id="activity">
 				<h2>Activity</h2>'.elgg_list_river(array('limit' => 3), "page/components/homepage-activity-list").'
 
 						<a class="orange-links" href="activity">View more activity</a>
-			</div><!-- End activity-->
+						</div><!-- End activity-->';
 
-			<!-----------------------------------------------
-							FEATURED MEMBER
-			------------------------------------------------->
-			<div id="featured-member-bkgd">
+$content .= elgg_view('homepage/featured_member');
 
-				<h2>Featured Member</h2>
-				<a class="featured-pic" href="#"></a>
-				<a class="featured-name" href="#">Owen Stiles</a>
-				<a class="featured-teaser" href="#">For an instant in the flashing eyes of the mate, and his fiery cheeks, you would have almost thought that he had really received the blaze of the levelled tube. But, mastering his emotion, he half calmly rose, and as he quitted the cabin, paused for an instant and said: "Thou hast outraged, not insulted me, sir; but for that I ask thee not to beware of Starbuck; thou wouldst but laugh; but let Ahab beware of Ahab; beware of thyself, old man."</a>
-
-			</div><!--End featured member bkgd-->
-
+$content .= '
 		</div><!-- End three columns content-->
 	</div><!-- End featured three columns-->
 </div><!--End wb body-->';

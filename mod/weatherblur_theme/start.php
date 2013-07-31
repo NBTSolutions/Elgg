@@ -23,7 +23,7 @@
 		elgg_load_css('header');
 
 		//INDEX_BODY.CSS
-		elgg_register_css('index_body', $css_dir.'index_body.css');
+		elgg_register_css('index_body', $css_dir.'index_body.less');
 		elgg_load_css('index_body');
 
 		//FOOTER.CSS

@@ -5,6 +5,10 @@
  * @package ElggGroups
  */
 
+// this is a lame way to do this but I can't think of anything better at this time.
+$GLOBALS['WB_USER_TYPES'] = array("Student", "Teacher", "Scientist", "Fisherman", "Community Member");
+$GLOBALS['WB_ADVISOR_TYPES'] = array_diff($GLOBALS['WB_USER_TYPES'], array('Student'));
+
 elgg_register_event_handler('init', 'system', 'investigations_init');
 
 // Ensure this runs after other plugins
@@ -373,6 +377,13 @@ function investigation_setup_sidebar_menus() {
  * @return bool
  */
 function investigation_page_handler($page) {
+	global $CONFIG;
+	elgg_register_css('bodywork', $CONFIG->url . 'mod/investigations/css/bodywork.less');
+	elgg_load_css('bodywork');
+	elgg_register_css('button', $CONFIG->url . 'mod/investigations/css/button.less');
+	elgg_load_css('button');
+	elgg_register_css('test', $CONFIG->url . 'mod/investigations/css/list-block.less');
+	elgg_load_css('test');
 
 	// forward old profile urls
 	if (is_numeric($page[0])) {
@@ -1347,7 +1358,7 @@ function get_obs_by_inv($investigation_guid) {
     $observations = array();
 
     foreach($results as $result) {
-        
+
         // get username and link
         $user = get_entity($result->owner_guid);
         $likes = get_likes($result->guid, 0);
@@ -1523,7 +1534,7 @@ function is_logged_in() {
             return $token ? $token[0]->token : 0;
         }
         else {
-           return 0; 
+           return 0;
         }
     }
     else {

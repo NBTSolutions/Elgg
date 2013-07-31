@@ -10,37 +10,37 @@ function investigations_handle_all_page() {
 
 	// all groups doesn't get link to self
 	elgg_pop_breadcrumb();
-	elgg_push_breadcrumb(elgg_echo('investigations'));
+	//elgg_push_breadcrumb(elgg_echo('investigations'));
 
 	if (elgg_get_plugin_setting('limited_groups', 'investigations') != 'yes' || elgg_is_admin_logged_in()) {
 		elgg_register_title_button();
 	}
 
-	$selected_tab = get_input('filter', 'newest');
-
-    $content = elgg_list_entities(array(
+	  $content = elgg_list_entities(array(
         'type' => 'group',
         'subtype' => 'investigation',
-        'full_view' => false
-    ),
-    'elgg_get_entities', 'elgg_view_investigation_list');
+    ), 'elgg_get_entities', 'elgg_view_investigation_list');
 
     // if no content show nothing
     if (!$content) {
         $content = elgg_echo('investigations:none');
-    }
+		}
 
-	$filter = elgg_view('investigations/group_sort_menu', array('selected' => $selected_tab));
-	
-	$sidebar = elgg_view('investigations/sidebar/find');
-	$sidebar .= elgg_view('investigations/sidebar/featured');
+	//$filter = elgg_view('investigations/group_sort_menu', array('selected' => $selected_tab));
+
+	//$sidebar = elgg_view('investigations/sidebar/find');
+		//$sidebar .= elgg_view('investigations/sidebar/featured');
+		//
+	$search = elgg_view('investigations/sidebar/find');
+ 	$header = elgg_view('page/layouts/content/header', array('title' => ' '));
+	$content = $header . $search . $content;
 
 	$params = array(
 		'content' => $content,
-		'sidebar' => $sidebar,
-		'filter' => ''
+		'filter' => '', // hide filtering buttons.
+		'title' => ' ' // hide the title for the view all page.
 	);
-	$body = elgg_view_layout('content', $params);
+	$body = elgg_view_layout('one_column', $params);
 
 	echo elgg_view_page(elgg_echo('investigations:all'), $body);
 }
@@ -74,36 +74,16 @@ function elgg_view_investigation_list($entities, $vars = array(), $offset = 0, $
 		$list_type = get_input('listtype');
 	}
 
-	if (is_array($vars)) {
-		// new function
-		$defaults = array(
-			'items' => $entities,
-			'list_class' => 'elgg-list-entity',
-			'full_view' => true,
-			'pagination' => true,
-			'list_type' => $list_type,
-			'list_type_toggle' => false,
-			'offset' => $offset,
-		);
+	$defaults = array(
+		'items' => $entities,
+		'full_view' => false,
+		'pagination' => true,
+		'list_type' => $list_type,
+		'list_type_toggle' => false,
+		'offset' => $offset,
+	);
 
-		$vars = array_merge($defaults, $vars);
-
-	} else {
-		// old function parameters
-		elgg_deprecated_notice("Please update your use of elgg_view_entity_list()", 1.8);
-
-		$vars = array(
-			'items' => $entities,
-			'count' => (int) $vars, // the old count parameter
-			'offset' => $offset,
-			'limit' => (int) $limit,
-			'full_view' => $full_view,
-			'pagination' => $pagination,
-			'list_type' => $list_type,
-			'list_type_toggle' => $list_type_toggle,
-			'list_class' => 'elgg-list-entity',
-		);
-	}
+	$vars = array_merge($defaults, $vars);
 
 	if ($vars['list_type'] != 'list') {
 		return elgg_view('page/components/gallery', $vars);
@@ -194,7 +174,7 @@ function groups_handle_mine_page() {
 	elgg_push_breadcrumb($title);
 
 	elgg_register_title_button();
-	
+
 	$dbprefix = elgg_get_config('dbprefix');
 
 	$content = elgg_list_entities_from_relationship(array(
@@ -228,7 +208,7 @@ function groups_handle_mine_page() {
  */
 function groups_handle_edit_page($page, $guid = 0) {
 	gatekeeper();
-	
+
 	if ($page == 'add') {
 		elgg_set_page_owner_guid(elgg_get_logged_in_user_guid());
 		$title = elgg_echo('investigate:add');
@@ -251,7 +231,7 @@ function groups_handle_edit_page($page, $guid = 0) {
 			$content = elgg_echo('investigations:noaccess');
 		}
 	}
-	
+
 	$params = array(
 		'content' => $content,
 		'title' => $title,
@@ -313,7 +293,7 @@ function groups_handle_profile_page($guid) {
 	$content = elgg_view('investigations/profile/layout', array('entity' => $group));
 	$sidebar = '';
 
-	if (group_gatekeeper(false)) {	
+	if (group_gatekeeper(false)) {
 		if (elgg_is_active_plugin('search')) {
 			$sidebar .= elgg_view('investigations/sidebar/search', array('entity' => $group));
 		}
@@ -322,18 +302,18 @@ function groups_handle_profile_page($guid) {
 		$subscribed = false;
 		if (elgg_is_active_plugin('notifications')) {
 			global $NOTIFICATION_HANDLERS;
-			
+
 			foreach ($NOTIFICATION_HANDLERS as $method => $foo) {
 				$relationship = check_entity_relationship(elgg_get_logged_in_user_guid(),
 						'notify' . $method, $guid);
-				
+
 				if ($relationship) {
 					$subscribed = true;
 					break;
 				}
 			}
 		}
-		
+
 		$sidebar .= elgg_view('investigations/sidebar/my_status', array(
 			'entity' => $group,
 			'subscribed' => $subscribed
@@ -381,7 +361,7 @@ function groups_handle_activity_page($guid) {
 	if (!$content) {
 		$content = '<p>' . elgg_echo('investigations:activity:none') . '</p>';
 	}
-	
+
 	$params = array(
 		'content' => $content,
 		'title' => $title,
@@ -471,7 +451,7 @@ function groups_handle_invite_page($guid) {
 
 /**
  * Manage requests to join a group
- * 
+ *
  * @param int $guid Group entity GUID
  */
 function groups_handle_requests_page($guid) {
@@ -487,7 +467,7 @@ function groups_handle_requests_page($guid) {
 	if ($group && $group->canEdit()) {
 		elgg_push_breadcrumb($group->name, $group->getURL());
 		elgg_push_breadcrumb($title);
-		
+
 		$requests = elgg_get_entities_from_relationship(array(
 			'type' => 'user',
 			'relationship' => 'membership_request',

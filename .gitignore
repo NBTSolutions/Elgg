@@ -41,6 +41,7 @@
 !/mod/twitter_api/
 !/mod/uservalidationbyemail/
 !/mod/zaudio/
+!/mod/galliProUser
 
 # ignore IDE/hidden/OS cache files
 .*
