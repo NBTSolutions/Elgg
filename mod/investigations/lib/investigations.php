@@ -1,10 +1,10 @@
 <?php
 /**
- * Groups function library
+ * Investigations function library
  */
 
 /**
- * List all groups
+ * List all investigations
  */
 function investigations_handle_all_page() {
 
@@ -294,10 +294,6 @@ function groups_handle_profile_page($guid) {
 	$sidebar = '';
 
 	if (group_gatekeeper(false)) {
-		if (elgg_is_active_plugin('search')) {
-			$sidebar .= elgg_view('investigations/sidebar/search', array('entity' => $group));
-		}
-		$sidebar .= elgg_view('investigations/sidebar/members', array('entity' => $group));
 
 		$subscribed = false;
 		if (elgg_is_active_plugin('notifications')) {
@@ -325,8 +321,9 @@ function groups_handle_profile_page($guid) {
 		'sidebar' => $sidebar,
 		'title' => $group->name,
 		'filter' => '',
+		'investigation' => $group
 	);
-	$body = elgg_view_layout('content', $params);
+	$body = elgg_view_layout('investigation/one_sidebar', $params);
 
 	echo elgg_view_page($group->name, $body);
 }

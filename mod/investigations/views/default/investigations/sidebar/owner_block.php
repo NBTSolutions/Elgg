@@ -8,6 +8,8 @@
  *
  */
 
+// XXX: this is only here to support modifications later...
+
 elgg_push_context('owner_block');
 
 // groups and other users get owner block
@@ -17,10 +19,10 @@ if ($owner instanceof ElggGroup ||
 
 	$header = elgg_view_entity($owner, array('full_view' => false));
 
-	// $body = elgg_view_menu('owner_block', array('entity' => $owner));
+	$body = elgg_view_menu('owner_block', array('entity' => $owner));
 
 	$body .= elgg_view('page/elements/owner_block/extend', $vars);
-    
+
 	echo elgg_view('page/components/module', array(
 		'header' => $header,
 		'body' => $body,
