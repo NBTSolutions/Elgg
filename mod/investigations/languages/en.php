@@ -11,8 +11,8 @@ $english = array(
 	 * Menu items and titles
 	 */
 	'investigation' => "Investigations",
-	'investigations:owned' => "Groups I own",
-	'investigations:owned:user' => 'Groups %s owns',
+	'investigations:owned' => "Investigation I own",
+	'investigations:owned:user' => 'Investigations %s owns',
 	'investigations:yours' => "My groups",
 	'investigations:user' => "%s's groups",
 	'investigations:all' => "All investigations",
@@ -21,12 +21,12 @@ $english = array(
 	'investigations:delete' => 'Delete Investigation',
 	'investigations:membershiprequests' => 'Manage join requests',
 	'investigations:membershiprequests:pending' => 'Manage join requests (%s)',
-	'investigations:invitations' => 'Group invitations',
-	'investigations:invitations:pending' => 'Group invitations (%s)',
+	'investigations:invitations' => 'Investigation invitations',
+	'investigations:invitations:pending' => 'Investigation invitations (%s)',
 
 	'investigations:icon' => 'Investigation icon (leave blank to leave unchanged)',
 	'investigations:name' => 'Investigation name',
-	'investigations:username' => 'Group short name (displayed in URLs, alphanumeric characters only)',
+	'investigations:username' => 'Investigation short name (displayed in URLs, alphanumeric characters only)',
 	'investigations:description' => 'Description',
 	'investigations:briefdescription' => 'Brief description',
 	'investigations:interests' => 'Tags',
@@ -45,14 +45,14 @@ $english = array(
 	'investigations:owner' => "Owner",
 	'investigations:owner:warning' => "Warning: if you change this value, you will no longer be the owner of this group.",
 	'investigations:widget:num_display' => 'Number of groups to display',
-	'investigations:widget:membership' => 'Group membership',
+	'investigations:widget:membership' => 'Investigation membership',
 	'investigations:widgets:description' => 'Display the groups you are a member of on your profile',
 	'investigations:noaccess' => 'No access to group',
 	'investigations:permissions:error' => 'You do not have the permissions for this',
 	'investigations:ingroup' => 'in the group',
 	'investigations:cantcreate' => 'You can not create a group. Only admins can.',
 	'investigations:cantedit' => 'You can not edit this group',
-	'investigations:saved' => 'Group saved',
+	'investigations:saved' => 'Investigation saved',
 	'investigations:featured' => 'Featured groups',
 	'investigations:makeunfeatured' => 'Unfeature',
 	'investigations:makefeatured' => 'Make featured',
@@ -73,7 +73,7 @@ $english = array(
 	'investigations:search:title' => "Search for groups tagged with '%s'",
 	'investigations:search:none' => "No matching groups were found",
 	'investigations:search_in_group' => "Search this investigation",
-	'investigations:acl' => "Group: %s",
+	'investigations:acl' => "Investigation: %s",
 
 	'investigation_discussion:notification:topic:subject' => 'New group discussion post',
 	'investigations:notification' =>
@@ -95,11 +95,11 @@ $english = array(
 	%s
 	',
 
-	'investigations:activity' => "Group activity",
+	'investigations:activity' => "Investigation activity",
 	'investigations:enableactivity' => 'Enable investigation activity',
 	'investigations:activity:none' => "There is no group activity yet",
 
-	'investigations:notfound' => "Group not found",
+	'investigations:notfound' => "Investigation not found",
 	'investigations:notfound:details' => "The requested group either does not exist or you do not have access to it",
 
 	'investigations:requests:none' => 'There are no current membership requests.',
@@ -145,7 +145,7 @@ $english = array(
 	'discussion' => 'Discussion',
 	'investigation_discussion:add' => 'Add discussion topic',
 	'investigation_discussion:latest' => 'Latest discussion',
-	'investigation_discussion:group' => 'Group discussion',
+	'investigation_discussion:group' => 'Investigation discussion',
 	'investigation_discussion:none' => 'No discussion',
 	'investigation_discussion:reply:title' => 'Reply by %s',
 
@@ -293,8 +293,8 @@ $english = array(
 	'investigations:joinrequestkilled' => 'The join request has been deleted.',
 
 	// ecml
-	'investigations:ecml:discussion' => 'Group Discussions',
-	'investigations:ecml:groupprofile' => 'Group profiles',
+	'investigations:ecml:discussion' => 'Investigation Discussions',
+	'investigations:ecml:groupprofile' => 'Investigation profiles',
 );
 
 add_translation("en", $english);
