@@ -129,7 +129,7 @@ if (!$is_new_group && $new_owner_guid && $new_owner_guid != $old_owner_guid) {
 
 $must_move_icons = ($owner_has_changed && $old_icontime);
 
-$group->subtype = 'investigation';
+$group->subtype = get_subtype_id('group', 'investigation');
 $group->save();
 
 // Invisible group support
@@ -168,6 +168,37 @@ if ($is_new_group) {
 
 	$group->join($user);
     add_to_river('river/group/create', 'create', $user->guid, $group->access_id);
+}
+
+// proposal test
+if (!empty($_FILES['proposal']['type'])) {
+	if (strpos($_FILES['proposal']['type'], 'pdf') === false) {
+		register_error('Proposals must be PDF format');
+		forward(REFERER);
+	} else {
+		$fh = new ElggFile();
+		$fh->owner_guid = $group->owner_guid;
+		$fh->setFilename('groups/proposal_' . $group->guid . '.pdf');
+		$fh->set('file category', 'proposal');
+		$fh->open('write');
+		print_r('write: ' . $fh->write(get_uploaded_file('proposal')));
+		$fh->close();
+		$fh->save();
+
+		// assuming we got this far, remove any existing proposals before linking
+		// this new one to our investigation:
+		$existing = elgg_get_entities_from_relationship(array(
+			'relationship' => 'proposal',
+			'relationship_guid' => $group->guid,
+			'inverse_relationship' => true
+		));
+		foreach($existing as $old) {
+			$old->delete();
+		}
+
+		remove_entity_relationships($group->guid, 'proposal', true);
+		add_entity_relationship($fh->getGUID(), 'proposal', $group->guid);
+	}
 }
 
 $has_uploaded_icon = (!empty($_FILES['icon']['type']) && substr_count($_FILES['icon']['type'], 'image/'));

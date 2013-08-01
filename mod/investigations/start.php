@@ -384,6 +384,7 @@ function investigation_page_handler($page) {
 	elgg_register_css('sidebar', $CONFIG->url . 'mod/investigations/css/sidebar.less');
 	elgg_load_css('sidebar');
 
+
 	// forward old profile urls
 	if (is_numeric($page[0])) {
 		$group = get_entity($page[0]);
@@ -420,10 +421,10 @@ function investigation_page_handler($page) {
 			groups_handle_invitations_page();
 			break;
 		case 'add':
-			groups_handle_edit_page('add');
+			investigations_handle_edit_page('add');
 			break;
 		case 'edit':
-			groups_handle_edit_page('edit', $page[1]);
+			investigations_handle_edit_page('edit', $page[1]);
 			break;
 		case 'profile':
 			groups_handle_profile_page($page[1]);
