@@ -14,22 +14,26 @@
 
 ?>
 <div class="elgg-layout elgg-layout-one-sidebar clearfix inv-detail">
+	<?php echo elgg_view('page/layouts/content/header', $vars); ?>
+
+	<h1>Investigation: <?php echo $vars['title']; ?></h1>
+
+	<div class="summary">
+		<?php echo elgg_view('investigations/profile/summary', $vars); ?>
+	</div>
+
 	<div class="elgg-sidebar">
 		<?php
 			echo elgg_view('page/investigation/sidebar', $vars);
 		?>
 	</div>
 
-	<div class="elgg-main elgg-body">
-		<?php
-			if (isset($vars['title'])) {
-				echo elgg_view_title($vars['title']);
-			}
-
+	<div id="investigation-detail" class="elgg-main elgg-body">
+			<?php
 			if (isset($vars['header'])) {
 				$vars['header_override'] = $vars['header'];
 			}
-			echo elgg_view('page/layouts/content/header', $vars);
+
 
 			if (isset($vars['content'])) {
 				echo $vars['content'];

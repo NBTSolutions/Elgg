@@ -26,13 +26,28 @@ body {
 	border-bottom: #fff;
 }
 
-.elgg-page > .elgg-page-body > .elgg-inner { width: 100%; }
+.elgg-page {
+	> .elgg-page-body {
+		> .elgg-inner {
+			width: 990px;
+			margin: 0 auto;
 
-.elgg-page > .elgg-page-body > .elgg-inner > .elgg-layout > .elgg-body {
-	background: #fffde8;
-	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
-	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
-	box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
+			> .elgg-layout {
+				> .elgg-body {
+					background: #fffde8;
+					-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
+					-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
+					box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
+				}
+			}
+		}
+	}
+}
+
+.elgg-page-default .elgg-page-header > .elgg-inner {
+	width: 990px;
+	margin: 0 auto;
+	height: 90px;
 }
 
 

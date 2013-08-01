@@ -6,7 +6,6 @@
 $group = $vars['entity'];
 
 $profile_fields = elgg_get_config('group');
-
 if (is_array($profile_fields) && count($profile_fields) > 0) {
 
 	$even_odd = 'odd';
