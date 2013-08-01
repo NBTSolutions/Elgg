@@ -12,6 +12,8 @@ $access_id = elgg_extract('access_id', $vars, ACCESS_DEFAULT);
 $container_guid = elgg_extract('container_guid', $vars);
 $guid = elgg_extract('guid', $vars, null);
 
+$discussion_subtype = get_input('discussion_subtype');
+
 ?>
 <div>
 	<label><?php echo elgg_echo('title'); ?></label><br />
@@ -25,6 +27,11 @@ $guid = elgg_extract('guid', $vars, null);
 	<label><?php echo elgg_echo('tags'); ?></label>
 	<?php echo elgg_view('input/tags', array('name' => 'tags', 'value' => $tags)); ?>
 </div>
+<?php
+    if($discussion_subtype) {
+        echo elgg_view('input/hidden', array('name' => 'discussion_subtype', 'value' => $discussion_subtype));
+    }
+?>
 <div>
     <label><?php echo elgg_echo("investigations:topicstatus"); ?></label><br />
 	<?php

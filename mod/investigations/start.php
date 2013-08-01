@@ -926,6 +926,11 @@ function investigation_discussion_init() {
 	elgg_register_page_handler('forum', 'investigation_discussion_forum_page_handler');
 
 	elgg_register_entity_url_handler('object', 'investigationforumtopic', 'investigation_discussion_override_topic_url');
+	elgg_register_entity_url_handler('object', 'investigationforumtopic_image', 'investigation_discussion_override_topic_url');
+	elgg_register_entity_url_handler('object', 'investigationforumtopic_video', 'investigation_discussion_override_topic_url');
+	elgg_register_entity_url_handler('object', 'investigationforumtopic_text', 'investigation_discussion_override_topic_url');
+	elgg_register_entity_url_handler('object', 'investigationforumtopic_graph', 'investigation_discussion_override_topic_url');
+	elgg_register_entity_url_handler('object', 'investigationforumtopic_map', 'investigation_discussion_override_topic_url');
 
 	// commenting not allowed on discussion topics (use a different annotation)
 	elgg_register_plugin_hook_handler('permissions_check:comment', 'object', 'investigation_discussion_comment_override');
@@ -941,6 +946,11 @@ function investigation_discussion_init() {
 
 	// Register for search.
 	elgg_register_entity_type('object', 'investigationforumtopic');
+	elgg_register_entity_type('object', 'investigationforumtopic_image');
+	elgg_register_entity_type('object', 'investigationforumtopic_video');
+	elgg_register_entity_type('object', 'investigationforumtopic_text');
+	elgg_register_entity_type('object', 'investigationforumtopic_map');
+	elgg_register_entity_type('object', 'investigationforumtopic_graph');
 
 	// because replies are not comments, need of our menu item
 	elgg_register_plugin_hook_handler('register', 'menu:river', 'investigation_discussion_add_to_river_menu');
@@ -953,6 +963,11 @@ function investigation_discussion_init() {
 
 	// notifications
 	register_notification_object('object', 'investigationforumtopic', elgg_echo('investigation_discussion:notification:topic:subject'));
+	register_notification_object('object', 'investigationforumtopic_image', elgg_echo('investigation_discussion:notification:topic:subject'));
+	register_notification_object('object', 'investigationforumtopic_video', elgg_echo('investigation_discussion:notification:topic:subject'));
+	register_notification_object('object', 'investigationforumtopic_text', elgg_echo('investigation_discussion:notification:topic:subject'));
+	register_notification_object('object', 'investigationforumtopic_map', elgg_echo('investigation_discussion:notification:topic:subject'));
+	register_notification_object('object', 'investigationforumtopic_graph', elgg_echo('investigation_discussion:notification:topic:subject'));
 	elgg_register_plugin_hook_handler('notify:entity:message', 'object', 'investigationforumtopic_notify_message');
 	elgg_register_event_handler('create', 'annotation', 'investigation_discussion_reply_notifications');
 	elgg_register_plugin_hook_handler('notify:annotation:message', 'group_topic_post', 'investigation_discussion_create_reply_notification');
@@ -1031,7 +1046,7 @@ function investigation_discussion_override_topic_url($entity) {
  * We don't want people commenting on topics in the river
  */
 function investigation_discussion_comment_override($hook, $type, $return, $params) {
-	if (elgg_instanceof($params['entity'], 'object', 'investigationforumtopic')) {
+	if (elgg_instanceof($params['entity'], 'object', 'investigationforumtopic') || elgg_instanceof($params['entity'], 'object', 'investigationforumtopic_image') || elgg_instanceof($params['entity'], 'object', 'investigationforumtopic_video') || elgg_instanceof($params['entity'], 'object', 'investigationforumtopic_text') || elgg_instanceof($params['entity'], 'object', 'investigationforumtopic_map') || elgg_instanceof($params['entity'], 'object', 'investigationforumtopic_graph')) {
 		return false;
 	}
 }
@@ -1058,7 +1073,7 @@ function investigation_discussion_add_to_river_menu($hook, $type, $return, $para
 	if (elgg_is_logged_in() && !elgg_in_context('widgets')) {
 		$item = $params['item'];
 		$object = $item->getObjectEntity();
-		if (elgg_instanceof($object, 'object', 'investigationforumtopic')) {
+		if (elgg_instanceof($object, 'object', 'investigationforumtopic') || elgg_instanceof($object, 'object', 'investigationforumtopic_image') || elgg_instanceof($object, 'object', 'investigationforumtopic_video' || elgg_instanceof($object, 'object', 'investigationforumtopic_text') || elgg_instanceof($object, 'object', 'investigationforumtopic_graph') || elgg_instanceof($object, 'object', 'investigationforumtopic_map'))) {
 			if ($item->annotation_id == 0) {
 				$group = $object->getContainerEntity();
 				if ($group && ($group->canWriteToContainer() || elgg_is_admin_logged_in())) {
@@ -1094,7 +1109,7 @@ function investigationforumtopic_notify_message($hook, $type, $message, $params)
 	$to_entity = $params['to_entity'];
 	$method = $params['method'];
 
-	if (($entity instanceof ElggEntity) && ($entity->getSubtype() == 'investigationforumtopic')) {
+	if (($entity instanceof ElggEntity) && ($entity->getSubtype() == 'investigationforumtopic' || $entity->getSubtype() == 'investigationforumtopic_image' || $entity->getSubtype() == 'investigationforumtopic_video' || $entity->getSubtype() == 'investigationforumtopic_text' || $entity->getSubtype() == 'investigationforumtopic_map' || $entity->getSubtype() == 'investigationforumtopic_graph')) {
 		$descr = $entity->description;
 		$title = $entity->title;
 		$url = $entity->getURL();

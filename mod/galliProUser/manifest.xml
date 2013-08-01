@@ -27,4 +27,5 @@
 		<description>Page Manager</description>
 		<path>screenshots/pagemanager.png</path>
 	</screenshot>	
+    <activate_on_install>true</activate_on_install>
 </plugin_manifest>

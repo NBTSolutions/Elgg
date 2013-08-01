@@ -11,9 +11,11 @@ function investigation_discussion_handle_all_page() {
 	elgg_pop_breadcrumb();
 	elgg_push_breadcrumb(elgg_echo('discussion'));
 
+    $subtype = array('investigationforumtopic_map', 'investigationforumtopic_graph', 'investigationforumtopic_image', 'investigationforumtopic_video', 'investigationforumtopic_text', 'investigationforumtopic');
+
 	$content = elgg_list_entities(array(
 		'type' => 'object',
-		'subtype' => 'investigationforumtopic',
+		'subtypes' => $subtype,
 		'order_by' => 'e.last_action desc',
 		'limit' => 20,
 		'full_view' => false,
@@ -57,7 +59,7 @@ function investigation_discussion_handle_list_page($guid) {
             $subtype = array("investigationforumtopic_video");
             break;
         default:
-            $subtype = array('investigationforumtopic_map', 'investigationforumtopic_graph', 'investigationforumtopic_image', 'investigationforumtopic_video', 'investigationforumtopic_text');
+            $subtype = array('investigationforumtopic_map', 'investigationforumtopic_graph', 'investigationforumtopic_image', 'investigationforumtopic_video', 'investigationforumtopic_text', 'investigationforumtopic');
     }
 
 	$group = get_entity($guid);
@@ -113,11 +115,6 @@ function investigation_discussion_handle_edit_page($type, $guid) {
 			forward();
 		}
         
-        $subtype = get_input("discussion_subtype");
-        if($subtype == "image" OR $subtype == "graph" OR $subtype == "map") {
-            forward('file/add/'.$investigation->getGUID()."?discussion_subtype=".$subtype);
-        }
-
 		// make sure user has permissions to add a topic to container
 		if (!$investigation->canWriteToContainer(0, 'object', 'investigationforumtopic')) {
 			register_error(elgg_echo('investigations:permissions:error'));
@@ -194,7 +191,9 @@ function investigation_discussion_handle_view_page($guid) {
 	elgg_push_breadcrumb($group->name, "investigation_discussion/owner/$group->guid");
 	elgg_push_breadcrumb($topic->title);
 
+    xdebug_break();
 	$content = elgg_view_entity($topic, array('full_view' => true));
+
 	if ($topic->status == 'closed') {
 		$content .= elgg_view('discussion/replies', array(
 			'entity' => $topic,
@@ -202,6 +201,11 @@ function investigation_discussion_handle_view_page($guid) {
 		));
 		$content .= elgg_view('discussion/closed');
 	} elseif ($group->canWriteToContainer(0, 'object', 'investigationforumtopic') || elgg_is_admin_logged_in()) {
+		$content .= elgg_view('discussion/replies', array(
+			'entity' => $topic,
+			'show_add_form' => true,
+		));
+	} elseif ($group->canWriteToContainer(0, 'object', 'investigationforumtopic_image') || elgg_is_admin_logged_in()) {
 		$content .= elgg_view('discussion/replies', array(
 			'entity' => $topic,
 			'show_add_form' => true,

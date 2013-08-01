@@ -6,10 +6,18 @@
 // Get variables
 $discussion_subtype = get_input('discussion_subtype');
 
-
 	switch ($discussion_subtype) {
 		case 'video':
             $discussion_subtype = "investigationforumtopic_video";
+			break;
+		case 'map':
+            $discussion_subtype = "investigationforumtopic_map";
+			break;
+		case 'image':
+            $discussion_subtype = "investigationforumtopic_image";
+			break;
+		case 'graph':
+            $discussion_subtype = "investigationforumtopic_graph";
 			break;
 		default:
             $discussion_subtype = "investigationforumtopic_text";
@@ -32,7 +40,7 @@ if (!$title || !$desc) {
 }
 
 $container = get_entity($container_guid);
-if (!$container || !$container->canWriteToContainer(0, 'object', $dicussion_subtype)) {
+if (!$container || !$container->canWriteToContainer(0, 'object', $discussion_subtype)) {
 	register_error(elgg_echo('discussion:error:permissions'));
 	forward(REFERER);
 }

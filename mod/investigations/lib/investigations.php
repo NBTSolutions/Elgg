@@ -51,7 +51,6 @@ function observation_page($observation_guid) {
 	elgg_pop_breadcrumb();
 	elgg_push_breadcrumb(elgg_echo('investigations'));
 
-    xdebug_break();
     $content = elgg_view('page/components/observations', array());
     $canvas_area = elgg_view_layout('one_column', array('content' => $content));
 
