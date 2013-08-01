@@ -42,8 +42,13 @@ if ($group_profile_fields > 0) {
 	}
 }
 
-print elgg_view_form('investigations/choose_advisor', $vars);
 ?>
+<div>
+	<label>Investigation Proposal (PDF; leave blank to leave unchanged)</label><br />
+	<?php echo elgg_view("input/file", array('name' => 'proposal')); ?>
+</div>
+
+<?php echo elgg_view_form('investigations/choose_advisor', $vars); ?>
 
 <div>
 	<label>

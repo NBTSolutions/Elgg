@@ -205,7 +205,7 @@ function groups_handle_mine_page() {
  * @param string $page
  * @param int $guid
  */
-function groups_handle_edit_page($page, $guid = 0) {
+function investigations_handle_edit_page($page, $guid = 0) {
 	gatekeeper();
 
 	if ($page == 'add') {

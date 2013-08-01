@@ -22,6 +22,7 @@ echo elgg_view('investigations/sidebar/people', $vars);
 
 echo elgg_view('investigations/sidebar/members', array('entity' => $vars['investigation']));
 
+echo elgg_view('investigations/sidebar/proposal', array('entity' => $vars['investigation']));
 
 // optional 'sidebar' parameter
 if (isset($vars['sidebar'])) {
