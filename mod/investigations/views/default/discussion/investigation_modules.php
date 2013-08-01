@@ -2,6 +2,7 @@
 // look at group_modules for original
 
 $group = $vars['entity'];
+$guid = $group->getGUID();
 $site = elgg_get_site_entity();
 
 elgg_load_library('elgg:investigation_discussion');
