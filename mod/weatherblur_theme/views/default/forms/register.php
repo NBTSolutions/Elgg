@@ -63,15 +63,6 @@ if (elgg_is_sticky_form('register')) {
 	));
 	?>
 </div>
-<div>
-	<label><?php echo elgg_echo('Are you a student, teacher, member, fisherman or scientist?'); ?></label><br />
-	<?php
-		echo elgg_view("input/checkboxes",
-			array('name'=>'params[my_var]',
-				'value'=>array($vars['entity']->my_var),
-				'options'=>array("Student"=>'my_var')));
-	?>
-</div>
 
 <?php
 // view to extend to add more fields to the registration form
