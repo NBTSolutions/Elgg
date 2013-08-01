@@ -34,12 +34,14 @@
 !/mod/profile/
 !/mod/reportedcontent/
 !/mod/search/
+!/mod/sw_widget/
 !/mod/tagcloud/
 !/mod/thewire/
 !/mod/tinymce/
 !/mod/twitter/
 !/mod/twitter_api/
 !/mod/uservalidationbyemail/
+!/mod/widget_manager-master/
 !/mod/zaudio/
 !/mod/galliProUser
 
