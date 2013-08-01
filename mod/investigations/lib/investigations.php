@@ -46,11 +46,11 @@ function investigations_handle_all_page() {
 }
 
 function observation_page($observation_guid) {
-    
+
 	// all groups doesn't get link to self
 	elgg_pop_breadcrumb();
 	elgg_push_breadcrumb(elgg_echo('investigations'));
-    
+
     xdebug_break();
     $content = elgg_view('page/components/observations', array());
     $canvas_area = elgg_view_layout('one_column', array('content' => $content));
@@ -272,7 +272,7 @@ function groups_handle_invitations_page() {
  *
  * @param int $guid Group entity GUID
  */
-function groups_handle_profile_page($guid) {
+function investigations_handle_profile_page($guid) {
 	elgg_set_page_owner_guid($guid);
 
 	// turn this into a core function
@@ -290,8 +290,9 @@ function groups_handle_profile_page($guid) {
 
 	groups_register_profile_buttons($group);
 
+	$summary = elgg_view('investigations/profile/summary', array('entity' => $group));
+
 	$content = elgg_view('investigations/profile/layout', array('entity' => $group));
-	$sidebar = '';
 
 	if (group_gatekeeper(false)) {
 
@@ -317,6 +318,7 @@ function groups_handle_profile_page($guid) {
 	}
 
 	$params = array(
+		'summary' => $summary,
 		'content' => $content,
 		'sidebar' => $sidebar,
 		'title' => $group->name,

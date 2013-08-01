@@ -430,7 +430,7 @@ function investigation_page_handler($page) {
 			investigations_handle_edit_page('edit', $page[1]);
 			break;
 		case 'profile':
-			groups_handle_profile_page($page[1]);
+			investigations_handle_profile_page($page[1]);
 			break;
 		case 'activity':
 			groups_handle_activity_page($page[1]);
