@@ -5,7 +5,7 @@
  * @uses $vars['entity']
  */
 
-echo elgg_view('investigations/profile/summary', $vars);
+//echo elgg_view('investigations/profile/summary', $vars);
 if (group_gatekeeper(false)) {
 	echo elgg_view('investigations/profile/widgets', $vars);
 } else {

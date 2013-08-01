@@ -7,17 +7,17 @@
  * @uses $vars['group']
  */
 
-if (!isset($vars['entity']) || !$vars['entity']) {
+if (!isset($vars['investigation']) || !$vars['investigation']) {
 	echo elgg_echo('investigations:notfound');
 	return true;
 }
 
-$group = $vars['entity'];
-$owner = $group->getOwnerEntity();
+$inv = $vars['investigation'];
+$owner = $inv->getOwnerEntity();
 
 if (!$owner) {
 	// not having an owner is very bad so we throw an exception
-	$msg = "Sorry, 'group owner' does not exist for guid:" . $group->guid;
+	$msg = "Sorry, 'group owner' does not exist for guid:" . $inv->guid;
 	throw new InvalidParameterException($msg);
 }
 
@@ -27,36 +27,18 @@ if (!$owner) {
 		<div class="groups-profile-icon">
 			<?php
 				// we don't force icons to be square so don't set width/height
-				echo elgg_view_entity_icon($group, 'large', array(
+				echo elgg_view_entity_icon($inv, 'large', array(
 					'href' => '',
 					'width' => '',
 					'height' => '',
 				));
 			?>
 		</div>
-		<div class="groups-stats">
-			<p>
-				<b><?php echo elgg_echo("investigations:owner"); ?>: </b>
-				<?php
-					echo elgg_view('output/url', array(
-						'text' => $owner->name,
-						'value' => $owner->getURL(),
-						'is_trusted' => true,
-					));
-				?>
-			</p>
-			<p>
-			<?php
-				echo elgg_echo('investigations:members') . ": " . $group->getMembers(0, 0, TRUE);
-			?>
-			</p>
-		</div>
 	</div>
 
-	<div class="groups-profile-fields elgg-body">
-		<?php
-			echo elgg_view('groups/profile/fields', $vars);
-		?>
+	<div class="summary-body">
+		<h3>Summary:</h3>
+		<?php echo $inv->get('description'); ?>
 	</div>
 </div>
 <?php
