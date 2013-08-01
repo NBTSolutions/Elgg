@@ -8,7 +8,6 @@
 // Get variables
 $title = htmlspecialchars(get_input('title', '', false), ENT_QUOTES, 'UTF-8');
 $desc = get_input("description");
-$subtype = get_input("discussion_subtype");
 $access_id = (int) get_input("access_id");
 $container_guid = (int) get_input('container_guid', 0);
 $guid = (int) get_input('file_guid');
@@ -16,13 +15,6 @@ $tags = get_input("tags");
 
 if ($container_guid == 0) {
 	$container_guid = elgg_get_logged_in_user_guid();
-}
-
-if($subtype == "map" OR $subtype == "graph" OR $subtype == "image") {
-    $subtype = "investigationforumtopic_".$subtype;
-}
-else {
-    $subtype = 'file';    
 }
 
 elgg_make_sticky_form('file');
@@ -48,7 +40,7 @@ if ($new_file) {
 	}
 
 	$file = new FilePluginFile();
-	$file->subtype = $subtype;
+	$file->subtype = 'file';
 
 	// if no title on new upload, grab filename
 	if (empty($title)) {
