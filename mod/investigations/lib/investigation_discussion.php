@@ -191,7 +191,6 @@ function investigation_discussion_handle_view_page($guid) {
 	elgg_push_breadcrumb($group->name, "investigation_discussion/owner/$group->guid");
 	elgg_push_breadcrumb($topic->title);
 
-    xdebug_break();
 	$content = elgg_view_entity($topic, array('full_view' => true));
 
 	if ($topic->status == 'closed') {

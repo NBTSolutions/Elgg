@@ -41,10 +41,7 @@ if ($guid) {
 	<label><?php echo elgg_echo('tags'); ?></label>
 	<?php echo elgg_view('input/tags', array('name' => 'tags', 'value' => $tags)); ?>
 </div>
-<?php if(get_input("discussion_subtype")) { ?>
-<?php echo elgg_view('input/hidden', array('name' => 'discussion_subtype', 'value' => get_input("discussion_subtype"))); ?>
 <?php
-}
 
 $categories = elgg_view('input/categories', $vars);
 if ($categories) {

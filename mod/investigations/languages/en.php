@@ -107,6 +107,11 @@ $english = array(
 	'investigations:invitations:none' => 'There are no current invitations.',
 
 	'item:object:investigationforumtopic' => "Discussion topics",
+    'item:object:investigationforumtopic_text' => 'Text Discussion',
+    'item:object:investigationforumtopic_image' => 'Image Discussion',
+    'item:object:investigationforumtopic_map' => 'Map Discussion',
+    'item:object:investigationforumtopic_graph' => 'Graph Discussion',
+    'item:object:investigationforumtopic_video' => 'Video Discussion',
 
 	'investigationforumtopic:new' => "Add discussion post",
 
