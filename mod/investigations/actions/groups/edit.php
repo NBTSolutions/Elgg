@@ -176,16 +176,7 @@ if (!empty($_FILES['proposal']['type'])) {
 		register_error('Proposals must be PDF format');
 		forward(REFERER);
 	} else {
-		$fh = new ElggFile();
-		$fh->owner_guid = $group->owner_guid;
-		$fh->setFilename('groups/proposal_' . $group->guid . '.pdf');
-		$fh->set('file category', 'proposal');
-		$fh->open('write');
-		print_r('write: ' . $fh->write(get_uploaded_file('proposal')));
-		$fh->close();
-		$fh->save();
-
-		// assuming we got this far, remove any existing proposals before linking
+		// remove any existing proposals before linking
 		// this new one to our investigation:
 		$existing = elgg_get_entities_from_relationship(array(
 			'relationship' => 'proposal',
@@ -195,6 +186,15 @@ if (!empty($_FILES['proposal']['type'])) {
 		foreach($existing as $old) {
 			$old->delete();
 		}
+
+		$fh = new ElggFile();
+		$fh->owner_guid = $group->owner_guid;
+		$fh->setFilename('groups/proposal_' . $group->guid . '.pdf');
+		$fh->set('file category', 'proposal');
+		$fh->open('write');
+		$fh->write(get_uploaded_file('proposal'));
+		$fh->close();
+		$fh->save();
 
 		remove_entity_relationships($group->guid, 'proposal', true);
 		add_entity_relationship($fh->getGUID(), 'proposal', $group->guid);
