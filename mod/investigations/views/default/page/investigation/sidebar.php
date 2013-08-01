@@ -10,7 +10,7 @@ echo elgg_view_menu('extras', array(
 	'class' => 'elgg-menu-hz',
 ));
 
-echo elgg_view('investigations/sidebar/owner_block', $vars);
+//echo elgg_view('investigations/sidebar/owner_block', $vars);
 
 echo elgg_view_menu('page', array('sort_by' => 'name'));
 

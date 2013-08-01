@@ -152,6 +152,7 @@ $english = array(
 	'investigation_discussion:latest' => 'Latest discussion',
 	'investigation_discussion:group' => 'Investigation discussion',
 	'investigation_discussion:none' => 'No discussion',
+	'investigation_discussion:none_yet' => "<p>Be the first to start a discussion about this investigation!</p>",
 	'investigation_discussion:reply:title' => 'Reply by %s',
 
 	'investigation_discussion:topic:created' => 'The discussion topic was created.',

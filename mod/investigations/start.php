@@ -378,10 +378,10 @@ function investigation_setup_sidebar_menus() {
  */
 function investigation_page_handler($page) {
 	global $CONFIG;
-	elgg_register_css('bodywork', $CONFIG->url . 'mod/investigations/css/bodywork.less');
-	elgg_load_css('bodywork');
 	elgg_register_css('button', $CONFIG->url . 'mod/investigations/css/button.less');
 	elgg_load_css('button');
+	elgg_register_css('bodywork', $CONFIG->url . 'mod/investigations/css/bodywork.less');
+	elgg_load_css('bodywork');
 	elgg_register_css('list-block', $CONFIG->url . 'mod/investigations/css/list-block.less');
 	elgg_load_css('list-block');
 	elgg_register_css('sidebar', $CONFIG->url . 'mod/investigations/css/sidebar.less');

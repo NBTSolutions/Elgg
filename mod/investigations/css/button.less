@@ -1,18 +1,26 @@
+.green_button {
+	border: 1px solid #4d7412;
+	background: #6ca019;
+	background-image: -moz-linear-gradient(#6ca019, #427514);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #427514),color-stop(1, #6ca019));
+	border-radius: 5px;
+	color: white;
+}
+.green_hover {
+	background: #549619;
+	background-image: -moz-linear-gradient(#80bd1f, #549619);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #549619),color-stop(1, #80bd1f));
+}
+
 /* this is the title menu "create new investigation" button. */
 .elgg-menu-title {
 	.elgg-menu-item-add {
 		width: 240px;
 		height: 50px;
-		border: 1px solid #4d7412;
-		background: #6ca019;
-		background-image: -moz-linear-gradient(#6ca019, #427514);
-		background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #427514),color-stop(1, #6ca019));
-		border-radius: 5px;
+		.green_button;
 
 		&:hover {
-			background: #549619;
-			background-image: -moz-linear-gradient(#80bd1f, #549619);
-			background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #549619),color-stop(1, #80bd1f));
+			.green_hover;
 		}
 		/*active {*/
 			/*-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) inset;*/
