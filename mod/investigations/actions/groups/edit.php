@@ -189,6 +189,7 @@ if (!empty($_FILES['proposal']['type'])) {
 
 		$fh = new ElggFile();
 		$fh->owner_guid = $group->owner_guid;
+		$fh->name = 'proposal_' . $group->guid . '.pdf';
 		$fh->setFilename('groups/proposal_' . $group->guid . '.pdf');
 		$fh->set('file category', 'proposal');
 		$fh->open('write');
