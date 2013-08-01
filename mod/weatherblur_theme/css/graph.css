@@ -1394,7 +1394,7 @@
 }
 #graph_graphView {
   position: relative;
-  width: 800px;
+  width: 960px; /*default: 800px*/
   height: 300px;
   margin: 0 auto;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -1477,6 +1477,11 @@ div.parameter-block .elgg-button {
 #graph_graphControls_control10,
 #graph_graphControls_control13 {
 	margin-right: 7px;
+}
+
+#graph_graphControls_control9,
+#graph_graphControls_control12 {/*Location & Radius*/
+	display: none;
 }
 
 .date-display { 

@@ -7,9 +7,10 @@
 }
 
 #footer-wrapper {
-	float:left;
 	width: 100%;
 	background:  #d9cfb0;
+	position: absolute;
+	padding-bottom: 30px;
 }
 
 #footer { 
