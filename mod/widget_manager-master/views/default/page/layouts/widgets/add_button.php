@@ -2,9 +2,9 @@
 /**
  * Button area for showing the add widgets panel
  */
-
+$user = get_loggedin_user();
+if($user->isAdmin()) {
 ?>
-<!--
 <div class="elgg-widget-add-control">
 <?php
 	$options = array(
@@ -22,4 +22,6 @@
 	
 ?>
 </div>
--->
+<?php
+}
+?>
