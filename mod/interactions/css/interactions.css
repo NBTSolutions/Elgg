@@ -1,0 +1,25 @@
+#wb-user-stats > ul {
+	margin: 0;
+	padding: 0;
+}
+
+#wb-user-stats > ul > li {
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+}
+
+.user-stat-icons {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	margin: 0 10px 0 0;
+	padding: 0;
+}
+
+#user-investigations { background: url(../graphics/user-stat-icons.png) 0 0 no-repeat; }
+#user-observations { background: url(../graphics/user-stat-icons.png) -30px 0 no-repeat; }
+#user-maps-posted { background: url(../graphics/user-stat-icons.png) -60px 0 no-repeat; }
+#user-graphs-posted { background: url(../graphics/user-stat-icons.png) -90px 0 no-repeat; }
+#user-videos { background: url(../graphics/user-stat-icons.png) -120px 0 no-repeat; }
+#user-discussions-posted { background: url(../graphics/user-stat-icons.png) -150px 0 no-repeat; }
