@@ -1,4 +1,14 @@
+@import 'button.less';
+
 div.elgg-sidebar {
+	ul.elgg-menu, ul.elgg-menu-title {
+		float: none;
+		margin: none;
+	}
+	ul.elgg-menu-title {
+		margin-bottom: 15px;
+	}
+
 	div.people-block {
 		div.person {
 			display: inline-block;
@@ -11,6 +21,41 @@ div.elgg-sidebar {
 
 			div.elgg-body {
 				text-align: center;
+				font-size: 11px;
+			}
+		}
+	}
+
+	div.create-discussion {
+		div.start {
+			cursor: pointer;
+			.green_button;
+			padding: 5px;
+			font-weight: bold;
+			text-align: center;
+
+			&:hover {
+				.green_hover;
+			}
+		}
+
+		ul {
+			display: none;
+			width: 90%;
+			margin: 5px auto 0;
+			background-color: white;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+		}
+
+		li {
+			display: block;
+			margin: 0 0 0 10px;
+
+			a {
+				line-height: 30px;
+				display: inline-block;
+				vertical-align: top;
 			}
 		}
 	}

@@ -5,18 +5,21 @@
  * @uses $vars['sidebar'] Optional content that is displayed at the bottom of sidebar
  */
 
-echo elgg_view_menu('extras', array(
-	'sort_by' => 'priority',
-	'class' => 'elgg-menu-hz',
-));
+//echo elgg_view_menu('extras', array(
+	//'sort_by' => 'priority',
+	//'class' => 'elgg-menu-hz',
+//));
 
 //echo elgg_view('investigations/sidebar/owner_block', $vars);
 
 echo elgg_view_menu('page', array('sort_by' => 'name'));
+echo elgg_view_menu('title', array('sort_by' => 'priority'));
 
-if (elgg_is_active_plugin('search')) {
-	echo elgg_view('investigations/sidebar/search', array('entity' => $vars['investigation']));
-}
+//if (elgg_is_active_plugin('search')) {
+	//echo elgg_view('investigations/sidebar/search', array('entity' => $vars['investigation']));
+//}
+//
+echo elgg_view('investigations/sidebar/new_discussion', $vars);
 
 echo elgg_view('investigations/sidebar/people', $vars);
 
