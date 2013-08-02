@@ -14,7 +14,6 @@
 
 ?>
 <div class="elgg-layout elgg-layout-one-sidebar clearfix inv-detail">
-	<?php echo elgg_view('page/layouts/content/header', $vars); ?>
 
 	<h1>Investigation: <?php echo $vars['title']; ?></h1>
 

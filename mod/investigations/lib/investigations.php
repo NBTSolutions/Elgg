@@ -310,16 +310,16 @@ function investigations_handle_profile_page($guid) {
 			}
 		}
 
-		$sidebar .= elgg_view('investigations/sidebar/my_status', array(
-			'entity' => $group,
-			'subscribed' => $subscribed
-		));
+		//$sidebar .= elgg_view('investigations/sidebar/my_status', array(
+			//'entity' => $group,
+			//'subscribed' => $subscribed
+		//));
 	}
 
 	$params = array(
 		'summary' => $summary,
 		'content' => $content,
-		'sidebar' => $sidebar,
+		//'sidebar' => $sidebar,
 		'title' => $group->name,
 		'filter' => '',
 		'investigation' => $group
