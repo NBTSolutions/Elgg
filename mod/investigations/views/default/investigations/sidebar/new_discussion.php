@@ -1,9 +1,10 @@
 <?php
 
-
 $url = 'investigation_discussion/add/' .
 	$vars['investigation']->getGUID() . '?discussion_subtype=';
 
+// only show if we are a logged in member
+if($vars['investigation']->isMember(elgg_get_logged_in_user_entity())) {
 ?>
 <div class="elgg-module elgg-module-aside create-discussion">
 	<div class="start">Start a Discussion</div>
@@ -39,3 +40,6 @@ $(document).ready(function() {
 });
 
 </script>
+<?php
+}
+?>
