@@ -29,15 +29,15 @@ $obs = elgg_get_entities( array(
 $maps = elgg_get_entities( array(
   'owner_guid' => $user_guid,
   'type' => 'object',
-  'subtype' => 'investigationforumtype_map',
+  'subtype' => 'investigationforumtopic_map',
   'limit' => false
-));
+)); 
 
 //count graphs
 $graphs = elgg_get_entities( array(
   'owner_guid' => $user_guid,
   'type' => 'object',
-  'subtype' => 'investigationforumtype_graph',
+  'subtype' => 'investigationforumtopic_graph',
   'limit' => false
 ));
 
@@ -45,7 +45,7 @@ $graphs = elgg_get_entities( array(
 $imgs = elgg_get_entities( array(
   'owner_guid' => $user_guid,
   'type' => 'object',
-  'subtype' => 'investigationforumtype_image',
+  'subtype' => 'investigationforumtopic_image',
   'limit' => false
 ));
 
@@ -53,7 +53,7 @@ $imgs = elgg_get_entities( array(
 $video = elgg_get_entities( array(
   'owner_guid' => $user_guid,
   'type' => 'object',
-  'subtype' => 'investigationforumtype_video',
+  'subtype' => 'investigationforumtopic_video',
   'limit' => false
 ));
 
@@ -61,7 +61,7 @@ $video = elgg_get_entities( array(
 $disc = elgg_get_entities( array(
   'owner_guid' => $user_guid,
   'type' => 'object',
-  'subtype' => 'investigationforumtype_text',
+  'subtype' => 'investigationforumtopic_text',
   'limit' => false
 ));
 
@@ -74,7 +74,7 @@ $disc = elgg_get_entities( array(
 		<li><span id="user-observations" class="user-stat-icons"></span> Observations: <?php echo countem($obs); ?></li>
 		<li><span id="user-images-posted" class="user-stat-icons"></span> Images Posted: <?php echo countem($imgs); ?></li>
 		<li><span id="user-maps-posted" class="user-stat-icons"></span> Maps Posted: <?php echo countem($maps); ?></li>
-		<li><span id="user-graphs-posted" class="user-stat-icons"></span> Graphs Posted: <?php echo countem($num_graphs); ?></li>
+		<li><span id="user-graphs-posted" class="user-stat-icons"></span> Graphs Posted: <?php echo countem($graphs); ?></li>
 		<li><span id="user-videos" class="user-stat-icons"></span> Videos Posted: <?php echo countem($video); ?></li>
 		<li><span id="user-discussions-posted" class="user-stat-icons"></span> Discussions Posted: <?php echo countem($disc); ?></li>
 	</ul>
