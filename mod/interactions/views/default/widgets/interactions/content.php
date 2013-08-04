@@ -76,7 +76,7 @@ $disc = elgg_get_entities( array(
 		<li><span id="user-maps-posted" class="user-stat-icons"></span> Maps Posted: <?php echo countem($maps); ?></li>
 		<li><span id="user-graphs-posted" class="user-stat-icons"></span> Graphs Posted: <?php echo countem($graphs); ?></li>
 		<li><span id="user-videos" class="user-stat-icons"></span> Videos Posted: <?php echo countem($video); ?></li>
-		<li><span id="user-discussions-posted" class="user-stat-icons"></span> Discussions Posted: <?php echo countem($disc); ?></li>
+		<li><span id="user-discussions-posted" class="user-stat-icons"></span> Questions & Ideas Posted: <?php echo countem($disc); ?></li>
 	</ul>
 </div>
 
