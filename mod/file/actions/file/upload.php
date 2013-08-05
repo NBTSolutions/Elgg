@@ -133,7 +133,7 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 	// if image, we need to create thumbnails (this should be moved into a function)
 	if ($guid && $file->simpletype == "image") {
 		$file->icontime = time();
-		
+
 		$thumbnail = get_resized_image_from_existing_file($file->getFilenameOnFilestore(), 60, 60, true);
 		if ($thumbnail) {
 			$thumb = new ElggFile();
@@ -173,9 +173,14 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 	$file->save();
 }
 
+// WB chage:
+// set metadata to indicate this upload is meant to be seen on the Resources page
+if (get_input('global', false)) {
+	create_metadata($file->getGUID(), 'file category', 'global', 'text');
+}
+
 // file saved so clear sticky form
 elgg_clear_sticky_form('file');
-
 
 // handle results differently for new files and file updates
 if ($new_file) {
@@ -204,4 +209,4 @@ if ($new_file) {
 	}
 
 	forward($file->getURL());
-}	
+}
