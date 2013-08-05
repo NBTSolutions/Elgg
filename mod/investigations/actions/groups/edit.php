@@ -129,7 +129,12 @@ if (!$is_new_group && $new_owner_guid && $new_owner_guid != $old_owner_guid) {
 
 $must_move_icons = ($owner_has_changed && $old_icontime);
 
-$group->subtype = get_subtype_id('group', 'investigation');
+if($is_new_group) {
+    $group->subtype = 'investigation';
+}
+else {
+    $group->subtype = get_subtype_id('group', 'investigation');
+}
 $group->save();
 
 // Invisible group support
@@ -167,7 +172,7 @@ if ($is_new_group) {
 	elgg_set_page_owner_guid($group->guid);
 
 	$group->join($user);
-    add_to_river('river/group/create', 'create', $user->guid, $group->access_id);
+    add_to_river('river/investigation/create', 'create', $user->guid, $group->access_id);
 }
 
 // proposal test
