@@ -172,7 +172,7 @@ if ($is_new_group) {
 	elgg_set_page_owner_guid($group->guid);
 
 	$group->join($user);
-    add_to_river('river/investigation/create', 'create', $user->guid, $group->access_id);
+    add_to_river('river/investigation/create', 'create', $user->guid, $group->guid);
 }
 
 // proposal test

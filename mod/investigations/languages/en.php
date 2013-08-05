@@ -255,7 +255,7 @@ $english = array(
 		Forum river items
 	 */
 
-	'river:create:group:default' => '%s created the group %s',
+	'river:create:object:investigation' => '%s created the investigation %s',
 	'river:join:group:default' => '%s joined the group %s',
 	'river:create:object:investigationforumtopic' => '%s added a new discussion topic %s',
 	'river:reply:object:investigationforumtopic' => '%s replied on the discussion topic %s',
