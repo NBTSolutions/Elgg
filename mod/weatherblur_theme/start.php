@@ -89,6 +89,9 @@
 		elgg_register_js('graph', $js_dir . 'graph.js');
 
 		elgg_register_event_handler('pagesetup', 'system', 'kill_friends_link');
+		
+		//register login count hook handler
+		elgg_register_event_handler('login', 'user', 'login_count');
 	}
 
 	/**
@@ -139,8 +142,24 @@
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/profile.php';
 			return true;
 		}
+		
+		if ($segments[0] == 'wbsnareport')
+		{
+			include elgg_get_plugins_path() . 'weatherblur_theme/pages/wbsnareport.php';
+			return true;
+		}
 
 		return false;
+	}
+    
+	function login_count($event, $type, $user) 
+	{
+			$login_count = $user->login_count;
+			$login_count++;
+			$user->login_count = $login_count;
+		 
+
+	
 	}
 
 	function elgg_get_featured($type, $subtype, $count=1) {
