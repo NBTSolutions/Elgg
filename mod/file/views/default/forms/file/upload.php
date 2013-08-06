@@ -5,7 +5,7 @@
  * @package ElggFile
  */
 
-// once elgg_view stops throwing all sorts of junk into $vars, we can use 
+// once elgg_view stops throwing all sorts of junk into $vars, we can use
 $title = elgg_extract('title', $vars, '');
 $desc = elgg_extract('description', $vars, '');
 $tags = elgg_extract('tags', $vars, '');
@@ -55,6 +55,10 @@ if ($categories) {
 </div>
 <div class="elgg-foot">
 <?php
+if (strpos(current_page_url(), elgg_get_site_url() . 'file/add') !== false) {
+	// then we are on the main file upload page and should include the hint:
+	echo elgg_view('input/hidden', array('name' => 'global', 'value' => '1'));
+}
 
 echo elgg_view('input/hidden', array('name' => 'container_guid', 'value' => $container_guid));
 

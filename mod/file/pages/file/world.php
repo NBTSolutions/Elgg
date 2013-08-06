@@ -13,11 +13,15 @@ $limit = get_input("limit", 10);
 
 $title = elgg_echo('file:all');
 
-$content = elgg_list_entities(array(
+$content = elgg_list_entities_from_metadata(array(
 	'type' => 'object',
 	'subtype' => 'file',
 	'limit' => $limit,
-	'full_view' => FALSE
+	'full_view' => FALSE,
+	'metadata_name_value_pairs' => array( // show only global files.
+		'name' => 'file category',
+		'value' => 'global'
+	)
 ));
 if (!$content) {
 	$content = elgg_echo('file:none');
