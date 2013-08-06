@@ -72,6 +72,7 @@ $disc = elgg_get_entities( array(
 	<ul>
 		<li><span id="user-investigations" class="user-stat-icons"></span> Investigations: <?php echo countem($relations); ?></li>
 		<li><span id="user-observations" class="user-stat-icons"></span> Observations: <?php echo countem($obs); ?></li>
+		<li><span id="user-images-posted" class="user-stat-icons"></span> Images Posted: <?php echo countem($imgs); ?></li>
 		<li><span id="user-maps-posted" class="user-stat-icons"></span> Maps Posted: <?php echo countem($maps); ?></li>
 		<li><span id="user-graphs-posted" class="user-stat-icons"></span> Graphs Posted: <?php echo countem($num_graphs); ?></li>
 		<li><span id="user-videos" class="user-stat-icons"></span> Videos Posted: <?php echo countem($video); ?></li>
