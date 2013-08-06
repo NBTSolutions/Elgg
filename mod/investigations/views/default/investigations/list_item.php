@@ -40,7 +40,7 @@ if (strlen(trim($desc)) == 0) { $desc = 'This investigation needs a brief descri
 	</div>
 
 	<div class="people">
-		<div>Investigation Owner:</div>
+		<div>Investigation Coordinator:</div>
 		<div class="owner"><?php print $inv->getOwnerEntity()->get('name'); ?></div>
 	</div>
 	<div class="people">
