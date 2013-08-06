@@ -50,7 +50,7 @@ if ($group_profile_fields > 0) {
 
 <?php echo elgg_view_form('investigations/choose_advisor', $vars); ?>
 
-<div>
+<div class="inv-option">
 	<label>
 		<?php echo elgg_echo('investigations:membership'); ?><br />
 		<?php echo elgg_view('input/select', array(
@@ -113,7 +113,7 @@ if ($entity && ($owner_guid == elgg_get_logged_in_user_guid() || elgg_is_admin_l
 	}
 ?>
 
-<div>
+<div class="inv-option">
 	<label>
 			<?php echo elgg_echo('investigations:owner'); ?><br />
 			<?php echo elgg_view('input/select', array(
@@ -141,17 +141,17 @@ if ($tools) {
 		$group_option_toggle_name = $group_option->name . "_enable";
 		$value = elgg_extract($group_option_toggle_name, $vars);
 ?>
-<div>
+<div class="inv-option">
 	<label>
 		<?php echo $group_option->label; ?><br />
 	</label>
-		<?php echo elgg_view("input/radio", array(
+		<?php echo elgg_view("input/hidden", array(
 			"name" => $group_option_toggle_name,
 			"value" => $value,
-			'options' => array(
-				elgg_echo('investigations:yes') => 'yes',
-				elgg_echo('investigations:no') => 'no',
-			),
+			//'options' => array(
+				//elgg_echo('investigations:yes') => 'yes',
+				//elgg_echo('investigations:no') => 'no',
+			//),
 		));
 		?>
 </div>
