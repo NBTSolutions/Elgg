@@ -9,9 +9,11 @@
 		</ul><!--End footer text links-->
 					
 		<ul id="contact-list">
-			<li>WeatherBlur 954 Main Street City, State 12345</li>
-			<li>888.555.5555</li>
-			<li><a href="#">Email: weatherblur@email.com</a></li>
+			<li>WeatherBlur</li>
+			<li>Island Institute</li>
+			<li>386 Main Street Rockland, ME 04841</li>
+			<li>207.594.9209</li>
+			<li><a href="#">Email: weatherblur@islandinstitute.org</a></li>
 		</ul><!--End contact list-->
 					
 		<ul id="social-media">
