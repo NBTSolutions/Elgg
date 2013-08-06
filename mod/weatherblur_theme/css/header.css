@@ -1,20 +1,4 @@
 /*-------------------------------------------------
-						BODY
---------------------------------------------------*/
-/*html,
-body { height: 100%; }
-
-#wrapper {
-	min-height: 100%;
-	height: auto !important!;
-	height: 100%;
-	margin: 0 auto -100px;
-} 
-
-.push { height: 100px; } /*Height must match footer's height*/
-
-
-/*-------------------------------------------------
 				HEADER STUFF
 --------------------------------------------------*/
 .elgg-page-header {
@@ -60,7 +44,6 @@ body { height: 100%; }
 .elgg-page-topbar {
 	background: #004712;
 	border-bottom: none;
-	/*height: 48px;*/
 }
 
 /*-------------------------------------------------
