@@ -186,7 +186,7 @@ function investigations_init() {
         "wb.get_user_info",
         "get_user_info",
         array(
-            'user_id' => array('type' => 'string')
+            'user_guid' => array('type' => 'string')
         ),
         '',
         'GET',
@@ -710,7 +710,7 @@ function investigation_create_event_listener($event, $object_type, $object) {
  */
 function investigation_write_acl_plugin_hook($hook, $entity_type, $returnvalue, $params) {
 	$page_owner = elgg_get_page_owner_entity();
-	$user_guid = $params['user_id'];
+	$user_guid = $params['user_guid'];
 	$user = get_entity($user_guid);
 	if (!$user) {
 		return $returnvalue;
@@ -1259,8 +1259,8 @@ function get_invs($username, $password) {
 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
     }
 
-    $user_id = validate_user_token($token, null);
-    $user = get_user($user_id);
+    $user_guid = validate_user_token($token, null);
+    $user = get_user($user_guid);
 
     login($user, false);
 
@@ -1269,7 +1269,7 @@ function get_invs($username, $password) {
 	$results = elgg_get_entities_from_relationship(array(
         'type_subtype_pair'	=>	array('group' => 'investigation'),
 		'relationship' => 'member',
-		'relationship_guid' => $user_id,
+		'relationship_guid' => $user_guid,
 		'inverse_relationship' => false,
 		'full_view' => false,
 		'joins' => array("JOIN {$dbprefix}groups_entity ge ON e.guid = ge.guid"),
@@ -1278,7 +1278,7 @@ function get_invs($username, $password) {
 
     // build out our list of investigation names/ids
     $investigations = array(
-        'user_guid' => intval($user_id),
+        'user_guid' => intval($user_guid),
         'username' => $username,
         'token' => $token,
         'investigations' => array()
@@ -1366,7 +1366,6 @@ function get_obs_by_inv($investigation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
     $investigation = get_entity($investigation_guid);
-    var_dump($investigation);
 
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'observation'),
@@ -1411,7 +1410,7 @@ function get_obs_by_user_type($user_type, $min_date, $max_date) {
                 "agg_ids" => $temp->value,
                 "user_display_name" => $user->name,
                 "username" => $user->username,
-                "user_id" => $user->guid
+                "user_guid" => $user->guid
             );
         }
     }
@@ -1422,12 +1421,12 @@ function get_obs_by_user_type($user_type, $min_date, $max_date) {
 function toggle_like_obs($observation_guid, $token) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
-    $user_id = validate_user_token($token, null);
-    if($user_id) {
+    $user_guid = validate_user_token($token, null);
+    if($user_guid) {
 
         // have we liked this observation yet?
         $results = elgg_get_annotations(array(
-            "annotation_owner_guid" => $user_id,
+            "annotation_owner_guid" => $user_guid,
             "annotation_guid" => $observation_guid,
             "name" => "observation_like"
         ));
@@ -1438,7 +1437,7 @@ function toggle_like_obs($observation_guid, $token) {
 
             // need to ignore access to set owner_id
             $ignore = elgg_set_ignore_access(true);
-            $id = $observation->annotate('like', 1, 2, $user_id, 'integer');
+            $id = $observation->annotate('like', 1, 2, $user_guid, 'integer');
             $observation->save();
             elgg_set_ignore_access($ignore);
         }
@@ -1462,11 +1461,11 @@ function get_likes($observation_guid, $token) {
 
     // if we pass in a token get login users likes
     if($token) {
-        $user_id = validate_user_token($token, null);
-        if($user_id) {
+        $user_guid = validate_user_token($token, null);
+        if($user_guid) {
 
             $my_like = elgg_get_annotations(array(
-                "annotation_owner_guid" => $user_id,
+                "annotation_owner_guid" => $user_guid,
                 "annotation_guid" => $observation_guid,
                 "name" => "observation_like"
             ));
@@ -1523,13 +1522,13 @@ function get_comments_on_obs($observation_guid) {
 function comment_on_obs($observation_guid, $comment, $token) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
-    $user_id = validate_user_token($token, null);
-    if($user_id) {
+    $user_guid = validate_user_token($token, null);
+    if($user_guid) {
 
         // need to ignore access to set owner_id
         $ignore = elgg_set_ignore_access(true);
         $observation = get_entity($observation_guid);
-        $id = $observation->annotate('observation_comments', $comment, 2, $user_id, 'text');
+        $id = $observation->annotate('observation_comments', $comment, 2, $user_guid, 'text');
         $observation->save();
         elgg_set_ignore_access($ignore);
 
@@ -1580,9 +1579,9 @@ function get_user_info_by_agg_id($agg_id) {
     }
 }
 
-function get_user_info($user_id) {
+function get_user_info($user_guid) {
     //get user by user name
-    $user = get_user($user_id);
+    $user = get_user($user_guid);
     $site = elgg_get_site_entity();
 
     $profile_type_guid = $user->custom_profile_type;
@@ -1591,7 +1590,7 @@ function get_user_info($user_id) {
     return array(
         "users_display_name" => name,
         "username" => $user->username,
-        "image" => $site->url."mod/profile/icondirect.php?lastcache=".time()."&joindate=".$user->time_created."&guid=".$user_id."&size=",
+        "image" => $site->url."mod/profile/icondirect.php?lastcache=".time()."&joindate=".$user->time_created."&guid=".$user_guid."&size=",
         "email" => $user->email,
         "profile_type" => $profile_type->getTitle()
     );

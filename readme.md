@@ -62,7 +62,7 @@ Full URL:<br>
     returns
         {
             status : <int>,
-            results : <obs_id>
+            results : <obs_guid>
         }
 
 ### Get Observation by User Type ###
@@ -95,13 +95,13 @@ Full URL:<br>
             		"agg_ids" : <int>, 
                 	"user_display_name" : <string>,
                 	"username" : <string>,
-                	"user_id" : <int>
+                	"user_guid" : <int>
             	},
             	{
             		"agg_ids" : <int>, 
                 	"user_display_name" : <string>,
                 	"username" : <string>,
-                	"user_id" : <int>	
+                	"user_guid" : <int>	
             	}
             ]
         }
@@ -276,16 +276,16 @@ URL:<br>
 `http://localhost:9999/elgg/services/api/rest/json/`
 
 URL Params:<br>
-`?method=wb.get_user_info&user_id=49`
+`?method=wb.get_user_info&user_guid=49`
 
 FULL URL:<br>
-`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_user_info&user_id=49`
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_user_info&user_guid=49`
 
 **get_user_info**
 
 	parameter
 		method : wb.get_user_info,
-		user_id : 49
+		user_guid : 49
 		
 	returns (image url append tiny, topbar, small, medium, large, or master to the url for image size)
 		{
