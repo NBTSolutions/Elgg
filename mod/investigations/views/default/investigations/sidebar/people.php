@@ -18,7 +18,7 @@ if (count($advisor) > 0) {
 ?>
 <div class="elgg-module elgg-module-aside people-block">
 	<div class="person">
-		<?php echo elgg_view('investigations/sidebar/person', array('person' => $owner, 'title' => 'Investigation Owner')); ?>
+		<?php echo elgg_view('investigations/sidebar/person', array('person' => $owner, 'title' => 'Investigation Coordinator')); ?>
 	</div>
 <?php if ($advisor) { ?>
 	<div class="person">

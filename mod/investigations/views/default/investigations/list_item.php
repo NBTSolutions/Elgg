@@ -23,8 +23,8 @@ $metadata = elgg_view_menu('entity', array(
 
 
 // weird css issue if there's not description.
-$desc = $inv->get('description');
-if (strlen(trim($desc)) == 0) { $desc = '<p>This investigation has yet to be described</p>'; }
+$desc = $inv->getMetaData('briefdescription');
+if (strlen(trim($desc)) == 0) { $desc = 'This investigation needs a brief description'; }
 
 ?>
 <li class="inv">
@@ -32,13 +32,15 @@ if (strlen(trim($desc)) == 0) { $desc = '<p>This investigation has yet to be des
 		<img src="<?php print $inv->getIconURL('large'); ?>" alt="<?php print $inv->get('name'); ?>">
 	</div>
 
-	<h3><a href="<?php print $inv->getURL(); ?>"><?php print $inv->get('name'); ?></a></h3>
-	<?php print $metadata; ?>
+	<div class="main_text">
+		<h3><a href="<?php print $inv->getURL(); ?>"><?php print $inv->get('name'); ?></a></h3>
+		<?php print $metadata; ?>
 
-	<div class="desc"><?php print $desc; ?></div>
+		<div class="desc"><p><?php print $desc; ?></p></div>
+	</div>
 
 	<div class="people">
-		<div>Investigation Owner:</div>
+		<div>Investigation Coordinator:</div>
 		<div class="owner"><?php print $inv->getOwnerEntity()->get('name'); ?></div>
 	</div>
 	<div class="people">
