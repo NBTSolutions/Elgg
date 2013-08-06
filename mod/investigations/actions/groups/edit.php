@@ -149,6 +149,16 @@ if (elgg_get_plugin_setting('hidden_groups', 'investigations') == 'yes') {
 
 $group->save();
 
+// after it's been saved up above (in the mess), update the briefdescription
+// in order to restrict its length:
+$brief = $group->getMetaData('briefdescription');
+if ($brief && strlen($brief) > 255) {
+	$group->setMetaData('briefdescription', substr($brief, 0, 255) . '...');
+	// Note: this is messy in that it's leaving extra lines in the metastrings
+	// table, but that table is kind of a disaster anyway so it's not worth it
+	// to try and fix.
+}
+
 // store the advisor guid as a relationship:
 $adv = get_input('advisor_guid');
 if ($adv && count($adv) > 0) {

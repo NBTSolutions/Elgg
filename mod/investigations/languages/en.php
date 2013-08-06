@@ -16,7 +16,7 @@ $english = array(
 	'investigations:yours' => "My groups",
 	'investigations:user' => "%s's groups",
 	'investigations:all' => "All investigations",
-	'investigate:add' => "<i class='icon-plus'></i> Create a new investigation",
+	'investigate:add' => "<i class='icon-plus'></i>&nbsp;Create a new investigation",
 	'investigations:edit' => "Edit investigation",
 	'investigations:delete' => 'Delete Investigation',
 	'investigations:membershiprequests' => 'Manage join requests',
