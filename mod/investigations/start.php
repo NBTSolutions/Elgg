@@ -19,6 +19,8 @@ elgg_register_event_handler('init', 'system', 'investigation_fields_setup', 1000
  */
 function investigations_init() {
 
+	elgg_register_js('inv:embed', elgg_get_site_url() . 'mod/investigations/js/show_embed.js', 'footer', 10000);
+
 	elgg_register_library('elgg:investigations', elgg_get_plugins_path() . 'investigations/lib/investigations.php');
 
 	// register group entities for search

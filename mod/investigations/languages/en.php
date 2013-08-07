@@ -56,22 +56,22 @@ $english = array(
 	'investigations:featured' => 'Featured groups',
 	'investigations:makeunfeatured' => 'Unfeature',
 	'investigations:makefeatured' => 'Make featured',
-	'investigations:featuredon' => '%s is now a featured group.',
-	'investigations:unfeatured' => '%s has been removed from the featured groups.',
-	'investigations:featured_error' => 'Invalid group.',
+	'investigations:featuredon' => '%s is now a featured investigation.',
+	'investigations:unfeatured' => '%s has been removed the featured investigation.',
+	'investigations:featured_error' => 'Invalid investigation.',
 	'investigations:joinrequest' => 'Request membership',
-	'investigations:join' => 'Join group',
-	'investigations:leave' => 'Leave group',
+	'investigations:join' => 'Join Investigation',
+	'investigations:leave' => 'Leave Investigation',
 	'investigations:invite' => 'Invite friends',
-	'investigations:invite:title' => 'Invite friends to this group',
+	'investigations:invite:title' => 'Invite friends to this investigation',
 	'investigations:inviteto' => "Invite friends to '%s'",
-	'investigations:nofriends' => "You have no friends left who have not been invited to this group.",
+	'investigations:nofriends' => "You have no friends left who have not been invited to this investigation.",
 	'investigations:nofriendsatall' => 'You have no friends to invite!',
 	'investigations:viagroups' => "via groups",
-	'investigations:group' => "Group",
+	'investigations:group' => "Investigation",
 	'investigations:search:tags' => "Search for Investigations",
-	'investigations:search:title' => "Search for groups tagged with '%s'",
-	'investigations:search:none' => "No matching groups were found",
+	'investigations:search:title' => "Search for investigations tagged with '%s'",
+	'investigations:search:none' => "No matching investigations were found",
 	'investigations:search_in_group' => "Search this investigation",
 	'investigations:acl' => "Investigation: %s",
 
@@ -87,7 +87,7 @@ $english = array(
 	',
 
 	'investigation_discussion:notification:reply:body' =>
-	'%s replied to the discussion topic %s in the group %s:
+	'%s replied to the discussion topic %s in the investigation %s:
 
 	%s
 
@@ -132,7 +132,7 @@ $english = array(
 	'investigations:access:public' => 'Open - Any user may join',
 	'investigations:access:group' => 'Group members only',
 	'investigations:closedgroup' => 'This group has a closed membership.',
-	'investigations:closedgroup:request' => 'To ask to be added, click the "request membership" menu link.',
+	'investigations:closedgroup:request' => 'To ask to be added, click "Request membership".',
 	'investigations:visibility' => 'Who can see this group?',
 
 	/*
@@ -152,7 +152,8 @@ $english = array(
 	'investigation_discussion:latest' => 'Latest discussion',
 	'investigation_discussion:group' => 'Investigation discussion',
 	'investigation_discussion:none' => 'No discussion',
-	'investigation_discussion:none_yet' => "<p>Be the first to start a discussion about this investigation!</p>",
+	'investigation_discussion:none_yet' => 'Be the first to start a discussion about this investigation!',
+	'investigation_discussion:not_a_member' => 'You must be a member of this investigation to participate in discussions about it, but you may still read them.',
 	'investigation_discussion:reply:title' => 'Reply by %s',
 
 	'investigation_discussion:topic:created' => 'The discussion topic was created.',
@@ -174,7 +175,7 @@ $english = array(
 	'investigations:forum:created' => 'Created %s with %d comments',
 	'investigations:forum:created:single' => 'Created %s with %d reply',
 	'investigations:forum' => 'Discussion',
-	'investigations:addtopic' => 'Add a topic',
+	'investigations:addtopic' => 'What would you like to talk about?',
 	'investigations:forumlatest' => 'Latest discussion',
 	'investigations:latestdiscussion' => 'Latest discussion',
 	'investigations:newest' => 'Newest',
@@ -183,8 +184,9 @@ $english = array(
 	'groupspost:failure' => 'There was problem while posting your reply',
 	'investigations:alldiscussion' => 'Latest discussion',
 	'investigations:edittopic' => 'Edit topic',
-	'investigations:topicmessage' => 'Topic message',
+	'investigations:topicmessage' => 'Describe your topic',
 	'investigations:topicstatus' => 'Topic status',
+	'investigations:savetopic' => 'Save my topic',
 	'investigations:reply' => 'Post a comment',
 	'investigations:topic' => 'Topic',
 	'investigations:posts' => 'Posts',
@@ -213,9 +215,9 @@ $english = array(
 	'investigations:removed' => 'Successfully removed %s from group',
 	'investigations:addedtogroup' => 'Successfully added the user to the group',
 	'investigations:joinrequestnotmade' => 'Could not request to join group',
-	'investigations:joinrequestmade' => 'Requested to join group',
-	'investigations:joined' => 'Successfully joined group!',
-	'investigations:left' => 'Successfully left group',
+	'investigations:joinrequestmade' => 'Requested to join investigation',
+	'investigations:joined' => 'Successfully joined investigation!',
+	'investigations:left' => 'Successfully left investigation',
 	'investigations:notowner' => 'Sorry, you are not the owner of this group.',
 	'investigations:notmember' => 'Sorry, you are not a member of this group.',
 	'investigations:alreadymember' => 'You are already a member of this group!',
