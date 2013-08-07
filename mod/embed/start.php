@@ -14,13 +14,13 @@ elgg_register_event_handler('init', 'system', 'embed_init');
 function embed_init() {
 	elgg_extend_view('css/elgg', 'embed/css');
 	elgg_extend_view('css/admin', 'embed/css');
-	
+
 	elgg_register_plugin_hook_handler('register', 'menu:longtext', 'embed_longtext_menu');
 	elgg_register_plugin_hook_handler('register', 'menu:embed', 'embed_select_tab', 1000);
 
 	// Page handler for the modal media embed
 	elgg_register_page_handler('embed', 'embed_page_handler');
-	
+
 	$embed_js = elgg_get_simplecache_url('js', 'embed/embed');
 	elgg_register_simplecache_view('js/embed/embed');
 	elgg_register_js('elgg.embed', $embed_js, 'footer');
@@ -37,6 +37,15 @@ function embed_init() {
  */
 function embed_longtext_menu($hook, $type, $items, $vars) {
 
+	if (isset($vars['embed_type']) && $vars['embed_type'] == 'none') {
+		return $items;
+	}
+
+	$text = elgg_echo('embed:media');
+	if (isset($vars['embed_type'])) {
+		$text = 'Upload ' . $vars['embed_type'];
+	}
+
 	if (elgg_get_context() == 'embed') {
 		return $items;
 	}
@@ -51,7 +60,7 @@ function embed_longtext_menu($hook, $type, $items, $vars) {
 	$items[] = ElggMenuItem::factory(array(
 		'name' => 'embed',
 		'href' => $url,
-		'text' => elgg_echo('embed:media'),
+		'text' => $text,
 		'rel' => "embed-lightbox-{$vars['id']}",
 		'link_class' => "elgg-longtext-control elgg-lightbox embed-control embed-control-{$vars['id']}",
 		'priority' => 10,
@@ -61,7 +70,7 @@ function embed_longtext_menu($hook, $type, $items, $vars) {
 	elgg_load_css('lightbox');
 	elgg_load_js('jquery.form');
 	elgg_load_js('elgg.embed');
-	
+
 	return $items;
 }
 
@@ -117,7 +126,7 @@ function embed_page_handler($page) {
 /**
  * A special listing function for selectable content
  *
- * This calls a custom list view for entities. 
+ * This calls a custom list view for entities.
  *
  * @param array $entities Array of ElggEntity objects
  * @param array $vars     Display parameters
