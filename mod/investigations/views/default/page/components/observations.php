@@ -1,4 +1,3 @@
-<!--
 <?php
     $ch = curl_init();
 
@@ -12,8 +11,6 @@
 
     $observation = json_decode($ok);
     $obs_by_category = array();
-
-    var_dump($observation);
 
     //using this to control the order and assign icons
     $obs_categories = array(
@@ -51,7 +48,6 @@
     $site = elgg_get_site_entity();
 
 ?>
- -->
 <!-- start html -->
 <h1 id="obs_measurements_heading">Observation Measurements</h1>
 <p>By <a href="<?php echo $site->url.'profile/'.$observation->observer->label; ?>"><?php echo $observation->observer->label; ?></a> on <?php echo date('F nS, Y', strtotime($observation->timestamp)); ?></p>
