@@ -35,14 +35,18 @@ $options = array(
     'order_by' => 'e.last_action desc',
     'container_guid' => $guid,
     'full_view' => false,
-);
-$discussions = elgg_list_entities($options, 'elgg_get_entities', 'elgg_view_investigation_discussion_list');
-if (!$discussions) {
-		$discussions = elgg_echo('investigation_discussion:none_yet');
+	);
+?>
+
+<h1>Current Discussions:</h1>
+<?php
+
+if (!$group->isMember(elgg_get_logged_in_user_guid()))  {
+	echo '<p>' . elgg_echo('investigation_discussion:not_a_member') . '</p>';
+	echo '<p>' . elgg_echo('investigations:closedgroup:request') . '</p>';
 }
 
 ?>
-<h1>Current Discussions:</h1>
 <div class="filter-select">
 	<label>Show only:</label>
 	<a href="?discussion_subtype=text"><div class="icon" id="user-discussions-posted"></div>Questions/Ideas</a>
@@ -52,5 +56,11 @@ if (!$discussions) {
 	<a href="?discussion_subtype=map"><div class="icon" id="user-maps-posted"></div>Maps</a>
 	<a href="?discussion_subtype=all" class="all">All</a>
 </div>
+<?php
 
-<?php echo $discussions; ?>
+$discussions = elgg_list_entities($options, 'elgg_get_entities', 'elgg_view_investigation_discussion_list');
+if (!$discussions) {
+	$discussions = '<p>' . elgg_echo('investigation_discussion:none_yet') . '</p>';
+}
+
+echo $discussions;

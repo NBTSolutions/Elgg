@@ -11,3 +11,4 @@ if (group_gatekeeper(false)) {
 } else {
 	echo elgg_view('groups/profile/closed_membership');
 }
+

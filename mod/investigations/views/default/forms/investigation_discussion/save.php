@@ -1,7 +1,7 @@
 <?php
 /**
  * Discussion topic add/edit form body
- * 
+ *
  */
 
 $title = elgg_extract('title', $vars, '');
@@ -33,22 +33,9 @@ $discussion_subtype = get_input('discussion_subtype');
     }
 ?>
 <div>
-    <label><?php echo elgg_echo("investigations:topicstatus"); ?></label><br />
-	<?php
-		echo elgg_view('input/select', array(
-			'name' => 'status',
-			'value' => $status,
-			'options_values' => array(
-				'open' => elgg_echo('investigations:topicopen'),
-				'closed' => elgg_echo('investigations:topicclosed'),
-			),
-		));
-	?>
-</div>
-<div>
-	<label><?php echo elgg_echo('access'); ?></label><br />
-	<?php echo elgg_view('input/access', array('name' => 'access_id', 'value' => $access_id)); ?>
-</div>
+
+<?php echo elgg_view('input/hidden', array('name' => 'status', 'value' => 'open')); ?>
+
 <div class="elgg-foot">
 <?php
 
@@ -58,7 +45,7 @@ if ($guid) {
 	echo elgg_view('input/hidden', array('name' => 'topic_guid', 'value' => $guid));
 }
 
-echo elgg_view('input/submit', array('value' => elgg_echo("save")));
+echo elgg_view('input/submit', array('value' => elgg_echo("investigations:savetopic")));
 
 ?>
 </div>
