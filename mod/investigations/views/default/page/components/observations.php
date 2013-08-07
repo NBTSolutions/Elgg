@@ -101,8 +101,8 @@ foreach($obs_categories as $category => $category_image) {
                     <span class="measurement_cat_label"><?php echo $measurement->phenomenon->description; ?></span>
                 </td>
                 <td>
-                    <? echo $measurement->value; ?>
-                    <? 
+                    <?php echo $measurement->value; ?>
+                    <?php 
                     if($measurement->phenomenon->unit) {
                         echo $measurement->phenomenon->unit->abbrev;
                     }
