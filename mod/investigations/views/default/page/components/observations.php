@@ -1,4 +1,3 @@
-<!--
 <?php
     $ch = curl_init();
 
@@ -13,7 +12,7 @@
     $observation = json_decode($ok);
     $obs_by_category = array();
 
-    //using this to control the order
+    //using this to control the order and assign icons
     $obs_categories = array(
         "sky" => 'sky_icon.png', 
         "precipitation" => 'precipitation_icon.png',
@@ -33,7 +32,7 @@
         else {
             //is in array add to it
             $cat_name = strtolower($measurement->phenomenon->category->name);
-            var_dump($cat_name);
+            
             if($obs_by_category[$cat_name]) {
                 $obs_by_category[$cat_name][] = $measurement;
             }
@@ -44,62 +43,38 @@
 
         }
     }
-
-	elgg_load_css('observation-detail.less');
     
     //elgg site
     $site = elgg_get_site_entity();
 
 ?>
--->
-<link href="http://vjs.zencdn.net/c/video-js.css" rel="stylesheet">
-<script src="http://vjs.zencdn.net/c/video.js"></script>
 
+<!-- start html -->
 <h1 id="obs_measurements_heading">Observation Measurements</h1>
-<?php
-// $video = false;
-// $picture = false;
-
-echo $blah['har.blah'];
-
-if($video OR $picture) {
-?>
+<?php if($video OR $picture) { ?>
+    <!-- video and/or pictures -->
     <div id="obs_media">
         <div id="obs_image">
             <h2>Image</h2>
-            <?php
-            if($picture) {
-            ?>
+            <?php if($picture) { ?>
                 <img src="<?php echo $picture->url; ?>" id="obs_thumbnail_image">
-            <?php
-            } else {
-            ?>
+            <?php } else { ?>
                 <h3>No Image Available</h3>
-            <?php
-            }
-            ?>
+            <?php } ?>
         </div>
         <div id="obs_video">
             <h2>Video</h2>
-        <?php
-        if($video) {
-        ?>
+        <?php if($video) { ?>
         <video id="example_video_1" class="video-js vjs-default-skin" controls preload="auto" width="400" height="400" poster="<?php echo $video->thumbnailUrl; ?>" data-setup='{"example_option":true}'>  
              <source src="<?php echo $video->url; ?>" type='video/mp4' />  
              <source src="<?php echo str_replace('.mp4', '', $video->url); ?>.webm" type='video/webm' />  
         </video>
-        <?php
-        } else {
-        ?>
+        <?php } else { ?>
             <h3>No Video Available</h3> 
-        <?php
-        }
-        ?>
+        <?php } ?>
         </div>
     </div>
-<?php
-}
-?>
+<?php } ?>
 
 <?php
 $category_count = 0;
@@ -108,9 +83,7 @@ foreach($obs_categories as $category => $category_image) {
         if($category_count % 2 == 0) {
 ?>
     <div class="measurement_category_row">
-    <?php
-        }
-    ?>
+        <?php } ?>
     <div class="measurement_category<?php echo " measurement_category_".$category?>">
         <table class="obs_measurements">
             <tr>
@@ -129,25 +102,23 @@ foreach($obs_categories as $category => $category_image) {
                 </td>
                 <td>
                     <? echo $measurement->value; ?>
-                    <? if($measurement->phenomenon->unit) {
+                    <? 
+                    if($measurement->phenomenon->unit) {
                         echo $measurement->phenomenon->unit->abbrev;
                     }
                     ?>
                 </td>
             </tr>
             <?php
-            $measurement_count++;
+                $measurement_count++;
             }
             ?>
         </table>
     </div>
-    <?php
-    if($category_count % 2 == 1) {
-    ?>
+    <?php if($category_count % 2 == 1) { ?>
+    <!-- close the measurement_category_row -->
     </div>
-    <?php
-        }
-    ?>
+    <?php } ?>
 <?php
         $category_count++;
     }

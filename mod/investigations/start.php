@@ -455,8 +455,14 @@ function investigation_page_handler($page) {
 function observation_page_handler($page) {
 	global $CONFIG;
 
+	elgg_register_js('video-js', 'http://vjs.zencdn.net/c/video.js', 'footer', 10000);
+
+    elgg_register_css('video-js-css', 'http://vjs.zencdn.net/c/video-js.css');
     elgg_register_css('observation-detail', $CONFIG->url . 'mod/investigations/css/observation-detail.less');
+
 	elgg_load_css('observation-detail');
+	elgg_load_css('video-js-css');
+    elgg_load_js('video-js');
 
 	elgg_load_library('elgg:investigations');
 

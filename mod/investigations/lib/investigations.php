@@ -16,7 +16,7 @@ function investigations_handle_all_page() {
 		elgg_register_title_button();
 	}
 
-	  $content = elgg_list_entities(array(
+	$content = elgg_list_entities(array(
         'type' => 'group',
         'subtype' => 'investigation',
     ), 'elgg_get_entities', 'elgg_view_investigation_list');
@@ -51,10 +51,11 @@ function observation_page($observation_guid) {
 	elgg_pop_breadcrumb();
 	elgg_push_breadcrumb(elgg_echo('investigations'));
 
-    $content = elgg_view('page/components/observations', array());
-    $canvas_area = elgg_view_layout('one_column', array('content' => $content));
+    xdebug_break();
+	elgg_load_css('observation-detail.less');
 
-    var_dump($content);
+    $content = elgg_view('page/components/observations', array("observation_guid" => $observation_guid));
+    $canvas_area = elgg_view_layout('one_column', array('content' => $content));
 
     echo elgg_view_page(elgg_echo('investigations:all'), $canvas_area);
 
