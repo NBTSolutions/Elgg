@@ -18,7 +18,7 @@
         "precipitation" => 'precipitation_icon.png',
         "ocean" => 'ocean_icon.png', 
         "media" => 'media_icon.png', 
-        "tags" => 'tags_icon.png',
+        "tags" => 'tag_icon.png',
         "notes" => 'comment_icon.png'
     );
 
@@ -76,15 +76,17 @@
     </div>
 <?php } ?>
 
+<div id="observation_data_tables">
+<h2>Data</h2>
 <?php
-$category_count = 0;
+// go over each category type
 foreach($obs_categories as $category => $category_image) {
+    // if we have data for this category show it
     if($obs_by_category[$category]) {
-        if($category_count % 2 == 0) {
 ?>
-    <div class="measurement_category_row">
-        <?php } ?>
-    <div class="measurement_category<?php echo " measurement_category_".$category?>">
+    <div class="measurement_cat">
+
+        <!-- data table for observation category -->
         <table class="obs_measurements">
             <tr>
                 <td class="measurement_category_heading" colspan='2'>
@@ -92,6 +94,7 @@ foreach($obs_categories as $category => $category_image) {
                     <h2><?php echo ucwords($category); ?></h2>
                 </td>
             <tr>
+
             <?php
             $measurement_count = 0;
             foreach($obs_by_category[$category] AS $measurement) {
@@ -114,15 +117,68 @@ foreach($obs_categories as $category => $category_image) {
             }
             ?>
         </table>
+
     </div>
-    <?php if($category_count % 2 == 1) { ?>
-    <!-- close the measurement_category_row -->
-    </div>
-    <?php } ?>
 <?php
-        $category_count++;
     }
 }
 ?>
+</div>
 
+<div id="observation_comments">
 <h2>Comments</h2>
+<ul class="elgg-list">
+    <li class="elgg-item">
+        <div class="elgg-image-block clearfix">
+            <div class="elgg-image">
+                <div class="elgg-avatar elgg-avatar-tiny">
+                    <span class="elgg-icon elgg-icon-hover-menu "></span>
+                    <ul class="elgg-menu elgg-menu-hover">
+                        <li><a href="http://demo.nbtsolutions.com/elgg/profile/admin"><span class="elgg-heading-basic">admin</span>@admin</a></li>
+                    </ul>
+                    <a href="http://demo.nbtsolutions.com/elgg/profile/admin" class="">
+                        <img src="http://demo.nbtsolutions.com/elgg/_graphics/spacer.gif" alt="admin" title="admin" class="" style="background: url(http://demo.nbtsolutions.com/elgg/mod/profile/icondirect.php?lastcache=1375362698&amp;joindate=1375362461&amp;guid=38&amp;size=tiny) no-repeat;">
+                    </a>
+                </div>
+            </div>
+            <div class="elgg-body">
+                <div class="elgg-subtext">
+                    Joe <acronym title="2 August 2013 @ 8:32am">6 days ago</acronym>
+                </div>		
+                <div class="clearfix"></div>
+                <div class="elgg-content">
+                    This is such a great observation! I want to tell all my friends. I wonder if they will like this as much as I do.
+                </div>
+            </div>
+        </div>
+    </li>
+     <li class="elgg-item">
+        <div class="elgg-image-block clearfix">
+            <div class="elgg-image">
+                <div class="elgg-avatar elgg-avatar-tiny">
+                    <span class="elgg-icon elgg-icon-hover-menu "></span>
+                    <ul class="elgg-menu elgg-menu-hover">
+                        <li><a href="http://demo.nbtsolutions.com/elgg/profile/admin"><span class="elgg-heading-basic">admin</span>@admin</a></li>
+                    </ul>
+                    <a href="http://demo.nbtsolutions.com/elgg/profile/admin" class="">
+                        <img src="http://demo.nbtsolutions.com/elgg/_graphics/spacer.gif" alt="admin" title="admin" class="" style="background: url(http://demo.nbtsolutions.com/elgg/mod/profile/icondirect.php?lastcache=1375362698&amp;joindate=1375362461&amp;guid=38&amp;size=tiny) no-repeat;">
+                    </a>
+                </div>
+            </div>
+            <div class="elgg-body">
+                <div class="elgg-subtext">
+                    Bob <acronym title="2 August 2013 @ 8:32am">2 days ago</acronym>
+                </div>		
+                <div class="clearfix"></div>
+                <div class="elgg-content">
+                    This is such a great observation! I want to tell all my friends.
+                </div>
+            </div>
+        </div>
+    </li>   
+</ul>
+<textarea></textarea>
+<a href="http://localhost:9999/elgg/investigate/add/49" class="elgg-button elgg-button-action">
+    Submit
+</a>
+</div>
