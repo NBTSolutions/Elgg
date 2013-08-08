@@ -19,7 +19,7 @@
 		elgg_load_css('font-awesome');
 
 		//HEADER.CSS
-		elgg_register_css('header', $css_dir.'header.css');
+		elgg_register_css('header', $css_dir.'header.less');
 		elgg_load_css('header');
 
 		//INDEX_BODY.CSS
@@ -27,31 +27,31 @@
 		elgg_load_css('index_body');
 
 		//FOOTER.CSS
-		elgg_register_css('footer', $css_dir.'footer.css');
+		elgg_register_css('footer', $css_dir.'footer.less');
 		elgg_load_css('footer');
 
 		//PROFILE.CSS
-		elgg_register_css('profile', $css_dir.'profile.css');
+		elgg_register_css('profile', $css_dir.'profile.less');
 		elgg_load_css('profile');
 
 		//MODULES.CSS
-		elgg_register_css('module', $css_dir.'modules.css');
+		elgg_register_css('module', $css_dir.'modules.less');
 		elgg_load_css('module');
 
 		//BUTTONS.CSS
-		elgg_register_css('buttons', $css_dir.'buttons.css');
+		elgg_register_css('buttons', $css_dir.'buttons.less');
 		elgg_load_css('buttons');
 
 		//INNER_PAGE.CSS
-		elgg_register_css('inner_page', $css_dir.'inner_page.css');
+		elgg_register_css('inner_page', $css_dir.'inner_page.less');
 		elgg_load_css('inner_page');
 
 		//ADMIN.CSS
-		elgg_register_css('admin', $css_dir.'admin.css');
+		elgg_register_css('admin', $css_dir.'admin.less');
 		elgg_load_css('admin');
 
 		//TYPOGRAPHY.CSS
-		elgg_register_css('typography', $css_dir.'typography.css');
+		elgg_register_css('typography', $css_dir.'typography.less');
 		elgg_load_css('typography');
 
 		//GRAPH.CSS
