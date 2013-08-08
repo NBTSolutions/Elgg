@@ -47,36 +47,30 @@
     //elgg site
     $site = elgg_get_site_entity();
 
+    //$video = false;
+    //$picture = false;
+
 ?>
 <!-- start html -->
 <h1 id="obs_measurements_heading">Observation Measurements</h1>
 <p>By <a href="<?php echo $site->url.'profile/'.$observation->observer->label; ?>"><?php echo $observation->observer->label; ?></a> on <?php echo date('F nS, Y', strtotime($observation->timestamp)); ?></p>
-<?php if($video OR $picture) { ?>
-    <!-- video and/or pictures -->
-    <div id="obs_media">
-        <div id="obs_image">
-            <h2>Image</h2>
-            <?php if($picture) { ?>
-                <img src="<?php echo $picture->url; ?>" id="obs_thumbnail_image">
-            <?php } else { ?>
-                <h3>No Image Available</h3>
-            <?php } ?>
-        </div>
-        <div id="obs_video">
-            <h2>Video</h2>
-        <?php if($video) { ?>
-        <video id="example_video_1" class="video-js vjs-default-skin" controls preload="auto" width="400" height="400" poster="<?php echo $video->thumbnailUrl; ?>" data-setup='{"example_option":true}'>  
+
+<div id="observation_left_col">
+    <!-- if there is a picture display else show video-->
+    <?php if($picture) { ?>
+    <h2>Image</h2>
+    <div id="obs_image">
+        <img src="<?php echo $picture->url; ?>" id="obs_thumbnail_image">
+    </div>
+    <?php } elseif($video) { ?>
+    <div id="obs_video">
+        <h2>Video</h2>
+        <video id="obs_video_js" class="video-js vjs-default-skin" controls preload="auto" width="400" height="400" poster="<?php echo $video->thumbnailUrl; ?>" data-setup='{"example_option":true}'>  
              <source src="<?php echo $video->url; ?>" type='video/mp4' />  
              <source src="<?php echo str_replace('.mp4', '', $video->url); ?>.webm" type='video/webm' />  
         </video>
-        <?php } else { ?>
-            <h3>No Video Available</h3> 
-        <?php } ?>
-        </div>
     </div>
-<?php } ?>
-
-<div id="observation_data_tables">
+    <?php } ?>
 <h2>Data</h2>
 <?php
 // go over each category type
@@ -99,6 +93,7 @@ foreach($obs_categories as $category => $category_image) {
             $measurement_count = 0;
             foreach($obs_by_category[$category] AS $measurement) {
             ?>
+            <!-- even odd logic -->
             <tr <?php echo ($measurement_count % 2 == 0) ? 'class="even"' : 'class="odd"'; ?>>
                 <td width="125">
                     <span class="measurement_cat_label"><?php echo $measurement->phenomenon->description; ?></span>
@@ -125,7 +120,17 @@ foreach($obs_categories as $category => $category_image) {
 ?>
 </div>
 
-<div id="observation_comments">
+<div id="observation_right_col">
+<!-- video -->
+<?php if($picture AND $video) { ?>
+<h2>Video</h2>
+<div id="obs_video">
+    <video id="example_video_1" class="video-js vjs-default-skin" controls preload="auto" width="400" height="400" poster="<?php echo $video->thumbnailUrl; ?>" data-setup='{"example_option":true}'>  
+         <source src="<?php echo $video->url; ?>" type='video/mp4' />  
+         <source src="<?php echo str_replace('.mp4', '', $video->url); ?>.webm" type='video/webm' />  
+    </video>
+</div>
+<?php } ?>
 <h2>Comments</h2>
 <ul class="elgg-list">
     <li class="elgg-item">
@@ -143,7 +148,7 @@ foreach($obs_categories as $category => $category_image) {
             </div>
             <div class="elgg-body">
                 <div class="elgg-subtext">
-                    Joe <acronym title="2 August 2013 @ 8:32am">6 days ago</acronym>
+                    <a href="http://demo.nbtsolutions.com/elgg/profile/admin">Joe</a> <acronym title="2 August 2013 @ 8:32am">6 days ago</acronym>
                 </div>		
                 <div class="clearfix"></div>
                 <div class="elgg-content">
@@ -167,7 +172,7 @@ foreach($obs_categories as $category => $category_image) {
             </div>
             <div class="elgg-body">
                 <div class="elgg-subtext">
-                    Bob <acronym title="2 August 2013 @ 8:32am">2 days ago</acronym>
+                    <a href="http://demo.nbtsolutions.com/elgg/profile/admin">Bob</a> <acronym title="2 August 2013 @ 8:32am">2 days ago</acronym>
                 </div>		
                 <div class="clearfix"></div>
                 <div class="elgg-content">
