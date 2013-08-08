@@ -1,0 +1,35 @@
+/*RED ORANGE PILL BUTTON*/
+.btn (@radius: 5px) {
+	color: #fff;
+	text-decoration: none;
+	font-size: .9em;
+	text-shadow: 0 1px 0 #000;
+	cursor: pointer;
+	
+	background: #aa3c27;
+	border: 1px solid #b14632;
+	background-image: -moz-linear-gradient(#aa3c27, #792413);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #792413),color-stop(1, #aa3c27));
+	
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	-ms-border-radius: @radius;
+	-o-border-radius: @radius;
+	border-radius: @radius;
+}
+
+.btn-hover {
+	background: #d24f35;
+	border: 1px solid #b14632;
+	background-image: -moz-linear-gradient(#d24f35, #aa3720);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #aa3720),color-stop(1, #d24f35));
+}
+
+.btn-active {
+	background: #aa3720;
+		
+	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .7) inset, 0 1px 0 rgba(255, 255, 255, 1);
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .7) inset, 0 1px 0 rgba(255, 255, 255, 1);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .7) inset, 0 1px 0 rgba(255, 255, 255, 1);
+}
+
