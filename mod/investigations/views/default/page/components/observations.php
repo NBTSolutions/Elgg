@@ -18,8 +18,8 @@
         "precipitation" => 'precipitation_icon.png',
         "ocean" => 'ocean_icon.png', 
         "media" => 'media_icon.png', 
-        "notes" => 'comment_icon.png', 
-        "tags" => 'tags_icon.png'
+        "tags" => 'tags_icon.png',
+        "notes" => 'comment_icon.png'
     );
 
     foreach($observation->measurements as $measurement) {
