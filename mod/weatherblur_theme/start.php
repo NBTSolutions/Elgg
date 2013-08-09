@@ -11,8 +11,8 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		// Register system page handlers
 		elgg_register_page_handler('wbsystem', 'wbsystem_pg_handler');
 
-		$css_dir = $CONFIG->url . 'mod/weatherblur_theme/css/';
-		$js_dir = $CONFIG->url . 'mod/weatherblur_theme/js/';
+		$css_dir = elgg_get_site_url() . 'mod/weatherblur_theme/css/';
+		$js_dir = elgg_get_site_url() . 'mod/weatherblur_theme/js/';
 
 		// include open sans font:
 		elgg_register_css('opensans', 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600,700');

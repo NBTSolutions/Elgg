@@ -11,5 +11,7 @@ $body = elgg_view_form('investigations/find', array(
 	'disable_security' => true,
 ));
 
-echo elgg_view_module('aside', '', $body);
-//echo elgg_view_module('aside', elgg_echo('investigations:searchtag'), $body);
+?>
+<div class="inv-search">
+<?php echo $body; ?>
+</div>

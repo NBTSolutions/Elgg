@@ -38,7 +38,8 @@ function investigations_handle_all_page() {
 	$params = array(
 		'content' => $content,
 		'filter' => '', // hide filtering buttons.
-		'title' => ' ' // hide the title for the view all page.
+		'title' => ' ', // hide the title for the view all page.
+		'class' => 'investigation-list'
 	);
 	$body = elgg_view_layout('one_column', $params);
 
