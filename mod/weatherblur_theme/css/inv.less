@@ -1,0 +1,257 @@
+@import "functions.less";
+@import "typography.less";
+@import "button2.less";
+
+@background-base: #fffde8;
+@background-selected: #c6c3b0;
+@reddish: #ab3e4e;
+
+div.elgg-page-body {
+	> div.elgg-inner {
+		.borderline(0, 1px, 0, 1px);
+		border-top: none;
+	}
+}
+
+/* hide tinymce toggle link */
+.elgg-menu-item-tinymce-toggler {
+	display: none;
+}
+
+div.inv-detail {
+	p {
+		.font(15px, darken(@base-text, 20%));
+
+		/* this is the image in a discussion, potential for disastrous formatting = high! */
+		a img {
+			float: left;
+			margin-bottom: 6px;
+		}
+	}
+
+	div.summary {
+		padding: 45px 0;
+		.borderline(0, 0, 1px, 0);
+
+		h1 {
+			.font(25px, @blue-text, 600);
+		}
+
+		div.inv-icon {
+			float: left;
+			margin: 0 20px;
+			border: 3px solid white;
+			box-shadow: 0px 1px 3px #ccc;
+		}
+
+		div.summary-body {
+			margin-top: 1em;
+			.font(15px, darken(@base-text, 20%));
+		}
+	}
+
+	div.elgg-sidebar {
+		margin: 0;
+		padding: 20px 15px;
+		background-color: @background-base;
+		.borderline(0, 1px, 0, 0);
+
+		> ul {
+			margin: 0;
+			float: none;
+			width: 100%;
+
+			li {
+				display: block;
+				height: 27px;
+				margin: 0 0 6px;
+				padding: 0 0 0 40px;
+				border: none;
+				background-image: url('../graphics/icon.png');
+				background-position: center left;
+				background-repeat: no-repeat;
+
+				a {
+					.font-normal(13px);
+					line-height: 23px;
+					border: none;
+					background: transparent;
+					&:hover {
+						background: transparent;
+					}
+					&:active {
+						backgroud: transparent;
+					}
+
+					span.color {
+						background-color: @reddish;
+					}
+				}
+			}
+		}
+
+		div.create-discussion {
+			margin: 30px 0 0;
+
+			div.start {
+				.green-button;
+				padding: 5px;
+				.font(13px, white, 700);
+			}
+
+			ul {
+				display: none;
+				margin: 5px auto 0;
+				background-color: @offwhite;
+				border: 1px solid #ddd;
+				border-radius: 5px;
+			}
+
+			li {
+				display: block;
+				margin: 0 0 0 10px;
+
+				a {
+					.font(13px, @base-text);
+					line-height: 30px;
+					display: inline-block;
+					vertical-align: top;
+					&:hover {
+						color: @blue-text;
+					}
+				}
+			}
+		}
+
+		div.people-block {
+			div.person {
+				margin-top: 30px;
+
+				h4 {
+					.font(13px, @base-text);
+				}
+
+				> div {
+					.font(15px, @blue-text, 600);
+				}
+
+				a {
+					margin-top: 15px;
+					display: block;
+				}
+			}
+		}
+
+		div.members {
+			.elgg-head {
+				border: none;
+				margin: 0;
+
+				h3 {
+					.font(13px, @base-text);
+				}
+			}
+
+			div.mts a {
+				.orange-link(15px);
+			}
+		}
+
+		div.proposal {
+			.green-button;
+			padding: 5px;
+			.font(13px, white, 700);
+			a {
+				.link(white);
+			}
+		}
+
+	}
+
+	#investigation-detail {
+		padding: 24px 0 0 240px;
+
+		div.head {
+			.borderline(0, 0, 1px, 0);
+			padding: 0 12px 40px;
+
+			.hint {
+				float: right;
+				.font(12px, @base-text);
+			}
+
+			h1 {
+				.font(15px, @base-text, 700);
+			}
+
+			ul.filter-select {
+				margin: 20px 0 0 0;
+				padding: 0;
+				height: 50px;
+
+				li {
+					.borderline;
+					float: left;
+					text-align: center;
+					width: 119px;
+					height: 49px;
+					box-shadow: 0px 2px 1px white inset;
+				}
+				li:first-child {
+					border-bottom-left-radius: 3px;
+					border-top-left-radius: 3px;
+				}
+				li:last-child {
+					border-bottom-right-radius: 3px;
+					border-top-right-radius: 3px;
+				}
+				li.selected {
+					background-color: @background-selected;
+					box-shadow: 0px 1px 4px rgba(0,0,0,0.3) inset;
+				}
+
+				a {
+					.font(11px, @base-text);
+					display: inline-block;
+					width: 100%;
+					margin: 0;
+					text-align: center;
+
+					div {
+						display: block;
+						margin: 0 auto;
+						width: 30px;
+						height: 30px;
+					}
+				}
+
+
+			}
+
+		}
+
+		> ul.discussion-list {
+			float: left; /* contains everything within it */
+			clear: none;
+			border: none;
+			margin: 0;
+			padding: 0;
+
+			li.discussion {
+				width: 725px;
+
+				&:hover {
+					background-color: @offwhite;
+
+					.editing {
+						display: block;
+					}
+				}
+
+				.editing {
+					display: none;
+				}
+			}
+		}
+	}
+}

@@ -22,25 +22,25 @@ if (!$owner) {
 }
 
 ?>
-<div class="groups-profile clearfix elgg-image-block">
-	<div class="elgg-image">
-		<div class="groups-profile-icon">
-			<?php
-				// we don't force icons to be square so don't set width/height
-				echo elgg_view_entity_icon($inv, 'large', array(
-					'href' => '',
-					'width' => '',
-					'height' => '',
-				));
-			?>
-		</div>
+
+<div class="summary">
+	<div class="inv-icon">
+<?php
+// we don't force icons to be square so don't set width/height
+echo elgg_view_entity_icon($inv, 'large', array(
+	'href' => '',
+	'width' => '',
+	'height' => '',
+));
+?>
 	</div>
 
+	<h1>Investigation: <?php echo $vars['title']; ?></h1>
+
 	<div class="summary-body">
-		<h3>Summary:</h3>
 		<?php echo $inv->get('description'); ?>
 	</div>
+
+	<div class="clearfix"></div>
 </div>
-<?php
-?>
 

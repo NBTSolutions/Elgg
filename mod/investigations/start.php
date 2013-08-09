@@ -383,15 +383,14 @@ function investigation_setup_sidebar_menus() {
  */
 function investigation_page_handler($page) {
 	global $CONFIG;
-	elgg_register_css('button', $CONFIG->url . 'mod/investigations/css/button.less');
+	elgg_register_css('functions', elgg_get_site_url() . 'mod/weatherblur_theme/css/functions.less');
+	elgg_load_css('functions');
+	elgg_register_css('button', elgg_get_site_url() . 'mod/weatherblur_theme/css/button2.less');
 	elgg_load_css('button');
-	elgg_register_css('bodywork', $CONFIG->url . 'mod/investigations/css/bodywork.less');
-	elgg_load_css('bodywork');
-	elgg_register_css('list-block', $CONFIG->url . 'mod/investigations/css/list-block.less');
-	elgg_load_css('list-block');
-	elgg_register_css('sidebar', $CONFIG->url . 'mod/investigations/css/sidebar.less');
-	elgg_load_css('sidebar');
-
+	elgg_register_css('inv-less', elgg_get_site_url() . 'mod/weatherblur_theme/css/inv.less');
+	elgg_load_css('inv-less');
+	elgg_register_css('discussion', elgg_get_site_url() . 'mod/weatherblur_theme/css/discussion_block.less');
+	elgg_load_css('discussion');
 
 	// forward old profile urls
 	if (is_numeric($page[0])) {
@@ -975,7 +974,8 @@ function investigation_discussion_init() {
 	//add_group_tool_option('forum', elgg_echo('investigations:enableforum'), true);
 
 	//elgg_extend_view('investigations/tool_latest', 'discussion/group_module');
-	elgg_extend_view('investigations/tool_latest', 'discussion/investigation_modules');
+	//elgg_extend_view('investigations/tool_latest', 'discussion/investigation_modules');
+	//not needed, jeeez.
 
 	// notifications
 	register_notification_object('object', 'investigationforumtopic', elgg_echo('investigation_discussion:notification:topic:subject'));
@@ -1019,6 +1019,13 @@ function investigation_discussion_forum_page_handler($page) {
 function investigation_discussion_page_handler($page) {
 
 	elgg_load_library('elgg:investigation_discussion');
+
+	elgg_register_css('functions', elgg_get_site_url() . 'mod/weatherblur_theme/css/functions.less');
+	elgg_load_css('functions');
+	elgg_register_css('discussion-detail', elgg_get_site_url() . 'mod/weatherblur_theme/css/discussion_detail.less');
+	elgg_load_css('discussion-detail');
+	elgg_register_css('discussion', elgg_get_site_url() . 'mod/weatherblur_theme/css/discussion_block.less');
+	elgg_load_css('discussion');
 
 	if (!isset($page[0])) {
 		$page[0] = 'all';

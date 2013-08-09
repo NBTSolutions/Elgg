@@ -1,0 +1,54 @@
+@import "functions.less";
+@import "typography.less";
+@import "button2.less";
+
+div.discussion-detail {
+	div.elgg-head {
+		h2 {
+			display: none;
+		}
+	}
+
+	#group-replies {
+		h3 {
+			.font(20px, @blue-text, 700);
+		}
+
+		> ul {
+			> li {
+				.borderline;
+				padding: 15px;
+				margin: 15px;
+
+				&:hover {
+					background-color: @offwhite;
+
+					.elgg-menu-annotation {
+						display: block;
+					}
+				}
+
+				.elgg-menu-annotation {
+					display: none;
+				}
+
+				.mbn {
+					a, acronym {
+						.font-normal;
+					}
+				}
+
+
+				p {
+					.font(15px, darken(@base-text, 20%));
+
+					/* this is the image in a discussion, potential for disastrous formatting = high! */
+					a img {
+						float: left;
+						margin-bottom: 6px;
+					}
+				}
+			}
+		}
+	}
+}

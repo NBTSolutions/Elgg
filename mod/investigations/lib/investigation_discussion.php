@@ -74,7 +74,7 @@ function investigation_discussion_handle_list_page($guid) {
 	group_gatekeeper();
 
 	$title = elgg_echo('item:object:investigationforumtopic');
-	
+
 	$options = array(
         'type' => 'object',
 		'subtypes' => $subtype,
@@ -114,7 +114,7 @@ function investigation_discussion_handle_edit_page($type, $guid) {
 			register_error(elgg_echo('investigation:notfound'));
 			forward();
 		}
-        
+
 		// make sure user has permissions to add a topic to container
 		if (!$investigation->canWriteToContainer(0, 'object', 'investigationforumtopic')) {
 			register_error(elgg_echo('investigations:permissions:error'));
@@ -191,7 +191,9 @@ function investigation_discussion_handle_view_page($guid) {
 	elgg_push_breadcrumb($group->name, "investigation_discussion/owner/$group->guid");
 	elgg_push_breadcrumb($topic->title);
 
-	$content = elgg_view_entity($topic, array('full_view' => true));
+	$content = elgg_view('investigations/discussion_item', array('entity' => $topic));
+
+	//$content = elgg_view_entity($topic, array('full_view' => true));
 
 	if ($topic->status == 'closed') {
 		$content .= elgg_view('discussion/replies', array(
@@ -218,8 +220,9 @@ function investigation_discussion_handle_view_page($guid) {
 
 	$params = array(
 		'content' => $content,
-		'title' => $topic->title,
+		'title' => false,
 		'filter' => '',
+		'class' => 'discussion-detail'
 	);
 	$body = elgg_view_layout('content', $params);
 
@@ -285,6 +288,7 @@ function elgg_view_investigation_discussion_list($entities, $vars = array(), $of
 		'list_type' => $list_type,
 		'list_type_toggle' => false,
 		'offset' => $offset,
+		'limit' => 30
 	);
 
 	$vars = array_merge($defaults, $vars);
@@ -292,6 +296,6 @@ function elgg_view_investigation_discussion_list($entities, $vars = array(), $of
 	if ($vars['list_type'] != 'list') {
 		return elgg_view('page/components/gallery', $vars);
 	} else {
-		return elgg_view('page/components/list', $vars);
+		return elgg_view('page/components/discussion_list', $vars);
 	}
 }

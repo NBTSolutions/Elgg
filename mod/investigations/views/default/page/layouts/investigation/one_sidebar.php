@@ -15,11 +15,7 @@
 ?>
 <div class="elgg-layout elgg-layout-one-sidebar clearfix inv-detail">
 
-	<h1>Investigation: <?php echo $vars['title']; ?></h1>
-
-	<div class="summary">
-		<?php echo elgg_view('investigations/profile/summary', $vars); ?>
-	</div>
+	<?php echo elgg_view('investigations/profile/summary', $vars); ?>
 
 	<div class="elgg-sidebar">
 		<?php
@@ -27,7 +23,7 @@
 		?>
 	</div>
 
-	<div id="investigation-detail" class="elgg-main elgg-body">
+	<div id="investigation-detail">
 			<?php
 			if (isset($vars['header'])) {
 				$vars['header_override'] = $vars['header'];

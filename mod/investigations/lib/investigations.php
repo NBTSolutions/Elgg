@@ -289,7 +289,7 @@ function investigations_handle_profile_page($guid) {
 
 	$summary = elgg_view('investigations/profile/summary', array('entity' => $group));
 
-	$content = elgg_view('investigations/profile/layout', array('entity' => $group));
+	$content = elgg_view('discussion/investigation_modules', array('entity' => $group));
 
 	if (group_gatekeeper(false)) {
 

@@ -1,0 +1,97 @@
+@import "functions.less";
+@import "typography.less";
+@import "button2.less";
+
+div.discussion {
+	.borderline(0, 0, 1px, 0);
+	padding: 20px 12px;
+
+	.poster {
+		float: left;
+		margin-right: 7px;
+
+		img {
+			border-radius: 3px;
+		}
+	}
+	.type-icon {
+		clear: left;
+		float: left;
+		margin: 5px 7px 5px -3px;
+		height: 30px;
+		width: 30px;
+	}
+
+	.editing {
+		float: right;
+		display: none;
+
+		li {
+			float: left;
+			margin-left: 15px;
+		}
+
+		span.icon-edit {
+			display: inline-block;
+			background-image: url('../../weatherblur_theme/graphics/icon-edit.png');
+			height: 16px;
+			width: 16px;
+		}
+
+		.elgg-menu-item-access, .elgg-menu-item-likes, .elgg-menu-item-likes-count { display: none; }
+	}
+
+	.social {
+		float: right;
+		clear: right;
+		margin-top: 5px;
+
+		li {
+			float: left;
+			.font-normal;
+			margin-left: 30px;
+
+			span {
+				display: inline-block;
+				margin-right: 5px;
+			}
+			span.bubble {
+				background-position: 0 -1080px;
+			}
+			span.thumb {
+				background-position: 0 -1350px;
+			}
+		}
+	}
+
+	h3 {
+		.font(20px, @blue-text, 700);
+		a {
+			.link(@blue-text);
+		}
+	}
+	.subtext {
+		margin-top: 10px;
+		.font(12px, @base-text);
+	}
+
+	.tags {
+		clear: both;
+		margin-top: 1em;
+
+		.elgg-icon-tag {
+			background-position: 0 -1242px;
+		}
+	}
+
+	p {
+		.font(15px, darken(@base-text, 20%));
+
+		/* this is the image in a discussion, potential for disastrous formatting = high! */
+		a img {
+			float: left;
+			margin-bottom: 6px;
+		}
+	}
+}
+
