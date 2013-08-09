@@ -285,6 +285,7 @@ function elgg_view_investigation_discussion_list($entities, $vars = array(), $of
 		'list_type' => $list_type,
 		'list_type_toggle' => false,
 		'offset' => $offset,
+		'limit' => 30
 	);
 
 	$vars = array_merge($defaults, $vars);
