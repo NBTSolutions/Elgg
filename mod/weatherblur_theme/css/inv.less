@@ -18,6 +18,31 @@ div.elgg-page-body {
 	display: none;
 }
 
+div.investigation-list {
+	.elgg-main {
+		> .elgg-head {
+			float: right;
+			border: none;
+
+			h2 {
+				display: none;
+			}
+		}
+	}
+
+	div.inv-search {
+		.elgg-input-search {
+			width: 400px;
+			height: 50px;
+			margin-right: 10px;
+		}
+
+		.elgg-button-submit {
+			height: 50px;
+		}
+	}
+}
+
 div.inv-detail {
 	p {
 		.font(15px, darken(@base-text, 20%));
