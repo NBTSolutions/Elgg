@@ -30,11 +30,20 @@
 		$u_guid = $user['guid'];
 		$u_obj = get_user($u_guid);
 		$profile_type_guid = $u_obj->custom_profile_type;
-        $profile_type = get_entity($profile_type_guid);
-		$u_type = $profile_type->getTitle();
-		
+		$u_type = "Unknown";
+		if ($profile_type_guid)
+		{
+			$profile_type = get_entity($profile_type_guid);
+			$u_type = $profile_type->getTitle();
+		}
+	
 		$name = $user['name'];
-		$login_count = $user->login_count;
+		$login_count = 0;
+		if ($user->login_count)
+		{
+			$login_count = $user->login_count;
+		}
+		
 		$last_login = $user['last_login'];
 		$first_login = $user['time_created'];
 		$relations = countem(get_users_membership($u_guid)); //get all the investigations
@@ -102,9 +111,7 @@
 		//with members
 		$with_members = 0;
 		
-		
-
-			
+	
 		//output 
 		echo $name;
 		echo ",";
