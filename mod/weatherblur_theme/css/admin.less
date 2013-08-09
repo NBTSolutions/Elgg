@@ -39,7 +39,7 @@
 	SUBHEADERS 
 -----------------------------------------------------------------------*/
 .elgg-page-admin > .elgg-inner > .elgg-page-body > .elgg-inner > .elgg-layout-one-sidebar > .elgg-body > .elgg-module > .elgg-head,
-.elgg-module-inline > .elgg-head  { background: #cee5b4; }
+.elgg-module-inline > .elgg-head  { background: #e9e7dc; }
 
 .elgg-page-admin > .elgg-inner > .elgg-page-body > .elgg-inner > .elgg-layout-one-sidebar > .elgg-body > .elgg-module > .elgg-head h3,
 .elgg-page-admin > .elgg-inner > .elgg-page-body > .elgg-inner > .elgg-layout-one-sidebar > .elgg-body > .elgg-form > fieldset > .elgg-module-inline > .elgg-head h3 { color: #4F6635; }
@@ -67,11 +67,25 @@
 .elgg-page-admin > .elgg-inner > .elgg-page-header { background: #fff; }
 
 /*-----------------------------------------------------------------------
-	LEFT CONTENT
+	RIGHT CONTENT
 -----------------------------------------------------------------------*/
 .elgg-page-admin > .elgg-inner > .elgg-page-body > .elgg-inner > .elgg-layout-one-sidebar > .elgg-body > .elgg-head h2 { color: #666; }
 
-.elgg-table-alt td, th { border-bottom: 1px solid #ddd; }
+.elgg-table-alt td, th { 
+	background: none;
+	border: none;
+	padding: 7px;
+}
+
+.elgg-table-alt  {
+	border-top: none;
+}
+
+.elgg-table-alt th {
+	background: none;
+	border-top: 1px solid #fff;
+}
+
 
 /***** PAGINATION *****/
 .elgg-pagination a, .elgg-pagination span {
@@ -150,12 +164,21 @@
 #logbrowser-search-area > div a { color: #41afd7; }
 
 /***** Plugin List *****/
-.elgg-plugin { border-color: #fff; }
+#elgg-plugin-list > ul > li > .elgg-plugin {
+	background: #dfddd4;
+	border: 1px solid #bfbdae;
+} 
 
-.elgg-plugin.elgg-state-active { background: white; }
+#elgg-plugin-list > ul > li > .elgg-plugin:hover {border: 1px solid #0090b6;}
 
-.elgg-plugin.elgg-state-inactive { background: white; }
+#elgg-plugin-list > ul > li > .elgg-state-active { background: #fff; }
 
+#elgg-plugin-list > ul > li > .elgg-plugin > .elgg-image-block {
+	border: none;
+	background: none;
+}
+
+/*------------------------------------------------------*/
 .elgg-image-block {
 	background: none;
 	border: 1px solid #efefef;
@@ -187,27 +210,35 @@
 /*-----------------------------------------------------------------------
 	SIDEBAR
 -----------------------------------------------------------------------*/
+.elgg-admin-sidebar-menu > .elgg-body h2 {font-size: 1.5em;}
+
+.elgg-admin-sidebar-menu li.elgg-state-selected > a {background: #e6e4d6;}
+
+.elgg-admin-sidebar-menu .elgg-child-menu {padding-left: 15px;}
+
 .elgg-menu-page-administer li a,
 .elgg-menu-page-configure li a {
+	background: #e6e4d6;
+	border: 1px solid #bfbdae;
 	color: #666;
-	background: #e6e6e6;
-	background-image: -moz-linear-gradient(#f8f8f8, #eee);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #f8f8f8));
+	text-shadow: none;
+	padding: 7px !important;
+	-moz-box-shadow: inset 0 1px 0 #f6f4ea;
+	-webkit-box-shadow: inset 0 1px 0 #f6f4ea;
+	box-shadow: inset 0 1px 0 #f6f4ea;
 }
 
 .elgg-menu-page-administer li a:hover,
 .elgg-menu-page-configure li a:hover {
-	color: #2e597b;
-	border: 1px solid #99c2cc;
-	background: #b4dbe3;
-	background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #b4dbe3),color-stop(1, #d0ebf3));
+	background: #d9d6c0;
+	border: 1px solid #bfbdae;
+	color: #666;
 }
 
 .elgg-menu-page-administer li a:active,
 .elgg-menu-page-configure li a:active {
-	-moz-box-shadow: 0 1px 2px rgba(255, 255, 255, 7) inset; 
-	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset; 
+	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset; 
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
 	position: relative;
 	top: 1px;
@@ -216,8 +247,12 @@
 /*-----------------------------------------------------------------------
 	FOOTER 
 -----------------------------------------------------------------------*/
+.elgg-page-admin > .elgg-inner > .elgg-page-body {border-bottom: 0;}
+
 .elgg-page-admin > .elgg-inner > .elgg-page-footer,
 .elgg-page-admin > .elgg-inner > .elgg-page-footer > .elgg-inner > .elgg-menu-admin-footer { background: #fff; }
+
+.elgg-menu-hz > li, .elgg-menu-hz > li:after, .elgg-menu-hz > li > a {font-weight: normal;}
 
 
 
@@ -231,32 +266,63 @@
 -----------------------------------------------------------------------*/
 .elgg-form-usersettings-save,
 .elgg-form-usersettings-save > fieldset > .elgg-module > div { 
-	margin: 0 auto; width: 300px; 
+	 width: 300px; 
+	 margin: 0 0 10px 15px;
 }
 
-.elgg-module-info > .elgg-head { background: #cee5b4; }
+.elgg-module-info > .elgg-head { background: #e9e7dc; }
 
 .elgg-module > .elgg-head h3,
 .elgg-module-inline > .elgg-head h3 { color: #4F6635; }
+
+.elgg-form-alt > fieldset > .elgg-foot {
+	border: none;
+	padding: 10px 15px;
+}
+
+
+/****TABS****/
+.elgg-tabs {
+	margin-top: 30px;
+	border-bottom: 1px solid #c6c3b0;
+}
+
+.elgg-tabs .elgg-state-selected { border-color: #c6c3b0;}
+
+.elgg-tabs li {
+	border-color: #d5d3c8;
+}
+
+.elgg-tabs a {
+	height: 30px;
+	padding: 5px 20px 0 20px;
+	background: #eceae0;
+}
+
+.elgg-tabs .elgg-state-selected a {
+	color: #0090b6;
+	background: #f3f1e4;
+	height: 30px;
+}
+
 
 /*-----------------------------------------------------------------------
 	SIDEBAR
 -----------------------------------------------------------------------*/
 .elgg-sidebar > .elgg-menu-page li a { 
+	background: #e6e4d6;
+	border: 1px solid #bfbdae;
 	color: #666;
-	border-radius: 5px !important;	
-	border: 1px solid #bbb;
-	background: #e6e6e6;
-	background-image: -moz-linear-gradient(#f8f8f8, #eee);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #f8f8f8));
+	text-shadow: none;
+	padding: 7px !important;
+	-moz-box-shadow: inset 0 1px 0 #f6f4ea;
+	-webkit-box-shadow: inset 0 1px 0 #f6f4ea;
+	box-shadow: inset 0 1px 0 #f6f4ea;
 }
 
 .elgg-sidebar > .elgg-menu-page li a:hover {
-	color: #2e597b !important;
-	border: 1px solid #99c2cc;
-	background: #b4dbe3;
-	background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #b4dbe3),color-stop(1, #d0ebf3));
+	background: #d9d6c0;
+	color: #666;
 }
 
 .elgg-sidebar > .elgg-menu-page li a:active {
@@ -273,6 +339,7 @@
 										MESSAGES
 										
 //////////////////////////////////////////////////////////////////*/
+
 .elgg-message.elgg-state-error {
 	background: #ac2424;
 	border-color: #fff;

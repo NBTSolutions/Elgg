@@ -360,7 +360,7 @@ $english = array(
 
 	'avatar' => 'Avatar',
 	'avatar:create' => 'Create your avatar',
-	'avatar:edit' => 'Edit avatar',
+	'avatar:edit' => 'Change Picture', //default: Edit avatar
 	'avatar:preview' => 'Preview',
 	'avatar:upload' => 'Upload a new avatar',
 	'avatar:current' => 'Current avatar',
@@ -376,7 +376,7 @@ $english = array(
 	'avatar:remove:success' => 'Removing the avatar succeeded',
 	'avatar:remove:fail' => 'Avatar remove failed',
 
-	'profile:edit' => 'Edit profile',
+	'profile:edit' => 'Change profile',//default: Edit profile
 	'profile:aboutme' => "About me",
 	'profile:description' => "About me",
 	'profile:briefdescription' => "Brief description",
