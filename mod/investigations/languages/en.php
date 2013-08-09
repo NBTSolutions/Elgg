@@ -19,8 +19,8 @@ $english = array(
 	'investigate:add' => "<i class='icon-plus'></i>&nbsp;Create a new investigation",
 	'investigations:edit' => "Edit investigation",
 	'investigations:delete' => 'Delete Investigation',
-	'investigations:membershiprequests' => 'Manage join requests',
-	'investigations:membershiprequests:pending' => 'Manage join requests (%s)',
+	'investigations:membershiprequests' => 'Join requests',
+	'investigations:membershiprequests:pending' => 'Join requests<span class="count">%s</span>',
 	'investigations:invitations' => 'Investigation invitations',
 	'investigations:invitations:pending' => 'Investigation invitations (%s)',
 
@@ -37,6 +37,8 @@ $english = array(
 	'investigations:my_status:group_member' => 'You are in this group',
 	'investigations:subscribed' => 'Investigation notifications on',
 	'investigations:unsubscribed' => 'Investigation notifications off',
+
+	'edit' => '<span class="icon-edit"></span>',
 
 	'investigations:members:title' => 'Members of %s',
 	'investigations:members:more' => "View all members",

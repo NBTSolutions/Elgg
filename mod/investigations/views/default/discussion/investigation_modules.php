@@ -7,7 +7,7 @@ $site = elgg_get_site_entity();
 
 elgg_load_library('elgg:investigation_discussion');
 
-$subtype_get = get_input('discussion_subtype');
+$subtype_get = get_input('discussion_subtype', 'all');
 
 switch ($subtype_get) {
     case 'map':
@@ -38,7 +38,9 @@ $options = array(
 	);
 ?>
 
-<h1>Current Discussions:</h1>
+<div class="head">
+	<div class="hint">Click icons below to filter discussions.</div>
+	<h1>Current Discussions:</h1>
 <?php
 
 if (!$group->isMember(elgg_get_logged_in_user_guid()))  {
@@ -46,15 +48,23 @@ if (!$group->isMember(elgg_get_logged_in_user_guid()))  {
 	echo '<p>' . elgg_echo('investigations:closedgroup:request') . '</p>';
 }
 
+$dis_types = array('text'=>'', 'image'=>'', 'video'=>'', 'graph'=>'', 'map'=>'');
+if (isset($dis_types[$subtype_get])) {
+	$dis_types[$subtype_get] = 'selected';
+	$dis_types['all'] = '';
+} else {
+	$dis_types['all'] = 'selected';
+}
 ?>
-<div class="filter-select">
-	<label>Show only:</label>
-	<a href="?discussion_subtype=text"><div class="icon" id="user-discussions-posted"></div>Questions/Ideas</a>
-	<a href="?discussion_subtype=image"><div class="icon" id="user-images-posted"></div>Pictures</a>
-	<a href="?discussion_subtype=video"><div class="icon" id="user-videos"></div>Videos</a>
-	<a href="?discussion_subtype=graph"><div class="icon" id="user-graphs-posted"></div>Graphs</a>
-	<a href="?discussion_subtype=map"><div class="icon" id="user-maps-posted"></div>Maps</a>
-	<a href="?discussion_subtype=all" class="all">All</a>
+<ul class="filter-select">
+<li class="<?php echo $dis_types['text']; ?>"><a href="?discussion_subtype=text"><div class="icon" id="user-discussions-posted"></div>Questions/Ideas</a></li>
+	<li class="<?php echo $dis_types['image']; ?>"><a href="?discussion_subtype=image"><div class="icon" id="user-images-posted"></div>Pictures</a></li>
+	<li class="<?php echo $dis_types['video']; ?>"><a href="?discussion_subtype=video"><div class="icon" id="user-videos"></div>Videos</a></li>
+	<li class="<?php echo $dis_types['graph']; ?>"><a href="?discussion_subtype=graph"><div class="icon" id="user-graphs-posted"></div>Graphs</a></li>
+	<li class="<?php echo $dis_types['map']; ?>"><a href="?discussion_subtype=map"><div class="icon" id="user-maps-posted"></div>Maps</a></li>
+	<li class="<?php echo $dis_types['all']; ?>"><a href="?discussion_subtype=all"><div class="icon" id="user-all-posted"></div>All</a></li>
+</ul>
+
 </div>
 <?php
 
