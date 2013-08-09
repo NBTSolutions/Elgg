@@ -6,7 +6,7 @@ $english = array(
 	 * Menu items and titles
 	 */
 
-	'messageboard:board' => "Message board",
+	'messageboard:board' => "My Message board",
 	'messageboard:messageboard' => "message board",
 	'messageboard:viewall' => "View all",
 	'messageboard:postit' => "Post",

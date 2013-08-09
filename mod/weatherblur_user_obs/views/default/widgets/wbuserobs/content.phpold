@@ -1,0 +1,9 @@
+<?php
+global $CONFIG;  
+  
+?>
+<div id="wb-obs-stats">
+	<h1>hi</h1>
+</div>
+
+
