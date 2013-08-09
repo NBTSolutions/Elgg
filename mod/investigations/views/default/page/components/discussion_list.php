@@ -48,7 +48,11 @@ if ($pagination && $count) {
 if (is_array($items) && count($items) > 0) {
 ?>
 <ul class="discussion-list">
-<?php foreach ($items as $item) { print elgg_view('investigations/discussion_item', array('entity'=>$item)); } ?>
+<?php foreach ($items as $item) { ?>
+	<li class="discussion">
+	<?php echo elgg_view('investigations/discussion_item', array('entity'=>$item)); ?>
+	</li>
+<?php } ?>
 </ul>
 <?php print $nav;
 }

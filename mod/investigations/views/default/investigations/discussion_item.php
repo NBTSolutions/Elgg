@@ -61,7 +61,7 @@ if (elgg_in_context('widgets')) {
 	$metadata = '';
 }
 
-$subtitle = "$poster_text $date $replies_link";
+$subtitle = "$poster_text $date";
 
 /*params = array(*/
 	//'entity' => $topic,
@@ -76,32 +76,28 @@ $subtitle = "$poster_text $date $replies_link";
 
 $body = elgg_view('output/longtext', array('value' => $topic->description));
 
-$likes = 1;
-$comments = 1;
-// $likes = likes_count($topic->getGUID());
-// $comments = $topic->countComments();
+$likes = likes_count($topic);
+//$comments = $topic->countComments();
+// dont' have comment system built up yet, so we have to use replies here
+$comments = $num_replies;
 
 ?>
-<li class="discussion">
+<div class="discussion">
 	<a class="poster" href="<?php echo $poster->getURL(); ?>"><img src="<?php echo $poster->getIconURL('tiny'); ?>" title="<?php echo $poster->get('name'); ?>"/></a>
 <?php if ($topic->canEdit(elgg_get_logged_in_user_guid())) { ?>
 	<?php echo $metadata; ?>
 <?php } ?>
-	<h3><?php echo $topic->title; ?></h3>
+	<h3><?php echo elgg_view('output/url', array('href' => $topic->getURL(), 'text' => $topic->title)); ?></h3>
 	<ul class="social">
-<?php if ($likes) { ?>
-		<li><span class="elgg-icon thumb"></span><?php echo $likes; ?> likes</li>
-<?php }
-if ($comments) { ?>
+		<li><?php echo elgg_view('likes/button', array('entity'=>$topic)); echo $likes; ?> likes</li>
 		<li><span class="elgg-icon bubble"></span><?php echo $comments; ?> comments</li>
-<?php } ?>
 	</ul>
 	<div class="subtext"><?php echo $subtitle; ?></div>
 	<?php echo $body; ?>
 <?php if ($tags) { ?>
 	<div class="tags"><?php echo $tags; ?></div>
 <?php } ?>
-</li>
+</div>
 
 <?php
 	/*v*/

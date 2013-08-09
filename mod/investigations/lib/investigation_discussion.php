@@ -191,7 +191,9 @@ function investigation_discussion_handle_view_page($guid) {
 	elgg_push_breadcrumb($group->name, "investigation_discussion/owner/$group->guid");
 	elgg_push_breadcrumb($topic->title);
 
-	$content = elgg_view_entity($topic, array('full_view' => true));
+	$content = elgg_view('investigations/discussion_item', array('entity' => $topic));
+
+	//$content = elgg_view_entity($topic, array('full_view' => true));
 
 	if ($topic->status == 'closed') {
 		$content .= elgg_view('discussion/replies', array(
@@ -218,8 +220,9 @@ function investigation_discussion_handle_view_page($guid) {
 
 	$params = array(
 		'content' => $content,
-		'title' => $topic->title,
+		'title' => false,
 		'filter' => '',
+		'class' => 'discussion-detail'
 	);
 	$body = elgg_view_layout('content', $params);
 

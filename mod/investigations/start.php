@@ -380,10 +380,14 @@ function investigation_setup_sidebar_menus() {
  */
 function investigation_page_handler($page) {
 	global $CONFIG;
+	elgg_register_css('functions', elgg_get_site_url() . 'mod/weatherblur_theme/css/functions.less');
+	elgg_load_css('functions');
 	elgg_register_css('button', elgg_get_site_url() . 'mod/weatherblur_theme/css/button2.less');
 	elgg_load_css('button');
 	elgg_register_css('inv-less', elgg_get_site_url() . 'mod/weatherblur_theme/css/inv.less');
 	elgg_load_css('inv-less');
+	elgg_register_css('discussion', elgg_get_site_url() . 'mod/weatherblur_theme/css/discussion_block.less');
+	elgg_load_css('discussion');
 
 	// forward old profile urls
 	if (is_numeric($page[0])) {
@@ -1012,6 +1016,13 @@ function investigation_discussion_forum_page_handler($page) {
 function investigation_discussion_page_handler($page) {
 
 	elgg_load_library('elgg:investigation_discussion');
+
+	elgg_register_css('functions', elgg_get_site_url() . 'mod/weatherblur_theme/css/functions.less');
+	elgg_load_css('functions');
+	elgg_register_css('discussion-detail', elgg_get_site_url() . 'mod/weatherblur_theme/css/discussion_detail.less');
+	elgg_load_css('discussion-detail');
+	elgg_register_css('discussion', elgg_get_site_url() . 'mod/weatherblur_theme/css/discussion_block.less');
+	elgg_load_css('discussion');
 
 	if (!isset($page[0])) {
 		$page[0] = 'all';
