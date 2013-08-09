@@ -63,6 +63,13 @@ if (elgg_in_context('widgets')) {
 
 $subtitle = "$poster_text $date";
 
+$subtype = $topic->getSubType();
+$icon_id = 'user-discussions-posted';
+$icon_id = ($subtype == 'investigationforumtopic_image') ? 'user-images-posted' : $icon_id;
+$icon_id = ($subtype == 'investigationforumtopic_graph') ? 'user-graphs-posted' : $icon_id;
+$icon_id = ($subtype == 'investigationforumtopic_map') ? 'user-maps-posted' : $icon_id;
+$icon_id = ($subtype == 'investigationforumtopic_video') ? 'user-videos' : $icon_id;
+
 /*params = array(*/
 	//'entity' => $topic,
 	//'metadata' => $metadata,
@@ -87,6 +94,7 @@ $comments = $num_replies;
 <?php if ($topic->canEdit(elgg_get_logged_in_user_guid())) { ?>
 	<?php echo $metadata; ?>
 <?php } ?>
+	<div class="type-icon" id="<?php echo $icon_id; ?>"></div>
 	<h3><?php echo elgg_view('output/url', array('href' => $topic->getURL(), 'text' => $topic->title)); ?></h3>
 	<ul class="social">
 		<li><?php echo elgg_view('likes/button', array('entity'=>$topic)); echo $likes; ?> likes</li>
