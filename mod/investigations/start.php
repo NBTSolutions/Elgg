@@ -47,6 +47,9 @@ function investigations_init() {
 	elgg_register_action("investigate/delete", "$action_base/delete.php");
 	elgg_register_action("investigations/featured", "$action_base/featured.php", 'admin');
 
+    elgg_register_action("observation/create_comment", elgg_get_plugins_path() . "investigations/actions/observation/create_comment.php");
+    elgg_register_action("observation/delete_comment", elgg_get_plugins_path() . "investigations/actions/observation/delete_comment.php");
+
 	$action_base .= '/membership';
 	elgg_register_action("groups/invite", "$action_base/invite.php");
 	elgg_register_action("groups/join", "$action_base/join.php");
@@ -77,7 +80,7 @@ function investigations_init() {
         array(
             'inv_guid' => array('type' => 'int'),
             'token'     => array('type' => 'string'),
-            'agg_id'    => array('type' => 'int')
+            'agg_id'    => array('type' => 'string')
         ),
         'Create Observation for an investigation',
         'GET',
@@ -1515,10 +1518,8 @@ function get_likes($observation_guid, $token) {
 
 function get_comments_on_obs($observation_guid) {
 
-        $comments = elgg_get_annotations(array(
-            "annotation_guid" => $observation_guid,
-            "name" => "observation_comments"
-        ));
+        $obs = get_entity($observation_guid);
+        $comments = $obs->getAnnotations("observation_comments");
 
         $results = array();
 
@@ -1608,5 +1609,4 @@ function get_user_info($user_guid) {
         "profile_type" => $profile_type->getTitle()
     );
 }
-
 
