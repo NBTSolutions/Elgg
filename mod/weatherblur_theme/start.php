@@ -1,6 +1,6 @@
 <?php
 	// register for the init, system event when our plugin start.php is loaded
-	elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
+elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 
 	function weatherblur_theme_init() {
 		global $CONFIG;
@@ -13,6 +13,10 @@
 
 		$css_dir = $CONFIG->url . 'mod/weatherblur_theme/css/';
 		$js_dir = $CONFIG->url . 'mod/weatherblur_theme/js/';
+
+		// include open sans font:
+		elgg_register_css('opensans', 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600,700');
+		elgg_load_css('opensans');
 
 		// include font-awesome's css
 		elgg_register_css('font-awesome', '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css');
@@ -47,7 +51,7 @@
 		elgg_load_css('inner_page');
 
 		//ADMIN.CSS
-		elgg_register_css('admin', $css_dir.'admin.css');
+		elgg_register_css('admin', $css_dir.'admin.less');
 		elgg_load_css('admin');
 
 		//TYPOGRAPHY.CSS
@@ -89,7 +93,7 @@
 		elgg_register_js('graph', $js_dir . 'graph.js');
 
 		elgg_register_event_handler('pagesetup', 'system', 'kill_friends_link');
-		
+
 		//register login count hook handler
 		elgg_register_event_handler('login', 'user', 'login_count');
 	}
@@ -142,7 +146,7 @@
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/profile.php';
 			return true;
 		}
-		
+
 		if ($segments[0] == 'wbsnareport')
 		{
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/wbsnareport.php';
@@ -151,15 +155,15 @@
 
 		return false;
 	}
-    
-	function login_count($event, $type, $user) 
+
+	function login_count($event, $type, $user)
 	{
 			$login_count = $user->login_count;
 			$login_count++;
 			$user->login_count = $login_count;
-		 
 
-	
+
+
 	}
 
 	function elgg_get_featured($type, $subtype, $count=1) {

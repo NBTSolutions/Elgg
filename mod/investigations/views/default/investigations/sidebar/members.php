@@ -29,4 +29,4 @@ $body = elgg_list_entities_from_relationship(array(
 
 $body .= "<div class='center mts'>$all_link</div>";
 
-echo elgg_view_module('aside', elgg_echo('investigations:members'), $body);
+echo elgg_view_module('aside', elgg_echo('investigations:members'), $body, array('class' => 'members'));

@@ -54,6 +54,6 @@ echo elgg_view('input/submit', array('value' => elgg_echo("investigations:saveto
 // XXX since there's lightbox loading, I can't find the right way to inject
 // this 'change of text' bit. Something to look forward to, not time now.
 if ($embed_type != 'none') {
-	elgg_load_js('inv:embed');
+	//elgg_load_js('inv:embed');
 }
 ?>
