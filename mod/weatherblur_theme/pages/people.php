@@ -4,11 +4,23 @@
 	
 	$title = elgg_echo('People');
 
-	$area2 = elgg_view_title($title);
-	
+    $content = elgg_view_title($title);
+
+    //elgg site
+    $site = elgg_get_site_entity();
+
+    $people = elgg_get_entities(array(
+        'types' => 'user',
+        'limit' => false,
+    ));
+
+    foreach($people AS $person) {
+        $content .= "<a href='" . $site->url . "profile/" . $person->username . "'><img src='".$person->getIconUrl('tiny')."'></a>";
+    }
+
 	//TODO Add People stuff
 
-	$body = elgg_view_layout("one_column", array('content' => $area2));
+	$body = elgg_view_layout("one_column", array('content' => $content));
 
 	echo elgg_view_page($title, $body);
 
