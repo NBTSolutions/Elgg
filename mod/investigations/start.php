@@ -391,6 +391,10 @@ function investigation_page_handler($page) {
 	elgg_load_css('inv-less');
 	elgg_register_css('discussion', elgg_get_site_url() . 'mod/weatherblur_theme/css/discussion_block.less');
 	elgg_load_css('discussion');
+	/* needed for discussion icons */
+	elgg_register_css('interactions', elgg_get_site_url() . 'mod/interactions/css/interactions.css');
+	elgg_load_css('interactions');
+
 
 	// forward old profile urls
 	if (is_numeric($page[0])) {
