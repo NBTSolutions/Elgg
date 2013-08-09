@@ -74,7 +74,7 @@ function investigation_discussion_handle_list_page($guid) {
 	group_gatekeeper();
 
 	$title = elgg_echo('item:object:investigationforumtopic');
-	
+
 	$options = array(
         'type' => 'object',
 		'subtypes' => $subtype,
@@ -114,7 +114,7 @@ function investigation_discussion_handle_edit_page($type, $guid) {
 			register_error(elgg_echo('investigation:notfound'));
 			forward();
 		}
-        
+
 		// make sure user has permissions to add a topic to container
 		if (!$investigation->canWriteToContainer(0, 'object', 'investigationforumtopic')) {
 			register_error(elgg_echo('investigations:permissions:error'));
@@ -292,6 +292,6 @@ function elgg_view_investigation_discussion_list($entities, $vars = array(), $of
 	if ($vars['list_type'] != 'list') {
 		return elgg_view('page/components/gallery', $vars);
 	} else {
-		return elgg_view('page/components/list', $vars);
+		return elgg_view('page/components/discussion_list', $vars);
 	}
 }
