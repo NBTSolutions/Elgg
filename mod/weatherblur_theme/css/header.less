@@ -1,13 +1,16 @@
+@import "typography.less";
+
 /*-------------------------------------------------
 				HEADER STUFF
 --------------------------------------------------*/
 .elgg-page-header {
 	display: block; 
 	background: #f8f8f8;
+	border-bottom: 1px solid #d5d4cb;
 	 
-	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+	/*-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
 	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
-	box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .2);*/
 }
 
 .elgg-page-header > .elgg-inner > .elgg-page-header { /*inner header*/
@@ -150,36 +153,12 @@ a.elgg-button-dropdown:hover { background: none; }
 
 /***** TEXT BOXES *****/
 .elgg-form-login > fieldset > div > input  {
-	border: 1px solid #ddd;
+	border: 1px solid #d5d7bd;
 	-moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset; 
 	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset; 
 	box-shadow: 0 1px 1px rgba(0, 0, 0, .2) inset;
 }
 
-/***** LOG IN BUTTON *****/
-.elgg-foot > .elgg-button-submit {/*Normal State*/
-	/*width: 70px;*/
-	height: 30px;
-	border: 1px solid #437f96;
-	background: #1d7596;
-	background-image: -moz-linear-gradient(#379bc1, #1d7596);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #1d7596),color-stop(1, #379bc1));
-}
-
-.elgg-foot > .elgg-button-submit:hover {/*Hover State*/
-	background: #2693bd;
-	background-image: -moz-linear-gradient(#56c7f2, #2693bd);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #2693bd),color-stop(1, #56c7f2));
-}
-
-.elgg-foot > .elgg-button-submit:active {/*Pressed State*/
-	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	
-	position: relative;
-	top: 1px;
-}
 
 /***** REMEMBER ME *****/
 .elgg-foot > label.mtm.float-alt { margin-top: 5px; }
@@ -217,9 +196,9 @@ mod > views > default > profile_manager > css > global.php
 .elgg-form-register > fieldset { margin-bottom: 70px; }
 
 .elgg-page-body > .elgg-inner > .elgg-layout > .elgg-body > h2 { /*Center H2*/
-	text-align: center; 
-	padding-top: 30px;
-	color: #46a4d5;
+	/*text-align: center; */
+	padding-top: 10px;
+	margin: 0 0 20px 30px;
 } 
 
 .elgg-form-user-requestnewpassword,
@@ -464,11 +443,3 @@ a.elgg-heading-site {
 	float: left;
 
 }*/
-
-
-
-
-
-
-
-

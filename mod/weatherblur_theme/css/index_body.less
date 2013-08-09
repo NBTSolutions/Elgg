@@ -5,7 +5,7 @@ html,
 body { height: 100%; }
 
 body {
-	background: #fffde8;
+	background: #f3f1e4;
 }
 
 #wrapper {
@@ -17,15 +17,22 @@ body {
 
 .push { height: 100px; } /*Height must match footer's height*/
 
+
 .wb-body {
 	width: 100%;
 	display: block;
 	float: left;
 	margin: 0;
-	background: #fffde8;
+	background: #f3f1e4;
 	border-bottom: #fff;
+	padding-bottom: 50px;
 }
 
+.elgg-layout { /*sidebar*/
+	background: #f3f1e4 !important;
+} 
+
+.elgg-page-body { border-bottom: 1px solid #c5bea8; }
 
 .elgg-page {
 	> .elgg-page-body {
@@ -35,10 +42,10 @@ body {
 
 			> .elgg-layout {
 				> .elgg-body {
-					background: #fffde8;
-					-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
+					background: #f3f1e4;
+					/*-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
 					-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
-					box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;
+					box-shadow: 0 2px 3px rgba(0, 0, 0, .2) inset;*/
 				}
 			}
 		}

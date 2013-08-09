@@ -4,7 +4,8 @@
 
 .profile .elgg-inner {
 	background: #fff; 
-	border-color: #efebc6;
+	border: 1px solid #d5d4cb;
+	border-radius: 3px;
 }
 
 #profile-details { padding: 15px; }
@@ -15,8 +16,8 @@
 .elgg-breadcrumbs { padding: 10px 0 10px 0; }
 
 #profile-owner-block {
-	border-radius: 7px;
-	background: #fff; 
+	background: none; 
+	width: 240px;
 }
 
 #profile-owner-block .large {
@@ -28,9 +29,36 @@
 	width: 100px;
 }
 
-#profile-owner-block a.elgg-button-action {}
+/**** Change Picture/Profile buttons ****/
+#profile-owner-block > ul.profile-action-menu > li {margin-right: 5px;}
 
-.profile-content-menu a {
+#profile-owner-block > ul.profile-action-menu > li > .elgg-button-action { 
+	display: inline-block; /*takes out gray table background*/
+	background: #1aa4cc;
+	border: 1px solid #1987a6;
+	color: #fff;
+	text-shadow: 0 1px 1px #000;
+	padding-bottom: 7px;
+	-moz-box-shadow: inset 0 1px 0 #5bd1f3;
+	-webkit-box-shadow: inset 0 1px 0 #5bd1f3;
+	box-shadow: inset 0 1px 0 #5bd1f3;
+} 
+
+#profile-owner-block > ul.profile-action-menu > li > .elgg-button-action:hover { background: #0090b6; }
+
+/*Hide: blogs, bookmarks, files, news, pages, wire posts*/
+.elgg-menu-item-blog,
+.elgg-menu-item-bookmarks,
+.elgg-menu-item-file,
+.elgg-menu-item-news,
+.elgg-menu-item-pages,
+.elgg-menu-item-thewire {
+	display: none;
+}
+
+
+/*----------------------------------------------------------------------------------------------------------------------------*/
+/*.profile-content-menu a {
 	color: #666;
 	border-radius: 5px !important;	
 	border: 1px solid #bbb;
@@ -80,7 +108,7 @@
 	margin-bottom: 0;
 }
 
-.profile-admin-menu-wrapper a:hover { color: black; }
+.profile-admin-menu-wrapper a:hover { color: black; }*/
 
 /*-----------------------------------------------------------------------
 	PROFILE DETAILS
@@ -89,26 +117,20 @@
 
 #profile-details .odd {
 	background-color: #fff;
+	color: #666;
 }
 #profile-details .even {
 	background-color: #fff;
 	margin: 0 0 7px;
 	padding: 2px 4px;
+	color: #666;
 }
-.profile-aboutme-title {
-	background-color:#f4f4f4;
-	border-radius: 4px;	
-	margin: 0;
-	padding: 2px 4px;
+ #custom_fields_userdetails > div > .odd > .elgg-output > p > span { 
+	font-size: 1.1em;
+	color: #333;
+	line-height: 1.7em;
 }
-.profile-aboutme-contents {
-	padding: 2px 0 0 3px;
-}
-.profile-banned-user {
-	border: 2px solid red;
-	padding: 4px 8px;
-	border-radius: 6px;
-}
+
 
 /***** Edit Profile page *****/
 .elgg-form-profile-edit { 

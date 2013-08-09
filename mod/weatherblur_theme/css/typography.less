@@ -6,13 +6,9 @@
 @blue-green: #3d8e9f;
 @blue-text: #0090b6;
 @orange-text: #e25f17;
+@header-blue: #a28d71;
 
-/*SUPPLEMENTAL NAV TEXT LINKS*/
-@sup-text-link: #888;
-@sup-text-visited: #888;
-@sup-text-hover: #41afd7;
-@sup-text-active: #41afd7;
-
+/* simple font functions */
 .font(@size:100%, @color:inherit, @weight:normal, @style:normal, @deco:none) {
 	font-size: @size;
 	color: @color;
@@ -48,63 +44,53 @@
 	.link(@orange-text);
 }
 
-/*BLUE-GREEN TEXT LINKS*/
-.blue-green-link {
-	.font(100%,@blue-green);
-	cursor: pointer;
-}
-.blue-green-link-visited { color: @blue-green; }
-.blue-green-link-hover { color: #50bbd2; }
-.blue-green-link-active {
-	color: @blue-green;
-	position: relative;
-	top: 1px;
+/*--------------------------------------------------------------
+	NAVIGATION LINKS
+--------------------------------------------------------------*/
+.top-nav {
+	color: #248ebb;
+	font-size: .7em;
+	font-weight: normal;
+	text-decoration: none;
+	text-transform: uppercase;
 }
 
-/*GRAY TEXT LINKS*/
-.gray-link {
+.top-nav-hover {
+	color: #2eb8f3;
+	text-decoration: underline;
+}
+
+.nav-link {
 	color: #555;
+	font-size: .7em;
+	font-weight: normal;
 	text-decoration: none;
-	cursor: pointer;
+	text-transform: uppercase;
 }
 
-/*ORANGE TEXT LINKS*/
-.orange-link {
-	color: #e25f17;
-	text-decoration: none;
-	font-size: .9em;
-	cursor: pointer;
-}
-.orange-link-visited { color: #e25f17; }
-.orange-link-hover { color: #ea941a; }
-.orange-link-active {
-	color: #e25f17;
-	position: relative;
-	top: 1px;
+.nav-link-hover-active {
+	color: #369;
 }
 
 
-/*HEADER TEXT*/
-/* H1 */
-.h1-style-blue {
-	color: #00446b;
-	font-size: 1.7em;
-	font-weight: 400;
+/*--------------------------------------------------------------
+	H1
+--------------------------------------------------------------*/
+.h1-style {
+	.font(1.2em, @header-blue, 700);
 	letter-spacing: 1px;
+	text-shadow: 0 1px rgba(255, 255, 255, 1);
 }
 
-.h1-style-red {
-	color: #7b003f;
-	font-size: 1.7em;
-	font-weight: 400;
-	letter-spacing: 1px;
-}
+/*--------------------------------------------------------------
+	H2
+--------------------------------------------------------------*/
+.h2-gray { color: #555555; }
 
-/* H2 */
 .h2-style-blue {
-	color: #00446b;
+	color: #0090b6;
 	font-size: 1.2em;
-	font-weight: 400;
+	font-weight: 700;
 	letter-spacing: 1px;
 	text-shadow: 0 1px rgba(0, 0, 0, .5);
 }
@@ -112,70 +98,29 @@
 .h2-style-red {
 	color: #993333;
 	font-size: 1.2em;
-	font-weight: 400;
-	letter-spacing: 1px;
-	text-shadow: 0 1px rgba(0, 0, 0, .5);
+	font-weight: 700;
 }
 
-.h2-style-white {
-	color: #fff;
-	font-size: .8em;
-	font-weight: 400;
-	letter-spacing: 1px;
-	text-shadow: 0 1px rgba(0, 0, 0, .5);
-}
 
-.h2-style-light-green {
-	color: #90c5b9;
-	font-size: 1.5em;
-	font-weight: 400;
-	text-shadow: 0 1px rgba(0, 0, 0, .5);
-}
-
-/* H3 */
-.h3-style-red {
-	color: #7b003f;
-	font-size: .9em;
-	font-weight: 400;
-	text-shadow: 0 1px rgba(0, 0, 0, .5);
-}
-
-.h3-style-white {
-	color: #fff;
-	font-size: 1.1em;
-	font-weight: 400;
-	letter-spacing: 1px;
-	text-shadow: 0 1px rgba(0, 0, 0, .5);
+/*--------------------------------------------------------------
+	H3
+--------------------------------------------------------------*/
+.h3-blue {
+	color: #0090b6;
 }
 
 .h3-style-gray {
-	color: #555;
+	color: #333;
 	font-size: .9em;
 	font-weight: 700;
 }
 
-.h3-style-light-blue {
-	color: #5bc0dc;
-	font-size: .9em;
-	font-weight: 400;
-}
-
-.h3-style-blue-gray {
-	color: @blue-green;
-	font-size: 1.1em;
-	font-weight: 700;
-}
-
-/* H4 */
-.h4-style {
-	color: #3d3f29;
-	font-size: .9em;
-	font-weight: 400;
-}
-
+/*--------------------------------------------------------------
+	H4
+--------------------------------------------------------------*/
 .h4-style-gray {
 	color: #888;
-	font-size: .9em;
+	font-size: .7em;
 	font-weight: 400;
 }
 
@@ -185,19 +130,27 @@
 	font-weight: 400;
 }
 
-/*PARAGRAPHS*/
+/*--------------------------------------------------------------
+	PARAGRAPH
+--------------------------------------------------------------*/
 .p-style {
-	color: #666666;
+	color: #333333;
 	font-size: 1em;
-	font-weight: 400;
-	line-height: 1.2em;
+	font-weight: 300;
+	line-height: 1.5em;
 }
 
-.p-style-white {
-	color: #fff;
-	font-size: 1em;
-	font-weight: 400;
+/*--------------------------------------------------------------
+	SPAN
+--------------------------------------------------------------*/
+.span-style {
+	color: #b84530;
 }
 
+/*----------------------------------------------------------------
+	 STYLE TAGS HERE
+-----------------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6, th {color: #0090b6;}
 
-
+p, dt, dd {color: #333;}
+ td {color: #666;}

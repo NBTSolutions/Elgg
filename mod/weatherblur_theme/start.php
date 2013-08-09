@@ -11,8 +11,8 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		// Register system page handlers
 		elgg_register_page_handler('wbsystem', 'wbsystem_pg_handler');
 
-		$css_dir = $CONFIG->url . 'mod/weatherblur_theme/css/';
-		$js_dir = $CONFIG->url . 'mod/weatherblur_theme/js/';
+		$css_dir = elgg_get_site_url() . 'mod/weatherblur_theme/css/';
+		$js_dir = elgg_get_site_url() . 'mod/weatherblur_theme/js/';
 
 		// include open sans font:
 		elgg_register_css('opensans', 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600,700');
@@ -23,7 +23,7 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		elgg_load_css('font-awesome');
 
 		//HEADER.CSS
-		elgg_register_css('header', $css_dir.'header.css');
+		elgg_register_css('header', $css_dir.'header.less');
 		elgg_load_css('header');
 
 		//INDEX_BODY.CSS
@@ -31,23 +31,23 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		elgg_load_css('index_body');
 
 		//FOOTER.CSS
-		elgg_register_css('footer', $css_dir.'footer.css');
+		elgg_register_css('footer', $css_dir.'footer.less');
 		elgg_load_css('footer');
 
 		//PROFILE.CSS
-		elgg_register_css('profile', $css_dir.'profile.css');
+		elgg_register_css('profile', $css_dir.'profile.less');
 		elgg_load_css('profile');
 
 		//MODULES.CSS
-		elgg_register_css('module', $css_dir.'modules.css');
+		elgg_register_css('module', $css_dir.'modules.less');
 		elgg_load_css('module');
 
 		//BUTTONS.CSS
-		elgg_register_css('buttons', $css_dir.'buttons.css');
+		elgg_register_css('buttons', $css_dir.'buttons.less');
 		elgg_load_css('buttons');
 
 		//INNER_PAGE.CSS
-		elgg_register_css('inner_page', $css_dir.'inner_page.css');
+		elgg_register_css('inner_page', $css_dir.'inner_page.less');
 		elgg_load_css('inner_page');
 
 		//ADMIN.CSS
@@ -55,7 +55,7 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		elgg_load_css('admin');
 
 		//TYPOGRAPHY.CSS
-		elgg_register_css('typography', $css_dir.'typography.css');
+		elgg_register_css('typography', $css_dir.'typography.less');
 		elgg_load_css('typography');
 
 		//GRAPH.CSS
