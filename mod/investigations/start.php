@@ -1609,7 +1609,7 @@ function get_user_info($user_guid) {
     $profile_type = get_entity($profile_type_guid);
 
     return array(
-        "users_display_name" => name,
+        "users_display_name" => $user->name,
         "username" => $user->username,
         "image" => $site->url."mod/profile/icondirect.php?lastcache=".time()."&joindate=".$user->time_created."&guid=".$user_guid."&size=",
         "email" => $user->email,
