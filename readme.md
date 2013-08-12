@@ -65,6 +65,37 @@ Full URL:<br>
             results : <obs_guid>
         }
 
+### Get All Observations ###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_obs`
+
+Full URL:<br>
+`http://<domain>/elgg/services/api/rest/json/?method=wb.get_obs`
+
+**create_obs**
+
+    parameters
+    	method : wb.get_obs
+
+    returns
+        {
+    "status": 0,
+    "result": [
+        	{
+            	"name": "john",
+            	"obs_guid": 135,
+            	"agg_id": "6ea91dea-eda9-49f4-ae05-2c972e76a395",
+            	"time_created": "1376056053"
+        	},
+        	{
+        		…
+        	}
+		}
+
 ### Get Observation by User Type ###
 Method: GET<br>
 URL:<br>
@@ -146,53 +177,121 @@ URL:<br>
 `http://<domain>/elgg/services/api/rest/json/`
 
 URL Params:<br>
-`?method=wb.toggle_like_obs&observation_guid=50&token=614ad70385f0fbda481adb4b32c1bf3a`
+`?method=wb.toggle_like_obs&observation_guid=50`
 
 Full URL:<br>
-`http://localhost:9999/elgg/services/api/rest/json/?method=wb.toggle_like_obs&observation_guid=50&token=614ad70385f0fbda481adb4b32c1bf3a`
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.toggle_like_obs&observation_guid=50`
 
 **toggle_like_obs**
 
     parameter
         method : wb.toggle_like_obs,
-        observation_guid : 50,
-        token : 614ad70385f0fbda481adb4b32c1bf3a 
+        observation_guid : 50
 
 	returns
 		{
     		"status": <int>,
     		"result": {
-        		"my_like": <0 or 1>,
         		"all_likes": <int>
     		}
 		}
 
-### Get Likes on Observation ###
+### Toggle Like on Observation By Agg Id
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/service/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.toggle_like_obs_by_agg_id&agg_id=df7ed694-c6c8-424f-b81e-fc54496f2b6d`
+
+FULL URL:<br>
+`http://<domain>/elgg/services/api/rest/json/?method=wb.toggle_like_obs_by_agg_id&agg_id=df7ed694-c6c8-424f-b81e-fc54496f2b6d`
+
+**toggle_like_obs_by_agg_id**
+
+    parameter
+        method : wb.toggle_like_obs,
+        agg_id : df7ed694-c6c8-424f-b81e-fc54496f2b6d
+
+	returns
+		{
+    		"status": <int>,
+    		"result": {
+        		"all_likes": <int>
+    		}
+		}
+	
+
+### Get Likes on an Observation ###
 Method: GET<br>
 URL:<br>
 `http://<domain>/elgg/services/api/rest/json/`
 
 URL Params:<br>
-`?method=wb.get_likes&observation_guid=52&token=f286d4fbc37593d2d7a18d96a56fa066`
+`?method=wb.get_likes&observation_guid=52`
 
 Full URL:<br>
-`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_likes&observation_guid=52&token=f286d4fbc37593d2d7a18d96a56fa066`
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_likes&observation_guid=52`
 
 **get_likes**
 
 	parameter
 		method : wb.get_likes,
-		observation_guid : 50,
-		token : f286d4fbc37593d2d7a18d96a56fa066
+		observation_guid : 50
 	
 	returns
 		{
     		"status": 0,
     		"result": {
-        		"my_like": <0 or 1>,
         		"all_likes": <int>
     		}
 		}
+
+### Get My Likes on an Observation ###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_my_obs_like&observation_guid=142`
+
+Full URL:<br>
+`http://<domain>/elgg/services/api/rest/json/?method=wb.get_my_obs_like&observation_guid=142`
+
+**get_likes**
+
+	parameter
+		method : wb.get_my_obs_like,
+		observation_guid : 50
+	
+	returns
+		{
+    		"status": 0,
+    		"result": <0 or 1>
+    	}
+
+### Get My Likes on an Observation By Agg Id###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_my_obs_like_by_agg_id&agg_id=df7ed694-c6c8-424f-b81e-fc54496f2b6d`
+
+Full URL:<br>
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_my_obs_like_by_agg_id&agg_id=df7ed694-c6c8-424f-b81e-fc54496f2b6d`
+
+**get_likes**
+
+	parameter
+		method : wb.get_my_obs_like,
+		observation_guid : df7ed694-c6c8-424f-b81e-fc54496f2b6d
+	
+	returns
+		{
+    		"status": 0,
+    		"result": <0 or 1>
+    	}
 
 ### Comment on Observation ###
 Method: GET<br>
@@ -248,6 +347,34 @@ Full URL:<br>
     		]
 		}
 
+### Get Comments on Observation By Agg Id ###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_comments_on_obs_by_agg_id&agg_id=df7ed694-c6c8-424f-b81e-fc54496f2b6d`
+
+Full URL:<br>
+`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_comments_on_obs_by_agg_id&agg_id=df7ed694-c6c8-424f-b81e-fc54496f2b6d`
+
+**get_comments_on_obs**
+
+	parameter
+		method : wb.get_comments_on_obs,
+		observation_guid : 50
+		
+	returns
+		{
+		   "status": 0,
+    		"result": [
+        		{
+            		"time_created": <int>,
+            		"value": <string>
+        		}
+    		]
+		}
+
 ### Is Logged In ###
 Method: GET<br>
 URL:<br>
@@ -264,7 +391,7 @@ Full URL:<br>
 	parameter
 		method : wb.is_loggend_in
 	
-	returns (result is the user's token)
+	returns (result is the user's token if logged in else result is 0)
 		{
     		"status": 0,
     		"result": "614ad70385f0fbda481adb4b32c1bf3a"
@@ -285,15 +412,16 @@ FULL URL:<br>
 
 	parameter
 		method : wb.get_user_info,
-		user_guid : 49
+		user_guid : 49,
+		icon_size: <tiny, topbar, small, medium, large, master>
 		
-	returns (image url append tiny, topbar, small, medium, large, or master to the url for image size)
+	returns 
 		{
 			"status": 0,
     		"result": {
-        		"users_display_name": "name",
-        		"username": "john",
-        		"image": "http://localhost:9999/elgg/mod/profile/icondirect.php?lastcache=1374841270&joindate=1374680200&guid=49&size=",
+        		"users_display_name": "John Longanecker",
+        		"username": "johnlonganecker",
+        		"image": "http://<domain>/elgg/mod/profile/icondirect.php?lastcache=1375285016&joindate=1374596349&amp;guid=37&size=tiny",
         		"email": "john.longanecker@nbtsolutions.com",
         		"profile_type": "Student"
     		}
@@ -315,14 +443,15 @@ FULL URL:<br>
 	parameter
 		method : wb.get_user_info_by_agg_id,
 		agg_id : 11
+		icon_size: <tiny, topbar, small, medium, large, master>
 		
-	returns (image url append tiny, topbar, small, medium, large, or master to the url for image size)
+	returns
 		{
 			"status": 0,
     		"result": {
         		"users_display_name": "name",
         		"username": "john",
-        		"image": "http://localhost:9999/elgg/mod/profile/icondirect.php?lastcache=1374841270&joindate=1374680200&guid=49&size=",
+        		"image": "<domain>/elgg/mod/profile/icondirect.php?lastcache=1375285016&joindate=1374596349&amp;guid=37&size=tiny",
         		"email": "john.longanecker@nbtsolutions.com",
         		"profile_type": "Student"
     		}

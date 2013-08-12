@@ -143,8 +143,7 @@ function investigations_init() {
         "wb.toggle_like_obs",
         "toggle_like_obs",
         array(
-            'observation_guid' => array('type' => 'int'),
-            'token' => array('type' => 'string')
+            'observation_guid' => array('type' => 'int')
         ),
         '',
         'GET',
@@ -153,11 +152,46 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.toggle_like_obs_by_agg_id",
+        "toggle_like_obs_by_agg_id",
+        array(
+            'agg_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+    
+    expose_function(
         "wb.get_likes",
         "get_likes",
         array(
-            'observation_guid' => array('type' => 'int'),
-            'token' => array('type' => 'string')
+            'observation_guid' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_my_obs_like",
+        "get_my_obs_like",
+        array(
+            'observation_guid' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_my_obs_like_by_agg_id",
+        "get_my_obs_like_by_agg_id",
+        array(
+            'agg_id' => array('type' => 'string')
         ),
         '',
         'GET',
@@ -188,10 +222,23 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.get_comments_on_obs_by_agg_id",
+        "get_comments_on_obs_by_agg_id",
+        array(
+            'agg_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_user_info",
         "get_user_info",
         array(
-            'user_guid' => array('type' => 'string')
+            'user_guid' => array('type' => 'string'),
+            'icon_size' => array('type' => 'string')
         ),
         '',
         'GET',
@@ -203,7 +250,8 @@ function investigations_init() {
         "wb.get_user_info_by_agg_id",
         "get_user_info_by_agg_id",
         array(
-            'agg_id' => array('type' => 'string')
+            'agg_id' => array('type' => 'string'),
+            'icon_size' => array('type' => 'string')
         ),
         '',
         'GET',
@@ -1376,8 +1424,9 @@ function get_obs() {
         $user = get_entity($result->owner_guid);
         $obs[] = array(
             "name" => $user->name,
+            "obs_guid" => $result->guid,
             "agg_id" => $result->agg_id,
-            "time_created" => $result->time_created,
+            "time_created" => $result->time_created
         );
     }
 
@@ -1441,38 +1490,38 @@ function get_obs_by_user_type($user_type, $min_date, $max_date) {
 }
 
 // returns true if like, false if unliked
-function toggle_like_obs($observation_guid, $token) {
+function toggle_like_obs($observation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
+    $token = is_logged_in(); 
     $user_guid = validate_user_token($token, null);
     if($user_guid) {
 
-        // have we liked this observation yet?
-        $results = elgg_get_annotations(array(
-            "annotation_owner_guid" => $user_guid,
-            "annotation_guid" => $observation_guid,
-            "name" => "observation_like"
-        ));
+        $obs = get_entity($observation_guid);
+        $results = $obs->getAnnotations("observation_like");
+        $my_like = 0;
+
+        foreach($results as $result) {
+            if($result->owner_guid == $user_guid) {
+                $my_like = $result;
+            }
+        }
 
         // like this observation
-        if(!$results) {
-            $observation = get_entity($observation_guid);
+        if(!$my_like) {
 
             // need to ignore access to set owner_id
             $ignore = elgg_set_ignore_access(true);
-            $id = $observation->annotate('like', 1, 2, $user_guid, 'integer');
-            $observation->save();
+            $id = $obs->annotate('observation_like', 1, 2, $user_guid, 'integer');
+            $obs->save();
             elgg_set_ignore_access($ignore);
+            return 1;
         }
         // unlike this observation
         else {
-
-           // delete entity foreaching just in case the system added multiple likes from this user
-           foreach($results as $result) {
-                elgg_delete_annotation_by_id($result->id);
-           }
+            elgg_delete_annotation_by_id($my_like->id);
+            return 0;
         }
-        return get_likes($observation_guid, $token);
     }
     else {
         // not a valid login
@@ -1480,49 +1529,73 @@ function toggle_like_obs($observation_guid, $token) {
     }
 }
 
-function get_likes($observation_guid, $token) {
+function toggle_like_obs_by_agg_id($agg_guid) {
+    
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
 
-    // if we pass in a token get login users likes
-    if($token) {
-        $user_guid = validate_user_token($token, null);
-        if($user_guid) {
+    //$results = elgg_get_entity_metadata_where_sql("e", "metadata", null, null, array('name' => 'agg_id', 'value' => '10'));
 
-            $my_like = elgg_get_annotations(array(
-                "annotation_owner_guid" => $user_guid,
-                "annotation_guid" => $observation_guid,
-                "name" => "observation_like"
-            ));
-
-            $my_like = $my_like ? 1 : 0;
-
-            $all_likes = elgg_get_annotations(array(
-                'guid' => $observation_guid,
-                'name' => 'observation_like'
-            ));
-
-            return array(
-                "my_like"  => $my_like,
-                "all_likes" => count($all_likes)
-            );
-        }
-        else {
-            throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
-        }
+    if($results) {
+        return toggle_like_obs($results[0]->guid);
     }
-    //if we pass in
     else {
-        $all_likes = elgg_get_annotations(array(
-            'guid' => $observation_guid,
-            'name' => 'observation_like'
-        ));
+        return 0;
+    }
+}
 
-        return array(
-            "all_likes" => count($all_likes)
-        );
+function get_likes($observation_guid) {
+
+    $obs = get_entity($observation_guid);
+    $all_likes = $obs->getAnnotations("observation_like");
+
+    return array(
+        "all_likes" => count($all_likes)
+    );
+
+}
+
+function get_my_obs_like($observation_guid) {
+
+    $user_guid = elgg_get_logged_in_user_guid();
+
+    if($user_guid) {
+
+        $obs = get_entity($observation_guid);
+        $likes = $obs->getAnnotations("observation_like");
+        $my_like = 0;
+
+        foreach($likes as $like) {
+            if($like->owner_guid == $user_guid) {
+                $my_like = 1;
+            }
+        }
+        
+        return $my_like;
+
+    }
+    else {
+        throw new Exception('User not logged in');
     }
 
 }
 
+function get_my_obs_like_by_agg_id($agg_id) {
+    
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    if($results) {
+        return get_my_obs_like($results[0]->guid);
+    }
+    else {
+        return 0;
+    }
+}
 function get_comments_on_obs($observation_guid) {
 
         $obs = get_entity($observation_guid);
@@ -1538,6 +1611,21 @@ function get_comments_on_obs($observation_guid) {
         }
 
         return $results;
+}
+
+function get_comments_on_obs_by_agg_id($agg_id) {
+
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    if($results) {
+        return get_comments_on_obs($results[0]->guid);
+    }
+    else {
+        return 0;
+    }
 }
 
 function comment_on_obs($observation_guid, $comment, $token) {
@@ -1565,14 +1653,18 @@ function comment_on_obs($observation_guid, $comment, $token) {
 
 // list of observations by date/user
 function is_logged_in() {
-
+   
     if(elgg_is_logged_in()) {
         $token = get_user_tokens(elgg_get_logged_in_user_guid());
         if($token) {
             return $token ? $token[0]->token : 0;
         }
         else {
-           return 0;
+           $user_guid = elgg_get_logged_in_user_guid();
+           $user = get_user($user_guid);
+           $token = create_user_token($user->username, PHP_INT_MAX);
+
+           return $token;
         }
     }
     else {
@@ -1584,7 +1676,7 @@ function is_logged_in() {
 tiny, topbar, small, medium, large, master
 */
 
-function get_user_info_by_agg_id($agg_id) {
+function get_user_info_by_agg_id($agg_id, $icon_size) {
     $results = elgg_get_entities_from_metadata(array(
         "type_subtype_pair"	=>	array('object' => 'observation'),
         "metadata_name_value_pairs" => array('agg_id' => $agg_id)
@@ -1593,14 +1685,14 @@ function get_user_info_by_agg_id($agg_id) {
     //$results = elgg_get_entity_metadata_where_sql("e", "metadata", null, null, array('name' => 'agg_id', 'value' => '10'));
 
     if($results) {
-        return get_user_info($results[0]->owner_guid);
+        return get_user_info($results[0]->owner_guid, $icon_size);
     }
     else {
         return 0;
     }
 }
 
-function get_user_info($user_guid) {
+function get_user_info($user_guid, $icon_size) {
     //get user by user name
     $user = get_user($user_guid);
     $site = elgg_get_site_entity();
@@ -1611,9 +1703,9 @@ function get_user_info($user_guid) {
     return array(
         "users_display_name" => $user->name,
         "username" => $user->username,
-        "image" => $site->url."mod/profile/icondirect.php?lastcache=".time()."&joindate=".$user->time_created."&guid=".$user_guid."&size=",
+        "image" => $user->getIconUrl($icon_size),
         "email" => $user->email,
-        "profile_type" => $profile_type->getTitle()
+        "profile_type" => $profile_type ? $profile_type->getTitle() : ''
     );
 }
 
