@@ -50,7 +50,7 @@
                 <div id="graph_container"></div>
             </div>
             <div id="tab_mapping">
-				<div><iframe src="http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/" id="home_map"></iframe></div>
+				<div><iframe src="http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/" id="explore_page_map"></iframe></div>
             </div>
 
         </div>

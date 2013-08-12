@@ -1,143 +1,112 @@
+@import "buttons.less";
+@import "typography.less";
+@import "rd_corners.less";
+
+.elgg-widget-add-control  {
+	> .elgg-button-action:hover {
+		.elgg-button-action-hover; 
+	} /*elgg-button-action:hover*/
+	> .elgg-button-action:active {
+		.elgg-button-action-active; 
+	} /*elgg-button-action-active*/
+} /*elgg-widget-add-control*/
+
+
 .profile {
 	width: 100%;
-}
+	> .elgg-inner {
+		background: #fff; 
+		border: 1px solid #d5d4cb;
+		border-radius: 3px;
+		
+		/***** Profile Owner Block *****/
+		> #profile-owner-block {
+			background: none; 
+			width: 240px;
+			> .profile-action-menu li  { 
+				display: inline-block;
+				width: 100px;
+				margin-right: 5px;
+				> .elgg-button-action {
+					.elgg-button;
+				} /*elgg-button-action*/
+				> .elgg-button-action:hover {
+					.elgg-button-hover;
+				} /*elgg-button-action:hover*/
+				> .elgg-button-action:active {
+					.elgg-button-active;
+				} /*elgg-button-action:active*/
+			} /*profile-action-menu li*/
+			> .elgg-menu-owner-block {
+				display: none;
+			} /*elgg-menu-owner-block*/
+		} /*profile-owner-block*/
+		
+		/***** Profile Details *****/
+		> #profile-details { 
+			padding: 15px; 
+			> #custom_fields_userdetails {
+				> .even {
+					background-color: #fff;
+					margin: 0 0 7px;
+					padding: 2px 4px;
+					color: #666;
+				} /*even*/
+				> div {
+					> .odd {
+						background: #fff;
+						> b {
+							color: #666;
+						}/*b*/
+						> .elgg-output {
+							margin: 0;
+							> p {
+								> span {
+									font-size: 1.1em;
+									color: #333;
+									line-height: 1.7em;
+								} /*span*/ 
+							} /*p*/
+						} /*elgg-output*/
+					} /*odd*/
+				} /*div*/
+			} /*custom_fields_userdetails*/
+		} /*profile-details*/
+		
+	} /*.elgg-inner*/
+} /*profile*/
 
-.profile .elgg-inner {
-	background: #fff; 
-	border: 1px solid #d5d4cb;
-	border-radius: 3px;
-}
-
-#profile-details { padding: 15px; }
-
-/*-----------------------------------------------------------------------
-	OWNER BLOCK
------------------------------------------------------------------------*/
-.elgg-breadcrumbs { padding: 10px 0 10px 0; }
-
-#profile-owner-block {
-	background: none; 
-	width: 240px;
-}
-
-#profile-owner-block .large {
-	margin-bottom: 10px;
-}
-
-.profile-action-menu li  { 
-	display: inline-block;
-	width: 100px;
-}
-
-/**** Change Picture/Profile buttons ****/
-#profile-owner-block > ul.profile-action-menu > li {margin-right: 5px;}
-
-#profile-owner-block > ul.profile-action-menu > li > .elgg-button-action { 
-	display: inline-block; /*takes out gray table background*/
-	background: #1aa4cc;
-	border: 1px solid #1987a6;
-	color: #fff;
-	text-shadow: 0 1px 1px #000;
-	padding-bottom: 7px;
-	-moz-box-shadow: inset 0 1px 0 #5bd1f3;
-	-webkit-box-shadow: inset 0 1px 0 #5bd1f3;
-	box-shadow: inset 0 1px 0 #5bd1f3;
-} 
-
-#profile-owner-block > ul.profile-action-menu > li > .elgg-button-action:hover { background: #0090b6; }
-
-/*Hide: blogs, bookmarks, files, news, pages, wire posts*/
-.elgg-menu-item-blog,
-.elgg-menu-item-bookmarks,
-.elgg-menu-item-file,
-.elgg-menu-item-news,
-.elgg-menu-item-pages,
-.elgg-menu-item-thewire {
-	display: none;
-}
-
-
-/*----------------------------------------------------------------------------------------------------------------------------*/
-/*.profile-content-menu a {
-	color: #666;
-	border-radius: 5px !important;	
-	border: 1px solid #bbb;
-	background: #e6e6e6;
-	background-image: -moz-linear-gradient(#f8f8f8, #eee);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #f8f8f8));
-}
-
-.profile-content-menu a:hover {
-	color: #2e597b !important;
-	border: 1px solid #99c2cc;
-	background: #b4dbe3;
-	background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #b4dbe3),color-stop(1, #d0ebf3));
-}
-
-.profile-content-menu a:active {
-	border: 1px solid #fff;
-	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	
-	position: relative;
-	top: 1px;
-}
-
-.profile-admin-menu {
-	display: none;
-}
-
-.profile-admin-menu-wrapper a {
-	display: block;
-	border-radius: 8px;	
-	background-color: white;
-	margin: 3px 0 5px 0;
-	padding: 2px 4px 2px 8px;
-}
-
-.profile-admin-menu-wrapper {
-	background-color: white;
-	border-radius: 8px;
-}
-
-.profile-admin-menu-wrapper li a {
-	background-color: white;
-	color: red;
-	margin-bottom: 0;
-}
-
-.profile-admin-menu-wrapper a:hover { color: black; }*/
-
-/*-----------------------------------------------------------------------
-	PROFILE DETAILS
------------------------------------------------------------------------*/
-.elgg-breadcrumbs { padding: 10px 0 10px 0; }
-
-#profile-details .odd {
-	background-color: #fff;
-	color: #666;
-}
-#profile-details .even {
-	background-color: #fff;
-	margin: 0 0 7px;
-	padding: 2px 4px;
-	color: #666;
-}
- #custom_fields_userdetails > div > .odd > .elgg-output > p > span { 
-	font-size: 1.1em;
-	color: #333;
-	line-height: 1.7em;
-}
-
-
-/***** Edit Profile page *****/
-.elgg-form-profile-edit { 
-	margin: 0 auto;
-	width: 900px; 
-}
-
-.elgg-form-profile-edit > fieldset > div > .elgg-input-text {
-	width: 900px;
-}
+.elgg-widgets {
+	> .elgg-module {
+		> .elgg-body {
+			> .elgg-widget-content {
+				> ul.elgg-list {
+					> li {
+						> .elgg-image-block {
+							.round-3px;
+							background: #fff;
+							border: 1px solid #efefef;
+							> .elgg-body {
+								> h3 {
+									margin-bottom: 5px;
+								} /*h3: moves subtext down*/
+								> h3 a {
+									color: #0090b6;
+								} /*h3*/
+								> h3 a:hover {
+									color: #1aa4cc;
+									text-decoration: underline;
+								}/*h3:hover*/
+							} /*elgg-body*/
+						} /*elgg-image-block*/
+						> .elgg-image-block:hover {
+							color: #0090b6 !important;
+							border: 1px solid #ccc;
+							background: #fff;
+						} /*elgg-image-block:hover*/
+					} /*li*/
+				} /*ul.elgg-list*/
+			} /*elgg-widget-content*/
+		} /*elgg-body*/
+	} /*elgg-module*/
+} /*elgg-widgets*/

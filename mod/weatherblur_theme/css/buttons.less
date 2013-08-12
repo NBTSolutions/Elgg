@@ -1,4 +1,5 @@
 /*BLUE BUTTONS*/
+.elgg-button,
 .elgg-button-submit,
 .elgg-foot > .elgg-button-submit { 
 	background: #1aa4cc;
@@ -11,9 +12,11 @@
 	box-shadow: inset 0 1px 0 #5bd1f3;
 }
 
+.elgg-button-hover,
 .elgg-button-submit:hover,
 .elgg-foot > .elgg-button-submit:hover { background: #0090b6; }
 
+.elgg-button-active,
 .elgg-button-submit:active,
 .elgg-foot > .elgg-button-submit:active {
 	-moz-box-shadow: 0 1px 0 rgba(0, 0, 0, .5) inset; 
@@ -35,12 +38,12 @@
 	box-shadow: inset 0 1px 0 #f6f4ea;
 }
 
-.elgg-button-action:hover {
+.elgg-button-action-hover {
 	background: #d9d6c0;
 	color: #666;
 }
 
-.elgg-button-action:active {
+.elgg-button-action-active {
 	-moz-box-shadow: 0 1px 0 rgba(0, 0, 0, .5) inset; 
 	-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, .5) inset; 
 	box-shadow: 0 1px 0 rgba(0, 0, 0, .5) inset;
@@ -72,39 +75,3 @@
 	position: relative;
 	top: 1px;
 }
-
-/*RED ORANGE PILL BUTTON*/
-.btn (@radius: 5px) {
-	color: #fff;
-	text-decoration: none;
-	font-size: .9em;
-	text-shadow: 0 1px 0 #000;
-	cursor: pointer;
-	
-	background: #aa3c27;
-	border: 1px solid #b14632;
-	background-image: -moz-linear-gradient(#aa3c27, #792413);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #792413),color-stop(1, #aa3c27));
-	
-	-webkit-border-radius: @radius;
-	-moz-border-radius: @radius;
-	-ms-border-radius: @radius;
-	-o-border-radius: @radius;
-	border-radius: @radius;
-}
-
-.btn-hover {
-	background: #d24f35;
-	border: 1px solid #b14632;
-	background-image: -moz-linear-gradient(#d24f35, #aa3720);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #aa3720),color-stop(1, #d24f35));
-}
-
-.btn-active {
-	background: #aa3720;
-		
-	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .7) inset, 0 1px 0 rgba(255, 255, 255, 1);
-	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .7) inset, 0 1px 0 rgba(255, 255, 255, 1);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, .7) inset, 0 1px 0 rgba(255, 255, 255, 1);
-}
-
