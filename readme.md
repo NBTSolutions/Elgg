@@ -231,13 +231,38 @@ URL Params:<br>
 `?method=wb.get_likes&observation_guid=52`
 
 Full URL:<br>
-`http://localhost:9999/elgg/services/api/rest/json/?method=wb.get_likes&observation_guid=52`
+`http://<domain>/elgg/services/api/rest/json/?method=wb.get_likes&observation_guid=52`
 
 **get_likes**
 
 	parameter
 		method : wb.get_likes,
 		observation_guid : 50
+	
+	returns
+		{
+    		"status": 0,
+    		"result": {
+        		"all_likes": <int>
+    		}
+		}
+
+### Get Likes on an Observation By Agg Id###
+Method: GET<br>
+URL:<br>
+`http://<domain>/elgg/services/api/rest/json/`
+
+URL Params:<br>
+`?method=wb.get_likes_by_agg_id&agg_id=df7ed694-c6c8-424f-b81e-fc54496f2b6d`
+
+Full URL:<br>
+`http://<domain>/elgg/services/api/rest/json/?method=wb.get_likes_by_agg_id&agg_id=df7ed694-c6c8-424f-b81e-fc54496f2b6d`
+
+**get_likes**
+
+	parameter
+		method : wb.get_likes,
+		agg_id : df7ed694-c6c8-424f-b81e-fc54496f2b6d
 	
 	returns
 		{

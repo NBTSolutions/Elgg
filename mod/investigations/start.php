@@ -176,6 +176,18 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.get_likes_by_agg_id",
+        "get_likes_by_agg_id",
+        array(
+            'agg_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_my_obs_like",
         "get_my_obs_like",
         array(
@@ -1540,8 +1552,6 @@ function toggle_like_obs_by_agg_id($agg_guid) {
         "metadata_name_value_pairs" => array('agg_id' => $agg_id)
     ));
 
-    //$results = elgg_get_entity_metadata_where_sql("e", "metadata", null, null, array('name' => 'agg_id', 'value' => '10'));
-
     if($results) {
         return toggle_like_obs($results[0]->guid);
     }
@@ -1559,6 +1569,21 @@ function get_likes($observation_guid) {
         "all_likes" => count($all_likes)
     );
 
+}
+
+function get_likes_by_agg_id($agg_id) {
+    
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    if($results) {
+        return get_likes($results[0]->guid);
+    }
+    else {
+        return 0;
+    }
 }
 
 function get_my_obs_like($observation_guid) {
