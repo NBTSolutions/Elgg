@@ -6,9 +6,13 @@
 @blue-green: #3d8e9f;
 @blue-text: #0090b6;
 @orange-text: #e25f17;
-@header-blue: #a28d71;
 
-/* simple font functions */
+/*SUPPLEMENTAL NAV TEXT LINKS*/
+@sup-text-link: #888;
+@sup-text-visited: #888;
+@sup-text-hover: #41afd7;
+@sup-text-active: #41afd7;
+
 .font(@size:100%, @color:inherit, @weight:normal, @style:normal, @deco:none) {
 	font-size: @size;
 	color: @color;
@@ -44,107 +48,140 @@
 	.link(@orange-text);
 }
 
-/*--------------------------------------------------------------
-	NAVIGATION LINKS
---------------------------------------------------------------*/
-.top-nav {
-	color: #248ebb;
-	font-size: .7em;
-	font-weight: normal;
-	text-decoration: none;
-	text-transform: uppercase;
+/*BLUE-GREEN TEXT LINKS*/
+.blue-green-link {
+	.font(100%,@blue-green);
+	cursor: pointer;
+}
+.blue-green-link-visited { color: @blue-green; }
+.blue-green-link-hover { color: #50bbd2; }
+.blue-green-link-active {
+	color: @blue-green;
+	position: relative;
+	top: 1px;
 }
 
-.top-nav-hover {
-	color: #2eb8f3;
-	text-decoration: underline;
-}
-
-.nav-link {
+/*GRAY TEXT LINKS*/
+.gray-link {
 	color: #555;
-	font-size: .7em;
-	font-weight: normal;
 	text-decoration: none;
-	text-transform: uppercase;
+	cursor: pointer;
 }
 
-.nav-link-hover-active {
-	color: #369;
+/*ORANGE TEXT LINKS*/
+.orange-link {
+	color: #e25f17;
+	text-decoration: none;
+	font-size: .9em;
+	cursor: pointer;
+}
+.orange-link-visited { color: #e25f17; }
+.orange-link-hover { color: #ea941a; }
+.orange-link-active {
+	color: #e25f17;
+	position: relative;
+	top: 1px;
 }
 
 
-/*--------------------------------------------------------------
-	H1
---------------------------------------------------------------*/
-.h1-style {
-	.font(1.2em, @header-blue, 700);
-	letter-spacing: 1px;
-	text-shadow: 0 1px rgba(255, 255, 255, 1);
-}
-
-/*--------------------------------------------------------------
-	H2
---------------------------------------------------------------*/
-.h2-gray { color: #555555; }
-
-.h2-style-blue {
+/*HEADER TEXT*/
+/* H1 */
+.h1-blue {
 	color: #0090b6;
+	font-size: 1.7em;
+	font-weight: 400;
+	letter-spacing: 1px;
+}
+
+/* H2 */
+.h2-blue {
+	color: #00446b;
 	font-size: 1.2em;
-	font-weight: 700;
+	font-weight: 400;
 	letter-spacing: 1px;
 	text-shadow: 0 1px rgba(0, 0, 0, .5);
 }
 
-.h2-style-red {
-	color: #993333;
-	font-size: 1.2em;
-	font-weight: 700;
+.h2-white {
+	color: #fff;
+	font-size: .8em;
+	font-weight: 400;
+	letter-spacing: 1px;
+	text-shadow: 0 1px rgba(0, 0, 0, .5);
 }
 
-
-/*--------------------------------------------------------------
-	H3
---------------------------------------------------------------*/
-.h3-blue {
-	color: #0090b6;
+.h2-light-green {
+	color: #90c5b9;
+	font-size: 1.5em;
+	font-weight: 400;
+	text-shadow: 0 1px rgba(0, 0, 0, .5);
 }
 
-.h3-style-gray {
-	color: #333;
+/* H3 */
+.h3-red {
+	color: #7b003f;
+	font-size: .9em;
+	font-weight: 400;
+	text-shadow: 0 1px rgba(0, 0, 0, .5);
+}
+
+.h3-white {
+	color: #fff;
+	font-size: 1.1em;
+	font-weight: 400;
+	letter-spacing: 1px;
+	text-shadow: 0 1px rgba(0, 0, 0, .5);
+}
+
+.h3-gray {
+	color: #555;
 	font-size: .9em;
 	font-weight: 700;
 }
 
-/*--------------------------------------------------------------
-	H4
---------------------------------------------------------------*/
-.h4-style-gray {
-	color: #888;
-	font-size: .7em;
+.h3-light-blue {
+	color: #5bc0dc;
+	font-size: .9em;
 	font-weight: 400;
 }
 
-.h4-style-gray-2 {
+.h3-blue-gray {
+	color: @blue-green;
+	font-size: 1.1em;
+	font-weight: 700;
+}
+
+/* H4 */
+.h4-style {
+	color: #3d3f29;
+	font-size: .9em;
+	font-weight: 400;
+}
+
+.h4-gray {
+	color: #888;
+	font-size: .9em;
+	font-weight: 400;
+}
+
+.h4-gray2 {
 	color: #666;
 	font-size: 1em;
 	font-weight: 400;
 }
 
-/*--------------------------------------------------------------
-	PARAGRAPH
---------------------------------------------------------------*/
+/*PARAGRAPHS*/
 .p-style {
-	color: #333333;
+	color: #666666;
 	font-size: 1em;
-	font-weight: 300;
-	line-height: 1.5em;
+	font-weight: 400;
+	line-height: 1.2em;
 }
 
-/*--------------------------------------------------------------
-	SPAN
---------------------------------------------------------------*/
-.span-style {
-	color: #b84530;
+.p-white {
+	color: #fff;
+	font-size: 1em;
+	font-weight: 400;
 }
 
 /*----------------------------------------------------------------
