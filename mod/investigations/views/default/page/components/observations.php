@@ -21,6 +21,8 @@
 
     $obs_user_local = json_decode($obs_user_local_response);
 
+    date_default_timezone_set("EST");
+
     // get the obs_guid
     $results = elgg_get_entities_from_metadata(array(
         "type_subtype_pair"	=>	array('object' => 'observation'),
@@ -30,6 +32,8 @@
 
     // get the comments for this obsevation
     $obs = get_entity($obs_guid);
+    $obs_user = get_user($obs->owner_guid);
+
     $comments = $obs->getAnnotations("observation_comments");
 
     $obs_by_category = array();
@@ -48,7 +52,7 @@
         if($measurement->value == "video") {
             $video = $measurement->meta; 
         }
-        else if($measurement->value === "image") {
+        else if($measurement->value == "image") {
             $picture = json_decode($measurement->meta);
         }
         else {
@@ -79,7 +83,11 @@
 ?>
 <!-- start html -->
 <h1 id="obs_measurements_heading">Observation Measurements</h1>
-<p>By <a href="<?php echo $site->url.'profile/'.$observation->observer->label; ?>"><?php echo $observation->observer->label; ?></a> on <?php echo date('F nS, Y', strtotime($obs_user_local->timestamp)); ?></p>
+<p>
+    <a href="<?php echo $site->url.'profile/'.$obs_user->username; ?>">
+        <img src='<?php echo $obs_user->getIcon("tiny") ?>'><?php echo $obs_user->name; ?></a>
+        on <?php echo date('F nS, Y g:i:s A', strtotime($obs_user_local->timestamp)); ?>
+</p>
 
 <div id="observation_left_col">
     <!-- if there is a picture display else show video -->
