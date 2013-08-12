@@ -439,6 +439,10 @@ function investigation_page_handler($page) {
 	elgg_load_css('inv-less');
 	elgg_register_css('discussion', elgg_get_site_url() . 'mod/weatherblur_theme/css/discussion_block.less');
 	elgg_load_css('discussion');
+	/* needed for discussion icons */
+	elgg_register_css('interactions', elgg_get_site_url() . 'mod/interactions/css/interactions.css');
+	elgg_load_css('interactions');
+
 
 	// forward old profile urls
 	if (is_numeric($page[0])) {
@@ -508,7 +512,7 @@ function observation_page_handler($page) {
 	elgg_register_js('video-js', 'http://vjs.zencdn.net/c/video.js', 'footer', 10000);
 
     elgg_register_css('video-js-css', 'http://vjs.zencdn.net/c/video-js.css');
-    elgg_register_css('observation-detail', $CONFIG->url . 'mod/investigations/css/observation-detail.less');
+    elgg_register_css('observation-detail', elgg_get_site_url() . 'mod/investigations/css/observation-detail.less');
 
 	elgg_load_css('observation-detail');
 	elgg_load_css('video-js-css');

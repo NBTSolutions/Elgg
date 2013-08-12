@@ -1,9 +1,37 @@
+@import "typography.less";
+
 /*//////////////////////////////////////////////////////////////////
 
 										ADMIN SCREEN
 
 //////////////////////////////////////////////////////////////////*/
-.elgg-page-admin { background: #fffde8;
+.elgg-page-admin { // contains everything else in this file!
+	background: #f3f1e4;
+
+	> .elgg-inner {
+		> .elgg-page-body {
+			> .elgg-inner {
+				> .elgg-layout {
+					> .elgg-main {
+						background: none;
+						border: none !important;
+					}
+				}
+
+				> .elgg-layout-one-sidebar {
+					> .elgg-sidebar {
+						margin: 0;
+					}
+				}
+			}
+		}
+	}
+
+
+.elgg-admin-sidebar-menu {
+	background: none;
+	border: 0 !important;
+}
 
 /*-----------------------------------------------------------------------
 	ROUNDED CORNERS
@@ -55,7 +83,7 @@
 -----------------------------------------------------------------------*/
 .elgg-page-admin > .elgg-inner > .elgg-page-body > .elgg-inner > .elgg-layout-one-sidebar > .elgg-body > .elgg-head h2 { color: #666; }
 
-.elgg-table-alt td, th { 
+.elgg-table-alt td, th {
 	background: none;
 	border: none;
 	padding: 7px;
@@ -151,7 +179,7 @@
 #elgg-plugin-list > ul > li > .elgg-plugin {
 	background: #dfddd4;
 	border: 1px solid #bfbdae;
-} 
+}
 
 #elgg-plugin-list > ul > li > .elgg-plugin:hover {border: 1px solid #0090b6;}
 
@@ -169,11 +197,14 @@
 	border-radius: 0;
 }
 
-.elgg-image-block:hover { 
+.elgg-image-block:hover {
 	color: #0090b6 !important;
 	border: 1px solid #ccc;
 	background: #fff;
 }
+
+.elgg-image-block > .elgg-body > h3  > a { color: #0090b6; }
+
 
 /***** Friends Picker *****/
 #friends-picker-navigation1 li a { background: #fffde8; }
@@ -218,7 +249,7 @@
 
 .elgg-menu-page-administer li a:active,
 .elgg-menu-page-configure li a:active {
-	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset; 
+	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
 	position: relative;
@@ -246,8 +277,8 @@
 	LEFT CONTENT
 -----------------------------------------------------------------------*/
 .elgg-form-usersettings-save,
-.elgg-form-usersettings-save > fieldset > .elgg-module > div { 
-	 width: 300px; 
+.elgg-form-usersettings-save > fieldset > .elgg-module > div {
+	 width: 300px;
 	 margin: 0 0 10px 15px;
 }
 
@@ -261,36 +292,10 @@
 	padding: 10px 15px;
 }
 
-
-/****TABS****/
-.elgg-tabs {
-	margin-top: 30px;
-	border-bottom: 1px solid #c6c3b0;
-}
-
-.elgg-tabs .elgg-state-selected { border-color: #c6c3b0;}
-
-.elgg-tabs li {
-	border-color: #d5d3c8;
-}
-
-.elgg-tabs a {
-	height: 30px;
-	padding: 5px 20px 0 20px;
-	background: #eceae0;
-}
-
-.elgg-tabs .elgg-state-selected a {
-	color: #0090b6;
-	background: #f3f1e4;
-	height: 30px;
-}
-
-
 /*-----------------------------------------------------------------------
 	SIDEBAR
 -----------------------------------------------------------------------*/
-.elgg-sidebar > .elgg-menu-page li a { 
+.elgg-sidebar > .elgg-menu-page li a {
 	background: #e6e4d6;
 	border: 1px solid #bfbdae;
 	color: #666;

@@ -37,13 +37,14 @@ function embed_init() {
  */
 function embed_longtext_menu($hook, $type, $items, $vars) {
 
-	if (isset($vars['embed_type']) && $vars['embed_type'] == 'none') {
+	$id = (isset($vars['id'])) ? $vars['id'] : 'embed_content';
+	if ($id == 'wb_none') {
 		return $items;
 	}
 
 	$text = elgg_echo('embed:media');
-	if (isset($vars['embed_type'])) {
-		$text = 'Upload ' . $vars['embed_type'];
+	if (substr($id, 0, 3) == 'wb_') {
+		$text = 'Upload ' . substr($id, 3);
 	}
 
 	if (elgg_get_context() == 'embed') {

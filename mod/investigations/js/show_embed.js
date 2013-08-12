@@ -1,6 +1,11 @@
+window.embed_text = window.embed_text || 'document';
 $(document).ready(function() {
-	console.log($('.elgg-menu-item-embed > a').click);
-	$('.elgg-menu-item-embed > a').click(); // show lightbox.
-	$('.embed-wrapper > h2').html('Choose <?php echo $text; ?> to include in the discussion');
+	setTimeout(function() {
+		$('.elgg-menu-item-embed > a').click(); // show lightbox.
+		//setTimeout(function() {
+			//$('.embed-wrapper > h2').html('Choose ' + embed_text + ' to include in the discussion');
+		//}, 750);
+		// in progress...
+	}, 750);
 });
 

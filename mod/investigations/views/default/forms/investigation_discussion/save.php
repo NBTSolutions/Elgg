@@ -22,7 +22,7 @@ $embed_type = ($discussion_subtype == 'text') ? 'none' : $discussion_subtype;
 </div>
 <div>
 	<label><?php echo elgg_echo('investigations:topicmessage'); ?></label>
-	<?php echo elgg_view('investigations/input/longtext', array('name' => 'description', 'value' => $desc, 'embed_type' => $embed_type)); ?>
+	<?php echo elgg_view('input/longtext', array('name' => 'description', 'value' => $desc, 'class' => 'embed-type-change', 'id' => 'wb_' . $embed_type)); ?>
 </div>
 <div>
 	<label><?php echo elgg_echo('tags'); ?></label>
@@ -54,6 +54,6 @@ echo elgg_view('input/submit', array('value' => elgg_echo("investigations:saveto
 // XXX since there's lightbox loading, I can't find the right way to inject
 // this 'change of text' bit. Something to look forward to, not time now.
 if ($embed_type != 'none') {
-	//elgg_load_js('inv:embed');
+	elgg_load_js('inv:embed');
 }
 ?>
