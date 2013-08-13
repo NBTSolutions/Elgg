@@ -33,26 +33,25 @@
 
 	echo elgg_view_page($title, $body, $canvas_area);
 	$site_url = elgg_get_site_url();
-	
+
     $content = '
         <script>
           $(function() {
                 $( "#tabs" ).tabs({
-				
-				 show: function(ui, event) 
+
+				 show: function(ui, event)
 				 {
 					ttInstances = TableTools.fnGetMasters();
 					for (i in ttInstances) {
 						if (ttInstances[i].fnResizeRequired()) ttInstances[i].fnResizeButtons();
 					}
-				} 
+				}
 				});
-          });
-        </script>
+					});
+				</script>
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
-			    
-			
+$(document).ready(function() {
+
 				var oTable = $("#wb-data").dataTable( {
 				    "sDom": \'T<"clear">lfrtip\',
 					"bProcessing": true,
@@ -63,10 +62,10 @@
 					},
 					"sAjaxSource": "'.$site_url.'mod/weatherblur_theme/pages/datatable.php"
 				} );
-				
+
 			} );
 		</script>
-		
+
 
         <div class="wb-body">
         <h2 style="text-align:center;padding: 20px">Explore Data</h2>
@@ -100,17 +99,17 @@
 						</tr>
 					</thead>
 					<tbody>
-						
+
 					</tbody>
-					
+
 				</table>
-				
+
 			</div>
             </div>
 
         </div>
-        </div>';    
+        </div>';
 	$canvas_area = elgg_view_layout('default', array('content' => $content));
 	echo elgg_view_page($title, $canvas_area);
-	
+
 ?>
