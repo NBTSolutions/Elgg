@@ -205,6 +205,6 @@ foreach($obs_categories as $category => $category_image) {
     <input type="hidden" name="__elgg_ts" value="<?php echo $ts; ?>" />
     <input type="hidden" name="obs_guid" value="<?php echo $obs_guid; ?>">
     <textarea name="comment"></textarea>
-    <input type="submit" value="Save" class="elgg-button elgg-button-submit" />
+    <input type="submit" value="Add Comment" class="elgg-button elgg-button-submit" />
 </form>
 </div>
