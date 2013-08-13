@@ -81,16 +81,16 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		elgg_register_js('d3', 'http://d3js.org/d3.v3.min.js');
 		elgg_register_js('moment',
 			'//d3pch6bcnsao4c.cloudfront.net/lib/moment.min.js');
-		elgg_register_js('underscore',
-			'//d3pch6bcnsao4c.cloudfront.net/lib/underscore-1.4.4.js');
+		//elgg_register_js('underscore',
+			//'//d3pch6bcnsao4c.cloudfront.net/lib/underscore-1.4.4.js');
 
 		elgg_register_js('jq-widget', $js_dir . 'jquery.ui.widget.min.js');
 		elgg_register_js('jq-tabs', $js_dir . 'jquery.ui.tabs.min.js');
 
-		elgg_register_js('require', '//d3pch6bcnsao4c.cloudfront.net/lib/require.js');
-		elgg_register_js('wb-api', '//s3.amazonaws.com/nbt-assets/weatherblur/wb.api.js');
-
-		elgg_register_js('graph', $js_dir . 'graph.js');
+		elgg_register_js('require', '//d3pch6bcnsao4c.cloudfront.net/lib/require.js', 'footer');
+		elgg_register_js('wb-api', '//s3.amazonaws.com/nbt-assets/weatherblur/wb.api.js', 'footer');
+		elgg_register_js('graph', $js_dir . 'graph.js', 'footer');
+		elgg_register_js('exploredata', $js_dir . 'exploredata.js');
 
 		elgg_register_event_handler('pagesetup', 'system', 'kill_friends_link');
 

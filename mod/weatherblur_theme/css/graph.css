@@ -1389,15 +1389,178 @@
 
 /* css/Graph.less */
 
+/********* TYPOGRAPHY - LESS VARIABLES *******/
+/* colors */
+/* simple font functions */
+/*--------------------------------------------------------------
+	NAVIGATION LINKS
+--------------------------------------------------------------*/
+.top-nav {
+  color: #248ebb;
+  font-size: .7em;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.top-nav-hover {
+  color: #2eb8f3;
+  text-decoration: underline;
+}
+.nav-link {
+  color: #555;
+  font-size: .7em;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.nav-link-hover-active {
+  color: #369;
+}
+/*--------------------------------------------------------------
+	H1
+--------------------------------------------------------------*/
+.h1-style {
+  font-size: 1.2em;
+  color: #a28d71;
+  font-weight: 700;
+  font-style: normal;
+  text-decoration: none;
+  font-family: 'Open Sans', Arial, sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 0 1px #ffffff;
+}
+/*--------------------------------------------------------------
+	H2
+--------------------------------------------------------------*/
+.h2-gray {
+  color: #555555;
+}
+.h2-style-blue {
+  color: #0090b6;
+  font-size: 1.2em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.5);
+}
+.h2-style-red {
+  color: #993333;
+  font-size: 1.2em;
+  font-weight: 700;
+}
+/*--------------------------------------------------------------
+	H3
+--------------------------------------------------------------*/
+.h3-blue {
+  color: #0090b6;
+}
+.h3-style-gray {
+  color: #333;
+  font-size: .9em;
+  font-weight: 700;
+}
+/*--------------------------------------------------------------
+	H4
+--------------------------------------------------------------*/
+.h4-style-gray {
+  color: #888;
+  font-size: .7em;
+  font-weight: 400;
+}
+.h4-style-gray-2 {
+  color: #666;
+  font-size: 1em;
+  font-weight: 400;
+}
+/*--------------------------------------------------------------
+	PARAGRAPH
+--------------------------------------------------------------*/
+.p-style {
+  color: #333333;
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.5em;
+}
+/*--------------------------------------------------------------
+	SPAN
+--------------------------------------------------------------*/
+.span-style {
+  color: #b84530;
+}
+/*----------------------------------------------------------------
+	 STYLE TAGS HERE
+-----------------------------------------------------------------*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+th {
+  color: #0090b6;
+}
+p,
+dt,
+dd {
+  color: #333;
+}
+td {
+  color: #666;
+}
 #graph {
   text-align: center;
 }
+#graph div.row {
+  margin-top: 20px;
+}
+#graph div.row:first-child > div {
+  width: 32%;
+}
+#graph div.row.measure {
+  text-align: left;
+  width: 800px;
+  display: inline-block;
+}
+#graph div.parameter-block {
+  display: inline-block;
+}
+#graph div.parameter-block > div {
+  position: relative;
+  display: inline-block;
+  font-size: 15px;
+  color: #666666;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: none;
+  font-family: 'Open Sans', Arial, sans-serif;
+  line-height: 1.2em;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  margin-right: 6px;
+}
+#graph div.parameter-block div.choice-display {
+  width: 125px;
+  height: 21px;
+  border-radius: 5px;
+  border-top: 1px solid #d5d7bd;
+  border-right: 1px solid #d5d7bd;
+  border-bottom: 1px solid #d5d7bd;
+  border-left: 1px solid #d5d7bd;
+  background-color: white;
+  padding: 2px 4px;
+}
+#graph div.parameter-block .elgg-button {
+  padding: 2px 4px;
+}
 #graph_graphView {
   position: relative;
-  width: 960px; /*default: 800px*/
+  width: 800px;
   height: 300px;
   margin: 0 auto;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid #d5d7bd;
+  border-right: 1px solid #d5d7bd;
+  border-bottom: 1px solid #d5d7bd;
+  border-left: 1px solid #d5d7bd;
   border-radius: 5px;
   background-color: #eee;
 }
@@ -1441,7 +1604,7 @@
 div.column {
   display: inline-block;
   vertical-align: top;
-  width: 300px;
+  width: 400px;
   margin: 20px;
   text-align: left;
 }
@@ -1458,61 +1621,6 @@ div.nbt-checkbox i {
 div.nbt-checkbox i {
   width: 20px;
 }
-div.parameter-block {
-  display: block;
-  padding: 6px 18px;
-  text-align: left;
-}
-div.parameter-block > div {
-  position: relative;
-  display: inline-block;
-  color: #666;
-}
-div.parameter-block .elgg-button {
-  padding: 2px 4px;
-}
-/****** GRAPH CONTROLS ******/
-#graph_graphControls_control3,
-#graph_graphControls_control8,
-#graph_graphControls_control10,
-#graph_graphControls_control13 {
-	margin-right: 7px;
-}
-
-#graph_graphControls_control9,
-#graph_graphControls_control12 {/*Location & Radius*/
-	display: none;
-}
-
-.date-display { 
-	background: #fff;
-	padding: 3px;
-}
-
-.icon-calendar { 
-}
-
-#graph_graphControls_fromPicker {
-	width: 20% !important;
-}
-
-div.parameter-block #graph_graphControls_measurePopup {
-  vertical-align: top;
-  position: absolute;
-  border-radius: 5px;
-  background-color: white;
-  border: 1px solid #ccc;
-}
-div.parameter-block .onyx-popup {
-  position: absolute;
-}
-div.date-display {
-  width: 175px;
-  height: 21px;
-  border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  margin-right: 5px;
-}
 div.data_popup {
   background-color: white;
   border: 1px solid #aaa;
@@ -1523,5 +1631,9 @@ div.data_popup .value div {
 }
 div.data_popup > div:last-child {
   font-size: 12px;
+}
+#graph_people {
+  display: none;
+  position: absolute;
 }
 
