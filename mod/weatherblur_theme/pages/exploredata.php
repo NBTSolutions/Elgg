@@ -14,7 +14,9 @@
 	elgg_load_css('jq-tabs');
 	elgg_load_css('enyo-css');
 	elgg_load_css('graph-css');
+	elgg_load_css('tables-css');
 	elgg_load_css('font-awesome');
+	elgg_load_css('tabletools-css');
 
 	elgg_load_js('enyo-js');
 	elgg_load_js('d3');
@@ -25,43 +27,74 @@
 	elgg_load_js('graph');
 	elgg_load_js('exploredata');
 
+	elgg_load_js('datatables');
+	elgg_load_js('table-tools');
+	elgg_load_js('table-tools-zc');
+
 	//echo elgg_view_page($title, $body);
 
 	echo elgg_view_page($title, $body, $canvas_area);
+	$site_url = elgg_get_site_url();
 
     $content = '
-        <script>
-          $(function() {
-                $( "#tabs" ).tabs();
-					});
+			<script>
+$(function() {
+	$( "#tabs" ).tabs({
 
-					var require = {
-						config: {
-							"wb/main": {
-								apiPath: "http://wb-aggregator.unstable.nbt.io/api"
-							}
-						},
-						paths: {
-							"wb/api/main": [
-								"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api"
-							]
-						}
-					};
+		show: function(ui, event)	{
+			ttInstances = TableTools.fnGetMasters();
+			for (i in ttInstances) {
+				if (ttInstances[i].fnResizeRequired()) ttInstances[i].fnResizeButtons();
+			}
+		}
+	});
+});
 
-					uid = ' . elgg_get_logged_in_user_guid() . '
+var require = {
+	config: {
+		"wb/main": {
+			apiPath: "http://wb-aggregator.unstable.nbt.io/api"
+		}
+	},
+	paths: {
+		"wb/api/main": [
+			"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api"
+		]
+	}
+};
 
-        </script>
+uid = ' . elgg_get_logged_in_user_guid() . '
+		</script>
+		<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+
+				var oTable = $("#wb-data").dataTable( {
+				    "sDom": \'T<"clear">lfrtip\',
+					"bProcessing": true,
+					"bLengthChange": false,
+					"iDisplayLength" : 15,
+					"oTableTools": {
+						"sSwfPath": "'.$site_url.'mod/weatherblur_theme/media/swf/copy_csv_xls_pdf.swf",
+					},
+					"sAjaxSource": "'.$site_url.'mod/weatherblur_theme/pages/datatable.php"
+				} );
+
+			} );
+		</script>
+
+>>>>>>> 1e3b63ded518ae2c9de7f9a1852d6f64fb99ed48
 
         <div class="wb-body">
         <h2 style="text-align:center;padding: 20px">Explore Data</h2>
         <div id="tabs">
             <ul>
-                <li><a href="#tab_explore">Explore Observations</a></li>
-                <li><a href="#tab_graphing">Graphing</a></li>
-                <li><a href="#tab_mapping">Mapping</a></li>
+                <li><a href="#tab_explore">Observations</a></li>
+                <li><a href="#tab_graphing">Graphs</a></li>
+                <li><a href="#tab_mapping">Maps</a></li>
+				 <li><a href="#tab_data">Data</a></li>
             </ul>
             <div id="tab_explore">
-                <div><img src="http://localhost:9999/elgg/mod/weatherblur_theme/graphics/observation_explorer.png"></div>
+                <div><img src="'.$site_url.'mod/weatherblur_theme/graphics/observation_explorer.png"></div>
             </div>
             <div id="tab_graphing">
 							<div id="graph_container"></div>
@@ -71,7 +104,28 @@
 								' . elgg_view('explore/graph/personpicker') . '</div>
             </div>
             <div id="tab_mapping">
-				<div><iframe src="http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/" id="home_map"></iframe></div>
+				<div><iframe src="http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/" id="explore_page_map"></iframe></div>
+            </div>
+			<div id="tab_data">
+				<div id="dynamic" width="100%">
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="wb-data">
+					<thead>
+						<tr>
+							<th width="20%">User</th>
+							<th width="25%">Investigation</th>
+							<th width="20%">Measurement</th>
+							<th width="10%">Value</th>
+							<th width="10%">Unit</th>
+							<th width="30%">Date</th>
+						</tr>
+					</thead>
+					<tbody>
+
+					</tbody>
+
+				</table>
+
+			</div>
             </div>
 
         </div>

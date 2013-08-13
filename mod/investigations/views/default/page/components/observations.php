@@ -53,7 +53,7 @@
             $video = $measurement->meta; 
         }
         else if($measurement->value == "image") {
-            $picture = json_decode($measurement->meta);
+            $picture = $measurement->meta;
         }
         else {
             //is in array add to it
@@ -82,7 +82,7 @@
 
 ?>
 <!-- start html -->
-<h1 id="obs_measurements_heading">Observation Measurements</h1>
+<h1 id="obs_measurements_heading">Observation Measurements asdf</h1>
 <p>
     <a href="<?php echo $site->url.'profile/'.$obs_user->username; ?>">
         <img src='<?php echo $obs_user->getIcon("tiny") ?>'><?php echo $obs_user->name; ?></a>
@@ -100,8 +100,8 @@
     <div id="obs_video">
         <h2>Video</h2>
         <video id="obs_video_js" class="video-js vjs-default-skin" controls preload="auto" width="400" height="400" poster="<?php echo $video->thumbnailUrl; ?>" data-setup='{"example_option":true}'>  
-             <source src="<?php echo $video->url; ?>" type='video/mp4' />  
-             <source src="<?php echo str_replace('.mp4', '', $video->url); ?>.webm" type='video/webm' />  
+             <source src="<?php echo str_replace('.$ext', '', $video->url); ?>.mp4" type='video/mp4' />  
+             <source src="<?php echo str_replace('.$ext', '', $video->url); ?>.webm" type='video/webm' />  
         </video>
     </div>
     <?php } ?>
@@ -160,8 +160,8 @@ foreach($obs_categories as $category => $category_image) {
 <h2>Video</h2>
 <div id="obs_video">
     <video id="example_video_1" class="video-js vjs-default-skin" controls preload="auto" width="400" height="400" poster="<?php echo $video->thumbnailUrl; ?>" data-setup='{"example_option":true}'>  
-         <source src="<?php echo $video->url; ?>" type='video/mp4' />  
-         <source src="<?php echo str_replace('.mp4', '', $video->url); ?>.webm" type='video/webm' />  
+         <source src="<?php echo str_replace('.$ext', '', $video->url); ?>.mp4" type='video/mp4' />  
+         <source src="<?php echo str_replace('.$ext', '', $video->url); ?>.webm" type='video/webm' />  
     </video>
 </div>
 <?php } ?>
@@ -176,16 +176,16 @@ foreach($obs_categories as $category => $category_image) {
                 <div class="elgg-avatar elgg-avatar-tiny">
                     <span class="elgg-icon elgg-icon-hover-menu "></span>
                     <ul class="elgg-menu elgg-menu-hover">
-                        <li><a href="http://demo.nbtsolutions.com/elgg/profile/admin"><span class="elgg-heading-basic">admin</span>@admin</a></li>
+                        <li><a href="<?php echo $site->url; ?>profile/<?php echo $obs_user->username; ?>"><span class="elgg-heading-basic">admin</span>@admin</a></li>
                     </ul>
-                    <a href="http://demo.nbtsolutions.com/elgg/profile/admin" class="">
-                        <img src="http://demo.nbtsolutions.com/elgg/_graphics/spacer.gif" alt="admin" title="admin" class="" style="background: url(http://demo.nbtsolutions.com/elgg/mod/profile/icondirect.php?lastcache=1375362698&amp;joindate=1375362461&amp;guid=38&amp;size=tiny) no-repeat;">
+                    <a href="<?php echo $site->url; ?>profile/<?php $obs_user->username; ?>" class="">
+                        <img src="<?php echo $site->url; ?>_graphics/spacer.gif" alt="admin" title="admin" class="" style="background: url(http://demo.nbtsolutions.com/elgg/mod/profile/icondirect.php?lastcache=1375362698&amp;joindate=1375362461&amp;guid=38&amp;size=tiny) no-repeat;">
                     </a>
                 </div>
             </div>
             <div class="elgg-body">
                 <div class="elgg-subtext">
-                    <a href="http://demo.nbtsolutions.com/elgg/profile/<?php echo $user->username; ?>"><?php echo $user->name; ?></a> <acronym title="2 August 2013 @ 8:32am">6 days ago</acronym>
+                    <a href="<?php echo $site->url; ?>profile/<?php echo $user->username; ?>"><?php echo $user->name; ?></a> <acronym title="2 August 2013 @ 8:32am">6 days ago</acronym>
                 </div>		
                 <div class="clearfix"></div>
                 <div class="elgg-content">
@@ -200,11 +200,14 @@ foreach($obs_categories as $category => $category_image) {
     <?php elgg_set_ignore_access($ignore); ?> 
     <?php } ?>
 </ul>
+<?php if(elgg_is_logged_in()) { ?>
+
 <form method="get" action='<?php echo $site->url; ?>action/observation/create_comment' class="elgg-form">
     <input type="hidden" name="__elgg_token" value="<?php echo $token; ?>" />
     <input type="hidden" name="__elgg_ts" value="<?php echo $ts; ?>" />
     <input type="hidden" name="obs_guid" value="<?php echo $obs_guid; ?>">
     <textarea name="comment"></textarea>
-    <input type="submit" value="Save" class="elgg-button elgg-button-submit" />
+    <input type="submit" value="Add Comment" class="elgg-button elgg-button-submit" />
 </form>
 </div>
+<?php } ?>

@@ -1,343 +1,517 @@
+@import "buttons.less";
 @import "typography.less";
+@import "rd_corners.less";
 
-/*//////////////////////////////////////////////////////////////////
-
-										ADMIN SCREEN
-
-//////////////////////////////////////////////////////////////////*/
-.elgg-page-admin { // contains everything else in this file!
+.elgg-page-admin { 
 	background: #f3f1e4;
-
 	> .elgg-inner {
+	
+		/***** HEADER *****/
+		> .elgg-page-header {
+			.round-5px; 
+				> .elgg-inner {
+					> .elgg-heading-site a {
+						color: #0090b6;
+					} /*elgg-heading-site*/
+					> .elgg-menu-user {
+						> li a {
+							.blue-green-link; 
+						} /*li a*/
+						> li a:hover {
+							color: #1aa4cc;
+							text-decoration: underline;
+						} /*li a:hover*/
+					} /*elgg-menu-user*/
+				} /*elgg-inner*/
+		} /*elgg-page-header*/
+	
+		/***** BODY *****/
 		> .elgg-page-body {
+			border-bottom: 0;
+			
 			> .elgg-inner {
 				> .elgg-layout {
+				
+					/***** Sidebar *****/
+					> .elgg-sidebar {
+						margin: 0 30px 0 0;
+						> .elgg-admin-sidebar-menu {
+							background: none;
+							border: none;
+							> .elgg-body {
+								> h2 {
+									font-size: 1.3em;
+									font-weight: normal;
+								} /*h2*/
+								> ul.elgg-menu {
+									> li a {
+										.elgg-button-action;
+									} /*li a*/
+									> li a:hover {
+										.elgg-button-action-hover;
+									} /*li a:hover*/
+									> li a:active {
+										.elgg-button-action-active;
+									} /*li a:active*/
+								} /*ul.elgg-menu*/
+							} /*elgg-body*/
+						} /*elgg-admin-sidebar-menu*/
+					} /*elgg-sidebar*/
+					
+					/***** Right content *****/
 					> .elgg-main {
 						background: none;
-						border: none !important;
-					}
-				}
-
-				> .elgg-layout-one-sidebar {
-					> .elgg-sidebar {
-						margin: 0;
-					}
-				}
-			}
-		}
-	}
-
-
-.elgg-admin-sidebar-menu {
-	background: none;
-	border: 0 !important;
-}
-
-/*-----------------------------------------------------------------------
-	ROUNDED CORNERS
------------------------------------------------------------------------*/
-.elgg-admin-sidebar-menu,
-.elgg-page-admin > .elgg-inner > .elgg-page-header,
-.elgg-page-admin > .elgg-inner > .elgg-page-body >.elgg-inner > .elgg-layout-one-sidebar > .elgg-body,
-.elgg-page-admin > .elgg-inner > .elgg-page-footer {
-	border: 1px solid #efebc6;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	box-shadow: none;
-}
-
-/*-----------------------------------------------------------------------
-	SUBHEADERS
------------------------------------------------------------------------*/
-.elgg-page-admin > .elgg-inner > .elgg-page-body > .elgg-inner > .elgg-layout-one-sidebar > .elgg-body > .elgg-module > .elgg-head,
-.elgg-module-inline > .elgg-head  { background: #e9e7dc; }
-
-.elgg-page-admin > .elgg-inner > .elgg-page-body > .elgg-inner > .elgg-layout-one-sidebar > .elgg-body > .elgg-module > .elgg-head h3,
-.elgg-page-admin > .elgg-inner > .elgg-page-body > .elgg-inner > .elgg-layout-one-sidebar > .elgg-body > .elgg-form > fieldset > .elgg-module-inline > .elgg-head h3 { color: #4F6635; }
-
-/*-----------------------------------------------------------------------
-	TEXT LINKS
------------------------------------------------------------------------*/
-.elgg-heading-site a,
-.elgg-menu-user a,
-.elgg-page-admin > .elgg-inner > .elgg-page-footer a {
-	color: #41afd7;
-}
-
-.elgg-heading-site a:hover,
-.elgg-menu-user a:hover,
-.elgg-page-admin > .elgg-inner > .elgg-page-footer a:hover {
-	color: #5BC9F1;
-}
-
-.elgg-module-inline > .elgg-head > .elgg-menu li a { color: #4F6635; }
-
-/*-----------------------------------------------------------------------
-	TOP BAR
------------------------------------------------------------------------*/
-.elgg-page-admin > .elgg-inner > .elgg-page-header { background: #fff; }
-
-/*-----------------------------------------------------------------------
-	RIGHT CONTENT
------------------------------------------------------------------------*/
-.elgg-page-admin > .elgg-inner > .elgg-page-body > .elgg-inner > .elgg-layout-one-sidebar > .elgg-body > .elgg-head h2 { color: #666; }
-
-.elgg-table-alt td, th {
-	background: none;
-	border: none;
-	padding: 7px;
-}
-
-.elgg-table-alt  {
-	border-top: none;
-}
-
-.elgg-table-alt th {
-	background: none;
-	border-top: 1px solid #fff;
-}
-
-
-/***** PAGINATION *****/
-.elgg-pagination a, .elgg-pagination span {
-	color: #41afd7;
-	border: 1px solid #ddd;
-	font-size: 12px;
-	text-decoration: none;
-
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-}
-
-.elgg-pagination a:hover {
-	background: #41afd7;
-	border: 1px solid #41afd7;
-	color: #fff;
-	text-decoration: none;
-}
-
-.elgg-pagination .elgg-state-selected span {
-	background: #41afd7;
-	color: #fff;
-	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .2) inset;
-	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2) inset;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
-}
-
-.elgg-pagination .elgg-state-disabled span,
-.elgg-pagination .elgg-state-selected span { border: none; }
-
-
-/***** Appearance: Edit Profile Fields *****/
-/* "All" & "Default" text links */
-.custom_fields_category a {
-	text-decoration: none;
-	color: #666;
-}
-.custom_fields_category a:hover {color: #2e597b;}
-
-/* "All" & "Default" buttons */
-.custom_fields_category {
-	text-decoration: none;
-	color: #666;
-	border: 1px solid #bbb;
-	background: #e6e6e6;
-	background-image: -moz-linear-gradient(#f8f8f8, #eee);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #f8f8f8));
-	text-shadow: none;
-	cursor: pointer;
-}
-
-.custom_fields_category:hover {
-	border: 1px solid #99c2cc !important;
-	background: #b4dbe3;
-	background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #b4dbe3),color-stop(1, #d0ebf3));
-}
-
-.custom_fields_category:active {
-	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	position: relative;
-	top: 1px;
-}
-
-#custom_fields_category_list_custom > .custom_fields_category_selected {
-	background: #ddd;
-	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
-	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
-}
-
-/***** Utilities: Log browser *****/
-#logbrowser-search-area > div a { color: #41afd7; }
-
-/***** Plugin List *****/
-#elgg-plugin-list > ul > li > .elgg-plugin {
-	background: #dfddd4;
-	border: 1px solid #bfbdae;
-}
-
-#elgg-plugin-list > ul > li > .elgg-plugin:hover {border: 1px solid #0090b6;}
-
-#elgg-plugin-list > ul > li > .elgg-state-active { background: #fff; }
-
-#elgg-plugin-list > ul > li > .elgg-plugin > .elgg-image-block {
-	border: none;
-	background: none;
-}
-
-/*------------------------------------------------------*/
-.elgg-image-block {
-	background: none;
-	border: 1px solid #efefef;
-	border-radius: 0;
-}
-
-.elgg-image-block:hover {
-	color: #0090b6 !important;
-	border: 1px solid #ccc;
-	background: #fff;
-}
-
-.elgg-image-block > .elgg-body > h3  > a { color: #0090b6; }
-
-
-/***** Friends Picker *****/
-#friends-picker-navigation1 li a { background: #fffde8; }
-
-.friends-picker-navigation li a.current {
-	background: #41afd7 !important;
-	color: #fff;
-	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .2) inset;
-	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2) inset;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
-}
-
-.friends-picker-navigation li a:hover { background: #41afd7 !important; }
-
-/*-----------------------------------------------------------------------
-	SIDEBAR
------------------------------------------------------------------------*/
-.elgg-admin-sidebar-menu > .elgg-body h2 {font-size: 1.5em;}
-
-.elgg-admin-sidebar-menu li.elgg-state-selected > a {background: #e6e4d6;}
-
-.elgg-admin-sidebar-menu .elgg-child-menu {padding-left: 15px;}
-
-.elgg-menu-page-administer li a,
-.elgg-menu-page-configure li a {
-	background: #e6e4d6;
-	border: 1px solid #bfbdae;
-	color: #666;
-	text-shadow: none;
-	padding: 7px !important;
-	-moz-box-shadow: inset 0 1px 0 #f6f4ea;
-	-webkit-box-shadow: inset 0 1px 0 #f6f4ea;
-	box-shadow: inset 0 1px 0 #f6f4ea;
-}
-
-.elgg-menu-page-administer li a:hover,
-.elgg-menu-page-configure li a:hover {
-	background: #d9d6c0;
-	border: 1px solid #bfbdae;
-	color: #666;
-}
-
-.elgg-menu-page-administer li a:active,
-.elgg-menu-page-configure li a:active {
-	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
-	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
-	position: relative;
-	top: 1px;
-}
-
-/*-----------------------------------------------------------------------
-	FOOTER
------------------------------------------------------------------------*/
-.elgg-page-admin > .elgg-inner > .elgg-page-body {border-bottom: 0;}
-
-.elgg-page-admin > .elgg-inner > .elgg-page-footer,
-.elgg-page-admin > .elgg-inner > .elgg-page-footer > .elgg-inner > .elgg-menu-admin-footer { background: #fff; }
-
-.elgg-menu-hz > li, .elgg-menu-hz > li:after, .elgg-menu-hz > li > a {font-weight: normal;}
-
-
-
-/*//////////////////////////////////////////////////////////////////
-
-									SETTINGS SCREEN
-
-//////////////////////////////////////////////////////////////////*/
-/*-----------------------------------------------------------------------
-	LEFT CONTENT
------------------------------------------------------------------------*/
-.elgg-form-usersettings-save,
-.elgg-form-usersettings-save > fieldset > .elgg-module > div {
-	 width: 300px;
-	 margin: 0 0 10px 15px;
-}
-
-.elgg-module-info > .elgg-head { background: #e9e7dc; }
-
-.elgg-module > .elgg-head h3,
-.elgg-module-inline > .elgg-head h3 { color: #4F6635; }
-
-.elgg-form-alt > fieldset > .elgg-foot {
-	border: none;
-	padding: 10px 15px;
-}
-
-/*-----------------------------------------------------------------------
-	SIDEBAR
------------------------------------------------------------------------*/
-.elgg-sidebar > .elgg-menu-page li a {
-	background: #e6e4d6;
-	border: 1px solid #bfbdae;
-	color: #666;
-	text-shadow: none;
-	padding: 7px !important;
-	-moz-box-shadow: inset 0 1px 0 #f6f4ea;
-	-webkit-box-shadow: inset 0 1px 0 #f6f4ea;
-	box-shadow: inset 0 1px 0 #f6f4ea;
-}
-
-.elgg-sidebar > .elgg-menu-page li a:hover {
-	background: #d9d6c0;
-	color: #666;
-}
-
-.elgg-sidebar > .elgg-menu-page li a:active {
-	border: 1px solid #fff;
-	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	position: relative;
-	top: 1px;
-}
-
-/*//////////////////////////////////////////////////////////////////
-
-										MESSAGES
-
-//////////////////////////////////////////////////////////////////*/
-
-.elgg-message.elgg-state-error {
-	background: #ac2424;
-	border-color: #fff;
-	font-weight: bold;
-}
-
-.elgg-message.elgg-state-success {
-	background: #369;
-	border-color: #c6d880;
-}
-
-.elgg-message.elgg-state-success p,
-.elgg-message.elgg-state-error p {color: #fff;}
-
-}
+						border: none;
+						
+						/***** Utilities: Log Browser *****/
+						> table {
+							> tbody {
+								> tr {
+									> th {
+										padding: 10px;
+										text-align: center;
+									} /*td*/
+								} /*tr*/
+								> tr {
+									> td {
+										padding: 15px;
+										> a {
+											.blue-green-link; 
+										} /*a*/
+										> a:hover {
+											color: #1aa4cc;
+											text-decoration: underline;
+										}
+									} /*td*/
+								} /*tr*/
+							} /*tbody*/
+						} /*table*/
+						
+						/***** Appearance: Menu Items *****/
+						> form {
+							> fieldset {
+								> .elgg-module {
+									> .elgg-head {
+										background: #e9e7dc;
+									} /*elgg-head*/
+									> .elgg-body {
+										> ul.elgg-list {
+											> li {
+												> .elgg-input-text {
+													margin-bottom: 15px;
+												} /*elgg-input-text*/
+											} /*li*/
+										} /*ul.elgg-list*/
+									} /*elgg-body*/
+								} /*elgg-module*/
+								> .elgg-button {
+									margin: 0 !important;
+								} /*elgg-button*/
+							} /*fieldset*/
+						} /*form*/
+									
+						/***** Pagination *****/
+						> ul.elgg-pagination {
+							float: right;
+							> li {
+								display: inline-block;
+								margin: 10px 0 20px 10px;
+							} /*li*/
+							> li a {
+								background: #e6e4d6;
+								border: 0;
+								color: #666;
+								padding: 7px 10px;
+							} /*li*/
+							> li a:hover {
+								background: #c6c3b0;
+							} /*li a:hover*/
+							> li.elgg-state-selected span {
+								background: #0090b6;
+								border: 0;
+								color: #fff;
+								padding: 7px 10px;
+							} /*li.elgg-selected span*/
+						} /*ul.elgg-pagination*/
+						
+						/***** Tabs *****/
+						> ul.elgg-tabs {
+							margin-top: 30px;
+							border-bottom: 1px solid #c6c3b0;
+							> li {
+								border-color: #d5d3c8;
+								> a {
+									height: 30px;
+									padding: 5px 20px 0 20px;
+									background: #eceae0;
+								} /*a*/
+								> a:hover {
+									background: #f3f1e4;
+									color: #1aa4cc;
+								} /*a:hover*/
+							} /*li*/
+							> li.elgg-state-selected a {
+								color: #0090b6;
+								background: #f3f1e4;
+								height: 30px;
+							} /*li.elgg-state-selected a*/
+						} /*ul.elgg-tabs*/
+						
+						/***** List Inactive Users, Manage Widgets *****/
+						> form {
+							> fieldset {
+								> table {
+									margin-top: 20px;
+									> tbody {
+										> tr {
+											> th {
+												padding: 15px;
+											} /*th*/
+										} /*tr*/
+										> tr {
+											> td {
+												border: 1px solid #efefef;
+												padding: 15px;
+											} /*td*/
+										} /*tr*/
+									} /*tbody*/
+								} /*table*/
+								> .elgg-button {
+									margin-left: 20px;
+								} /*elgg-button*/
+							} /*fieldset*/
+						} /*form*/
+									
+						> .elgg-head {
+							> h2 {
+								color: #0090b6;
+							} /*h2*/
+						} /*elgg-head*/
+							> .elgg-widget-add-control  {
+								> .elgg-button-action:hover {
+										.elgg-button-action-hover; 
+								} /*elgg-button-action:hover*/
+								> .elgg-button-action:active {
+									.elgg-button-action-active; 
+								} /*elgg-button-action-active*/
+							} /*elgg-widget-add-control*/
+							
+							> .elgg-module {							
+								> .elgg-head {
+									background: #e9e7dc;
+								} /*elgg-head*/
+								> .elgg-body {
+									> form {
+										> table {
+											> tbody {
+												> tr {
+													> td {
+														color: #0090b6;
+														padding: 10px 7px;
+													} /*td*/
+												} /*tr*/
+											} /*tbody*/
+										} /*table*/
+										> .elgg-button {
+											margin-top: 30px;
+										} /*elgg-button*/
+									} /*form*/
+								} /*elgg-body*/
+								
+								/***** Profile Types *****/
+								> #custom_fields_profile_types_list_custom .elgg-item {
+									background: #fff; 
+									border: 1px solid #ccc;
+									margin-right: 15px;
+									> .custom_profile_type {
+										color: #0090b6;
+									} /*custom_profile_type*/
+								} /*custom_fields_profile_types_list_custom .elgg-item*/
+								
+								> #custom_fields_category_list_custom {
+									> .custom_fields_category {
+										background: #fff; 
+										border: 1px solid #ccc;
+										margin-right: 10px;
+										padding: 5px 10px;
+										> a {
+											color: #0090b6;
+										} /*a*/
+										> a:hover {
+											color: #1aa4cc;
+											text-decoration: none;
+										} /*a:hover*/
+									} /*custom_fields_category */
+									> .custom_fields_category_selected {
+										background: #c6c3b0; 
+										border: 1px solid #c6c3b0;
+										-moz-box-shadow: 0 1px 0 rgba(0, 0, 0, .5) inset; 
+										-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, .5) inset; 
+										box-shadow: 0 1px 0 rgba(0, 0, 0, .5) inset;
+										> a {
+											color: #666;
+										} /*a*/
+										> a:hover {
+											color: #666;
+											text-decoration: none;
+										} /*a:hover*/
+									} /*custom_fields_category */
+								} /*#custom_fields_category_list_custom*/
+								
+								> #custom_fields_ordering {
+									> ul.elgg-list {
+										> li {
+											> .custom_field {
+												padding: 10px;
+											} /*custom_field*/
+										} /*li*/
+									} /*elgg-list*/
+								} /*custom_fields_ordering*/
+								
+								> .profile-manager-actions {
+									padding: 10px;
+								}
+
+								> .elgg-body {
+									> .elgg-button {
+											.elgg-button; /*change this class name in buttons.less*/
+										}
+									> .elgg-button:hover {
+										.elgg-button-hover;/*change this class name in buttons.less*/
+									} /*elgg-button:hover*/
+									> .elgg-button:active {
+										.elgg-button-active;/*change this class name in buttons.less*/
+									} /*elgg-button:active*/
+																		
+								
+									/***** Tabular Data *****/
+									> .elgg-table .elgg-table-alt {
+										border-top: none;
+										> tbody {
+											> tr {
+												> td {
+													border: none;
+													padding: 7px;
+												} /*td*/
+											} /*tr*/
+										} /*tbody*/
+									} /*elgg-table elgg-table-alt*/
+									
+									/***** Users Currently Online *****/
+									> ul.elgg-list {
+										> li.elgg-item {
+											> .elgg-image-block {
+												.round-5px;
+												background: #fff;
+												border: 1px solid #efefef;
+												> .elgg-body {
+													> h3 a {
+														color: #0090b6;
+													} /*h3*/
+													> h3 a:hover {
+														color: #1aa4cc;
+														text-decoration: underline;
+													}/*h3:hover*/
+												} /*elgg-body*/
+											} /*elgg-image-block*/
+											> .elgg-image-block:hover {
+												color: #0090b6 !important;
+												border: 1px solid #ccc;
+												background: #fff;
+											} /*elgg-image-block:hover*/
+										}/*li.elgg-item*/
+									} /*ul.elgg-list*/
+									
+									/***** Export Users, Profile Manager Settings *****/
+									> form {
+										> fieldset {
+											/***** Tabs *****/
+											> ul.elgg-tabs {
+												margin-top: 30px;
+												border-bottom: 1px solid #c6c3b0;
+												> li {
+													border-color: #d5d3c8;
+													> a {
+														height: 30px;
+														padding: 5px 20px 0 20px;
+														background: #eceae0;
+													} /*a*/
+													> a:hover {
+														background: #f3f1e4;
+														color: #1aa4cc;
+													} /*a:hover*/
+												} /*li*/
+												> li.elgg-state-selected a {
+													color: #0090b6;
+													background: #f3f1e4;
+													height: 30px;
+												} /*li.elgg-state-selected a*/
+											} /*ul.elgg-tabs*/
+											> table {
+												> tbody {
+													> tr {
+														> td {
+															padding: 7px;
+															> .elgg-module-inline {
+																> .elgg-head {
+																	background: #e9e7dc;
+																	> h3 {
+																	color: #666;
+																	} /*h3*/
+																} /*elgg-head*/
+															} /*elgg-module-inline*/
+														} /*td*/
+													} /*tr*/
+												} /*tbody*/
+											} /*table*/
+										> .elgg-button {
+											margin-top: 20px;
+										} /*elgg-button*/
+										} /*fieldset*/
+									} /*form*/
+														
+								} /*elgg-body*/
+							} /*elgg-module*/
+							
+							/***** Column 1 *****/
+							> #elgg-widget-col-1 {
+									> .elgg-module {
+										> .elgg-body {
+											> .elgg-widget-content {
+												> ul.elgg-menu {
+													> li a:hover {
+														.elgg-button-action-hover; 
+													} /*li a:hover*/
+													> li a:active{
+														.elgg-button-action-active; 
+													} /*li a:active*/
+												} /*.elgg-menu*/
+											} /*elgg-widget-content*/
+										} /*elgg-body*/
+									} /*elgg-module*/
+							} /*elgg-widget-col-1*/
+							
+							/***** Column 2 *****/
+							> #elgg-widget-col-2 {
+								> .elgg-module {
+									> .elgg-body {
+										> .elgg-widget-content {
+											> ul.elgg-list {
+												> li.elgg-item {
+													> .elgg-image-block {
+														background: none;
+														border: 1px solid #efefef;
+														border-radius: 0;
+														> .elgg-body {
+															> h3 a {
+																color: #0090b6;
+															} /*h3*/
+															> h3 a:hover {
+																color: #1aa4cc;
+																text-decoration: underline;
+															}/*h3:hover*/
+														} /*elgg-body*/
+													} /*elgg-image-block*/
+													> .elgg-image-block:hover {
+														color: #0090b6 !important;
+														border: 1px solid #ccc;
+														background: #fff;
+													} /*elgg-image-block:hover*/
+												} /*li.elgg-item*/
+											} /*ul.elgg-list*/
+											> .elgg-table-alt {
+												border-top: none;
+												> tbody {
+													> tr {
+														> th {
+															padding: 7px;
+															border-color: #fff;
+														} /*th*/
+														> td {
+															padding: 7px;
+															border-color: #fff;
+														} /*td*/
+													} /*tr*/
+												} /*tbody*/
+											} /*elgg-table-alt*/
+											> .mtm a {
+												.blue-green-link;
+												margin-left: 7px;
+											}  /*mtm a*/
+											> .mtm a:hover {
+												color: #1aa4cc;
+												text-decoration: underline;
+											} /*mtm a:hover*/
+										} /*elgg-widget-content*/
+									} /*elgg-body*/
+								} /*elgg-module*/
+							} /*elgg-widget-col-2*/
+							
+						/***** Plugin List *****/
+						> #elgg-plugin-list {
+							> ul.elgg-list {
+								> li.elgg-item {
+									> .elgg-plugin {
+										background: #dfddd4;
+										border: 1px solid #bfbdae;
+										> .elgg-image-block {
+											background: none;
+											border: 0;
+											border-radius: 0;
+										} /*elgg-image-block*/
+									} /*elgg-plugin*/
+									> .elgg-plugin-category-bundled {
+										background: #dfddd4;
+										border: 1px solid #bfbdae;
+										> .elgg-image-block {
+											background: none;
+											border: 0;
+											border-radius: 0;
+											> .elgg-image-alt {
+												> .mtm {
+													margin-top: 35px;
+													> a.elgg-button {
+														padding: 7px 16px;
+													} /*a.elgg-button*/
+												} /*mtm*/
+											} /*elgg-image-alt*/
+										} /*elgg-image-block*/
+									} /*elgg-plugin-category-bundled*/
+									> .elgg-state-active {
+										background: #fff;
+									} /*elgg-state-active*/
+									> .elgg-state-inactive {
+										background: #dfddd4;
+										border: 1px solid #bfbdae;
+									} /*elgg-state-inactive*/
+								} /*li.elgg-item*/
+							} /*ul.elgg-list*/
+						} /*elgg-plugin-list*/
+						
+					} /*elgg-main*/
+						
+				} /*elgg-layout*/
+			} /*elgg-inner*/
+		} /*elgg-page-body*/
+		
+		/***** FOOTER *****/
+		> .elgg-page-footer {
+			.round-5px; 
+			background: #fff;
+			> .elgg-inner {
+				> ul.elgg-menu-admin-footer {
+					 background: #fff; 
+					> li a {
+						.blue-green-link;
+					} /*li a*/
+					> li a:hover {
+						color: #1aa4cc;
+						text-decoration: underline;
+					} /*li a:hover*/
+				} /*ul.elgg-menu-admin-footer*/
+			} /*elgg-inner*/
+		} /*elgg-page-footer*/
+		
+	} /*elgg-inner*/
+
+} /*elgg-page-admin*/
