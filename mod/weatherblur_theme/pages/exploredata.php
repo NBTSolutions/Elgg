@@ -21,9 +21,7 @@
 	elgg_load_js('enyo-js');
 	elgg_load_js('d3');
 	elgg_load_js('moment');
-	elgg_load_js('jq-widget');
-	elgg_load_js('jq-tabs');
-	elgg_load_js('require');
+	//elgg_load_js('require');
 	elgg_load_js('graph');
 	elgg_load_js('exploredata');
 
@@ -36,7 +34,7 @@
 	echo elgg_view_page($title, $body, $canvas_area);
 	$site_url = elgg_get_site_url();
 
-    $content = '
+	$content = '
 			<script>
 $(function() {
 	$( "#tabs" ).tabs({
@@ -49,6 +47,7 @@ $(function() {
 		}
 	});
 });
+
 
 var require = {
 	config: {
@@ -64,6 +63,17 @@ var require = {
 };
 
 uid = ' . elgg_get_logged_in_user_guid() . '
+	</script>
+<script src="//d3pch6bcnsao4c.cloudfront.net/lib/require.js"></script>
+<script>
+define("jquery", [], function() { return jQuery; });
+require(["wb/api/main"], function(wb) {
+	require(["require"], function() {
+		$.ajaxSetup({ cache: true });
+		app = new wb.Graph().renderInto(document.getElementById("graph_container"));
+	});
+});
+
 		</script>
 		<script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
@@ -81,8 +91,6 @@ $(document).ready(function() {
 
 			} );
 		</script>
-
->>>>>>> 1e3b63ded518ae2c9de7f9a1852d6f64fb99ed48
 
         <div class="wb-body">
         <h2 style="text-align:center;padding: 20px">Explore Data</h2>

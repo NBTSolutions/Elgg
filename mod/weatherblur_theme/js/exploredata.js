@@ -5,4 +5,7 @@ $(document).ready(function() {
 		$('#graph_graphControls_fromDisplay').html('Me');
 		$('#graph_people').hide();
 	});
+
 });
+
+
