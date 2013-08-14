@@ -86,7 +86,7 @@
 <p>
     <a href="<?php echo $site->url.'profile/'.$obs_user->username; ?>">
         <img src='<?php echo $obs_user->getIcon("tiny") ?>'><?php echo $obs_user->name; ?></a>
-        <span style="font-weight: bold">on <?php echo date('F nS, Y g:i:s A', strtotime($obs_user_local->timestamp)); ?></span>
+        <span style="font-weight: bold">on <?php echo date('F nS, Y g:i:s A', strtotime($obs_user_local->timestamp) + (3600 * (1 - date('I', $comment->time_created)))); ?></span>
 </p>
 
 <div id="observation_left_col">
@@ -182,7 +182,7 @@ foreach($obs_categories as $category => $category_image) {
             <div class="elgg-body">
                 <div class="elgg-subtext">
                     <a href="<?php echo $site->url; ?>profile/<?php echo $user->username; ?>"><?php echo $user->name; ?></a>
-                    <acronym">on <?php echo date('F nS, Y g:i:s A', $comment->time_created); ?></acronym>
+                    <acronym">on <?php echo date('F nS, Y g:i:s A', $comment->time_created + (3600 * (1 - date('I', $comment->time_created)))); ?></acronym>
                 </div>		
                 <div class="clearfix"></div>
                 <div class="elgg-content">
