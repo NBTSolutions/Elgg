@@ -58,10 +58,27 @@ for($y =0; $y < count($features); $y++)
 			
 			if ($obj_meas[$x]["phenomenon"]["name"] == $obj_sc[$u]["name"])
 			{
+				//get investigation
+				$url_inv = "http://demo.nbtsolutions.com/elgg/services/api/rest/json/?method=wb.get_inv_by_agg_id&agg_id=".$m_id;
+				echo $url_inv;
+				die();
+				$ch = curl_init($url_inv);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+				$inv_str = curl_exec($ch);
+				curl_close($ch);
+				$obj_inv = json_decode($inv_str,true);
+				$inv_name = $obj_inv["results"]["name"];
+				if(!$inv_name)
+				{
+					$inv_name = "--";
+				}
+				
+				
 		        $elem = array();
 				//it is scalar, so we need to get the data
 				array_push($elem,$uname);
-				array_push($elem,"WeatherBlur");
+				array_push($elem,$inv_name);
 				array_push($elem,$obj_sc[$u]["description"]);
 				array_push($elem,$obj_meas[$x]["value"]);
 				array_push($elem,$obj_sc[$u]["unit"]["name"]);
