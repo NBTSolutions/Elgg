@@ -7,6 +7,8 @@ $prop = elgg_get_entities_from_relationship(array(
 	'inverse_relationship' => true
 ));
 
+if (count($prop) > 0) {
+
 $regex = '/[^a-zA-Z0-9_-]/';
 
 // assuming all props are pdfs
@@ -14,7 +16,8 @@ $filename = $inv->name . '-' . $prop[0]->getGUID();
 $filename = preg_replace($regex, '-', $filename) . '.pdf';
 
 $val = preg_replace($regex, '', $val);
-if (count($prop) > 0) {
+
+
 ?>
 <div class="elgg-module elgg-module-aside proposal-block">
 	<div class="proposal">
