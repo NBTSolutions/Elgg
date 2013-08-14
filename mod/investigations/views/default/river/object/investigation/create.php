@@ -28,8 +28,6 @@ $object_link = elgg_view('output/url', array(
 
 $summary = elgg_echo("river:create:object:observation", array($subject_link, $object_link));
 
-xdebug_break();
-
 echo elgg_view('river/elements/layout', array(
 	'item' => $vars['item'],
 	'message' => $excerpt,
