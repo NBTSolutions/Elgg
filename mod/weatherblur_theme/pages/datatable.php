@@ -59,7 +59,7 @@ for($y =0; $y < count($features); $y++)
 			if ($obj_meas[$x]["phenomenon"]["name"] == $obj_sc[$u]["name"])
 			{
 				//get investigation
-				$url_inv = "http://demo.nbtsolutions.com/elgg/services/api/rest/json/?method=wb.get_inv_by_agg_id&agg_id=".$m_id;
+				$url_inv = elgg_get_site_url()."services/api/rest/json/?method=wb.get_inv_by_agg_id&agg_id=".$m_id;
 		
 				$ch = curl_init($url_inv);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
