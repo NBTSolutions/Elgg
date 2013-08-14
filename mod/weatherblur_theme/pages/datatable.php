@@ -60,8 +60,7 @@ for($y =0; $y < count($features); $y++)
 			{
 				//get investigation
 				$url_inv = "http://demo.nbtsolutions.com/elgg/services/api/rest/json/?method=wb.get_inv_by_agg_id&agg_id=".$m_id;
-				echo $url_inv;
-				die();
+		
 				$ch = curl_init($url_inv);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
