@@ -55,6 +55,10 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		//ADMIN.CSS
 		elgg_register_css('admin', $css_dir.'admin.less');
 		elgg_load_css('admin');
+		
+		//SETTINGS.CSS
+		elgg_register_css('settings', $css_dir.'settings.less');
+		elgg_load_css('settings');
 
 		//TYPOGRAPHY.CSS
 		elgg_register_css('typography', $css_dir.'typography.less');

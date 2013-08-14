@@ -1,3 +1,6 @@
+@import "buttons.less";
+@import "typography.less";
+@import "rd_corners.less";
 /*-----------------------------------------------------------------------
 	BODY
 -----------------------------------------------------------------------*/
@@ -132,7 +135,7 @@ iframe#home_map{
 #tabs > ul.ui-tabs-nav  {
 	background: none;
 	border: none;
-	width: 400px;
+	width: 490px;
 	margin: 0 auto;
 }
 
@@ -151,34 +154,30 @@ iframe#home_map{
 
 /***** Normal Button State *****/
 .ui-tabs-nav li a {
-	color: #666;
-	border: 1px solid #dcd9bb;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-
-	background: #f5f3db;
-	background-image: -moz-linear-gradient(#f5f3db, #e8e6cd);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #e8e6cd),color-stop(1, #f5f3db));
+	.elgg-button-action;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	width: 100px;
+	text-align: center;
 }
 
 /***** Hover Button State *****/
 .ui-tabs-nav li a:hover {
-	border: 1px solid #a5a178;
-	background: #e4e1c2;
-	background-image: -moz-linear-gradient(#e4e1c2, #c8c5a2);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #c8c5a2),color-stop(1, #e4e1c2)) !important;
+	.elgg-button-action-hover;
+	border: 1px solid #bfbdae;
 }
 
 /***** Pressed & Selected Button State *****/
 .ui-tabs-nav li a:active,
 .ui-state-active a,
 .ui-state-active a:link {
-	color: #fff !important;
-	background: #a09d81;
-	-moz-box-shadow: 0 1px 2px rgba(255, 255, 255, 7) inset;
-	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, .5) inset;
+	color: #666 !important;
+	background: #d9d6c0;
+	border: 1px solid #f3f1e4;
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .3) inset;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .3) inset;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .3) inset;
 }
 
 

@@ -1,0 +1,210 @@
+@import "buttons.less";
+@import "typography.less";
+@import "rd_corners.less";
+
+.elgg-inner {
+	> .elgg-layout {
+		
+		/***** SIDEBAR *****/
+		> .elgg-sidebar {
+			
+			> ul.elgg-menu-extras {
+				display: none;
+			} /*ul.elgg-menu-extras*/
+			
+			> ul.elgg-menu {
+				> li a {
+					.elgg-button-action;
+					
+					&:hover {
+						.elgg-button-action-hover;	
+					} /*hover*/
+					
+					&:active {
+						.elgg-button-action-active;
+					} /*active*/
+				} /*li a*/
+				
+				> li.elgg-state-selected a {
+					background: #c6c3b0;
+					-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset; 
+					-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset; 
+					box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset;
+					border: 0;
+				} /*li.elgg-state-selected a*/
+			} /*ul.elgg-menu*/
+
+		} /*elgg-sidebar*/
+		
+		/***** BODY *****/
+		> .elgg-body {
+			> .elgg-module {
+				margin-left: 30px;
+				> .elgg-head {
+					background: #e9e7dc;
+				} /*elgg-head*/
+				
+				> .elgg-body {
+					> table.elgg-table-alt {
+						border: 0;
+						> tbody {
+							> tr {
+								> td {
+									padding: 10px;
+									border-bottom: 1px solid #d5d3c3;
+								} /*td*/
+								
+								> td.column-one {
+									color: #0090b6;
+									font-weight: 600; 
+								} /*td.column-one*/
+							} /*tr*/
+						} /*tbody*/
+					} /*table.elgg-table-alt*/
+				} /*elgg-body*/
+				
+			} /*elgg-module*/
+			
+			
+			> form {
+				> fieldset {
+					margin-left: 30px;
+					
+					> .notification_personal {
+					
+						> .elgg-module {
+							> .elgg-head {
+								background: #e9e7dc;
+							} /*elgg-head*/
+						} /*elgg-module*/
+						
+						> table#notificationstable {
+							> tbody {
+								> tr {
+									> td {
+										padding: 10px;
+										border-bottom: 1px solid #d5d3c3;
+									} /*td*/
+								} /*tr*/
+							} /*tbody*/
+						} /*table#notificationstable*/
+						
+					} /*notification_personal*/
+					
+					> .elgg-module {
+						margin-left: 30px;
+						width: 674px;
+						> .elgg-head {
+							background: #e9e7dc;
+						} /*elgg-head*/
+						
+						> table#notificationstable {
+							margin-top: 20px;
+							> tbody {
+								> tr {
+									> td {
+										padding: 10px;
+										border-bottom: 1px solid #d5d3c3;
+									} /*td*/
+										
+									> td.namefield {
+										color: #0090b6;
+										font-weight: 600; 
+									} /*td.namefield*/
+								}/*tr*/
+							}/*tbody*/
+						} /*table#notificationstable*/
+						
+						> .friends-picker-main-wrapper {
+							margin-top: 10px;
+							> #friends-picker_placeholder1 {
+								> .friends-picker-wrapper {
+									
+									> .friends-picker-navigation-l {
+										right: 120px;
+									} /*friends-picker-navigation-l*/
+									
+									> .friends-picker-navigation-r {
+										right: 70px;
+									} /*friends-picker-navigation-r*/
+
+									> .friends-picker-navigation {
+										border: none;
+										> ul {
+											> li {
+												padding: .20em;
+												background: none;
+												> a {
+													.round-3px;
+													border: none;
+													background: #e6e4d6;
+													&:hover {
+														background: #0090b6;
+													}
+												} /*a*/
+												> a.current {
+													background: #0090b6;
+												} /*a.current*/
+											} /*li*/
+										} /*ul*/
+									} /*friends-picker-navigation*/
+							
+									> .friends-picker {
+										width: 670px;
+										background: #eae8dc;
+										> .friends-picker-container {
+											padding: 10px;
+											> .panel {
+												> .wrapper {
+													h3 {
+														margin: 10px 0 30px 0;
+														color: #0090b6 !important;
+													}/*h3*/
+													> table#notificationstable {
+														> tbody {
+															> tr {
+																> td {
+																	padding: 10px;
+																	border-bottom: 1px solid #d5d3c3;
+																} /*td*/
+															}/*tr*/
+														}/*tbody*/
+													} /*table#notificationstable*/
+												}/*wrapper*/
+											}/*panel*/
+										}/*friends-picker-container*/
+									}/*friends-picker*/
+							
+								} /*friends-picker-wrapper*/
+							} /*friends-picker_placeholder*/
+						} /*friends-picker-main-wrapper*/
+						
+							
+						> .elgg-body {
+			
+							> table#notificationstable {
+								margin-top: 20px;
+								> tbody {
+									> tr {
+										> td {
+										padding: 10px;
+										border-bottom: 1px solid #d5d3c3;
+										} /*td*/
+										
+										> td.namefield {
+											color: #0090b6;
+											font-weight: 600; 
+										} /*td.namefield*/
+									}/*tr*/
+								}/*tbody*/
+							} /*table#notificationstable*/
+							
+						} /*elgg-body*/
+					} /*elgg-module*/
+				} /*fieldset*/
+			} /*form*/
+			
+		} /*elgg-body*/
+		
+	} /*elgg-layout*/
+} /*elgg-inner*/
