@@ -150,7 +150,10 @@ function file_page_handler($page) {
 			break;
 		case 'download':
 			set_input('guid', $page[1]);
+            // added this in so anyone can download an ElggFile
+            $ignore = elgg_set_ignore_access(true);
 			include "$file_dir/download.php";
+            elgg_set_ignore_access($ignore);
 			break;
 		default:
 			return false;
