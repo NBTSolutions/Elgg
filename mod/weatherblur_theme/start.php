@@ -103,19 +103,6 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 
 		elgg_register_js('graph', $js_dir . 'graph.js');
 
-		elgg_unregister_js('jquery');
-		elgg_register_js('jquery191', '//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js');
-		elgg_load_js('jquery191');
-		elgg_register_js('jquery-migrate', '//ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-1.1.1.min.js');
-		elgg_load_js('jquery-migrate');
-
-		elgg_unregister_js('jquery-ui');
-		elgg_register_js('jquery191-ui', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/jquery-ui.min.js');
-		elgg_load_js('jquery191-ui');
-
-		elgg_register_css('jq-smooth', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/themes/smoothness/jquery-ui.css');
-
-
 		elgg_register_event_handler('pagesetup', 'system', 'kill_friends_link');
 
 		//register login count hook handler
@@ -154,6 +141,18 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		}
 		if ($segments[0] == 'exploredata')
 		{
+            elgg_unregister_js('jquery');
+            
+            elgg_register_js('jquery191', '//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js');
+            elgg_load_js('jquery191');
+            elgg_register_js('jquery-migrate', '//ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-1.1.1.min.js');
+            elgg_load_js('jquery-migrate');
+
+            elgg_unregister_js('jquery-ui');
+            elgg_register_js('jquery191-ui', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/jquery-ui.min.js');
+            elgg_load_js('jquery191-ui');
+            elgg_register_css('jq-smooth', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/themes/smoothness/jquery-ui.css');
+
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/exploredata.php';
 			return true;
 		}
