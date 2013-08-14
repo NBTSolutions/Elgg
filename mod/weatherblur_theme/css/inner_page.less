@@ -1,3 +1,6 @@
+@import "functions.less";
+@import "typography.less";
+
 /*-----------------------------------------------------------------------
 	IFRAME
 -----------------------------------------------------------------------*/
@@ -9,6 +12,10 @@ iframe {
 	margin: 0 auto;
 	padding: 0;
     background: #fff;
+}
+
+.ui-tabs-hide {
+	display: none !important;
 }
 
 /*-----------------------------------------------------------------------
@@ -24,7 +31,7 @@ iframe {
 .elgg-list,
 .elgg-list li,
 .elgg-list > .elgg-list-item { /*hides top and bottom borders*/
-	border: none; 
+	border: none;
 }
 
 /*-----------------------------------------------------------------------
@@ -35,7 +42,7 @@ iframe {
 	padding: 15px;
 	background: #f8f8f8;
 	border: 1px solid #ddd;
-	
+
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -66,7 +73,7 @@ iframe {
 .elgg-menu-item-messages-inbox a,
 .elgg-menu-item-messages-sentmessages a {
 	color: #666 !important;
-	border-radius: 5px !important;	
+	border-radius: 5px !important;
 	border: 1px solid #bbb;
 	background: #e6e6e6;
 	background-image: -moz-linear-gradient(#f8f8f8, #eee);
@@ -100,7 +107,41 @@ iframe {
 	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
 	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
 	box-shadow: 0 2px 3px rgba(0, 0, 0, .5) inset;
-	
+
 	position: relative;
 	top: 1px;
+}
+
+/****
+ people page
+*/
+div.people-page {
+	h2 {
+		.font(1.5em, @blue-text, bold);
+	}
+
+	ul.people {
+		margin-top: 25px;
+		text-align: center;
+
+		li.person {
+			display: inline-block;
+			width: 24%;
+			text-align: center;
+			margin-bottom: 35px;
+
+			a {
+				.font-normal(15px);
+			}
+			a:first-child {
+				display: block;
+				height: 210px;
+				margin-bottom: 10px;
+
+				img {
+					.borderline(4px, 4px, 4px, 4px, white);
+				}
+			}
+		}
+	}
 }

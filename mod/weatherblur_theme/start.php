@@ -4,9 +4,9 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 
 	function weatherblur_theme_init() {
 		global $CONFIG;
-		
+
 		$site_url = elgg_get_site_url();
-		
+
 		// Replace the default index page
 		elgg_register_plugin_hook_handler('index', 'system', 'new_index');
 
@@ -68,27 +68,22 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		elgg_register_css('graph', $CONFIG->url.'mod/weatherblur_theme/css/graph.css');
 		elgg_load_css('graph');
 
-
-		// smoothness UI from jquery, this css needs to be removed but see tabs in
-		// exploredata page, those will have to be replaced.
-		elgg_register_css('jq-smooth',
-			'http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css');
 		elgg_register_css('jq-tabs', $css_dir.'tabs.css');
 		elgg_register_css('enyo-css',
 			'//d3pch6bcnsao4c.cloudfront.net/lib/enyo/enyo-onyx-2.2.0.css');
 		elgg_register_css('graph-css', $css_dir.'graph.css');
 		elgg_register_css('tables-css', $css_dir.'wb-table.css');
 		elgg_register_css('tabletools-css', $site_url.'mod/weatherblur_theme/media/css/TableTools.css');
-			
-		
+
+
 		elgg_register_js('datatables', '//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js');
         elgg_register_js('table-tools',
 			$site_url.'mod/weatherblur_theme/media/js/TableTools.js');
 		elgg_register_js('table-tools-zc',
 			$site_url.'mod/weatherblur_theme/media/js/ZeroClipboard.js');
-		
-	
-		elgg_register_js('less', 
+
+
+		elgg_register_js('less',
 		'//d3pch6bcnsao4c.cloudfront.net/lib/less-1.3.3.min.js');
 		elgg_load_js('less');
 
@@ -107,15 +102,25 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		elgg_register_js('wb-api', '//s3.amazonaws.com/nbt-assets/weatherblur/wb.api.js');
 
 		elgg_register_js('graph', $js_dir . 'graph.js');
-		
-		
+
+		elgg_unregister_js('jquery');
 		elgg_register_js('jquery191', '//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js');
+		elgg_load_js('jquery191');
+		elgg_register_js('jquery-migrate', '//ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-1.1.1.min.js');
+		elgg_load_js('jquery-migrate');
+
+		elgg_unregister_js('jquery-ui');
+		elgg_register_js('jquery191-ui', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/jquery-ui.min.js');
+		elgg_load_js('jquery191-ui');
+
+		elgg_register_css('jq-smooth', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/themes/smoothness/jquery-ui.css');
+
 
 		elgg_register_event_handler('pagesetup', 'system', 'kill_friends_link');
 
 		//register login count hook handler
 		elgg_register_event_handler('login', 'user', 'login_count');
-		
+
 
 	}
 
