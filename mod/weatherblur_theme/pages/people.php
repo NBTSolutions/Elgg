@@ -16,6 +16,8 @@ if ($type == 'all') {
 	$people = elgg_get_entities(array(
 		'types' => 'user',
 		'limit' => false,
+		'joins' => array('left join elgg_users_entity u on e.guid = u.guid'), // good grief this is ugly!
+		'order_by' => 'u.username asc' // all to sort by username!
 	));
 }
 
