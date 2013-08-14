@@ -19,7 +19,10 @@ echo elgg_view('investigations/sidebar/people', $vars);
 
 echo elgg_view('investigations/sidebar/members', array('entity' => $vars['investigation']));
 
+// without ignore access proposals will only display for investigation owners
+$ignore = elgg_set_ignore_access(true);
 echo elgg_view('investigations/sidebar/proposal', array('entity' => $vars['investigation']));
+elgg_set_ignore_access($ignore);
 
 // optional 'sidebar' parameter
 if (isset($vars['sidebar'])) {
