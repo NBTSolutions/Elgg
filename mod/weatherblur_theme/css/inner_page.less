@@ -1,3 +1,6 @@
+@import "functions.less";
+@import "typography.less";
+
 /*-----------------------------------------------------------------------
 	IFRAME
 -----------------------------------------------------------------------*/
@@ -107,4 +110,36 @@ iframe {
 
 	position: relative;
 	top: 1px;
+}
+
+/****
+ people page
+*/
+div.people-page {
+	h2 {
+		.font(1.5em, #0090b6, bold);
+	}
+
+	ul.people {
+
+		li.person {
+			display: inline-block;
+			width: 225px;
+			text-align: center;
+			margin-bottom: 35px;
+
+			a {
+				.font-normal(15px);
+			}
+			a:first-child {
+				display: block;
+				height: 210px;
+				margin-bottom: 10px;
+
+				img {
+					.borderline(4px, 4px, 4px, 4px, white);
+				}
+			}
+		}
+	}
 }
