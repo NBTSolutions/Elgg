@@ -58,6 +58,7 @@ $(document).ready(function() {
 					"bLengthChange": false,
 					"iDisplayLength" : 15,
 					"oTableTools": {
+						"aButtons": [ "copy", "print","csv","pdf"],
 						"sSwfPath": "'.$site_url.'mod/weatherblur_theme/media/swf/copy_csv_xls_pdf.swf",
 					},
 					"sAjaxSource": "'.$site_url.'mod/weatherblur_theme/pages/datatable.php"
@@ -91,11 +92,11 @@ $(document).ready(function() {
 					<thead>
 						<tr>
 							<th width="20%">User</th>
-							<th width="25%">Investigation</th>
+							<th width="20%">Investigation</th>
 							<th width="20%">Measurement</th>
-							<th width="10%">Value</th>
-							<th width="10%">Unit</th>
-							<th width="30%">Date</th>
+							<th width="5%">Value</th>
+							<th width="5%">Unit</th>
+							<th width="25%">Date</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -22,6 +22,7 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $obs_str = curl_exec($ch);
 curl_close($ch); 
 
+
 $obj_obs = json_decode($obs_str,true);
 
 
@@ -36,7 +37,7 @@ for($y =0; $y < count($features); $y++)
 	$ts = strtotime($tss);
 	$dates = date("F j, Y, g:i a", $ts);  
 	
-	$uname = $features[$y]["properties"]["observer"]["label"];
+	$uname = $features[$y]["properties"]["observer"]["properties"]["label"];
 	
 	$url_meas = "http://wb-aggregator.unstable.nbt.io/api/observation/".$m_id."/measurement";
 	
@@ -45,7 +46,7 @@ for($y =0; $y < count($features); $y++)
 
 	$meas_str = curl_exec($ch);
 	curl_close($ch); 
-
+   
 	$obj_meas = json_decode($meas_str,true);
 	
 	//loop over all obs_meas

@@ -270,6 +270,18 @@ function investigations_init() {
         false,
         false
     );
+	
+	expose_function(
+        "wb.get_inv_by_agg_id",
+        "get_inv_by_agg_id",
+        array(
+            'agg_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
 
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
@@ -1713,8 +1725,37 @@ function get_user_info_by_agg_id($agg_id, $icon_size) {
 
     //$results = elgg_get_entity_metadata_where_sql("e", "metadata", null, null, array('name' => 'agg_id', 'value' => '10'));
 
-    if($results) {
+    if($results) 
+	{
         return get_user_info($results[0]->owner_guid, $icon_size);
+    }
+    else {
+        return 0;
+    }
+}
+
+function get_inv_by_agg_id($agg_id) {
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    if($results) {
+       
+		$obs = get_entity($results[0]->guid);
+		$inv_guid = $obs->parent_guid;
+		$inv = get_entity($inv_guid);
+		if ($inv)
+		{	
+			return array(
+				"guid" => $inv->guid,
+				"name" => $inv->name
+			);
+		}
+		else
+		{
+			return 0;
+		}  
     }
     else {
         return 0;
