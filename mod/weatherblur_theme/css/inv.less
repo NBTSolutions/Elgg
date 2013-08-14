@@ -2,7 +2,7 @@
 @import "typography.less";
 @import "button2.less";
 
-@background-base: #fffde8;
+@background-base: #f3f1e4;
 @background-selected: #c6c3b0;
 @reddish: #ab3e4e;
 
@@ -33,6 +33,7 @@ div.investigation-list {
 	}
 
 	div.inv-search {
+		
 		margin-bottom: 20px;
 
 		.elgg-input-search {
@@ -77,8 +78,17 @@ div.investigation-list {
 			h3 {
 				margin-top: 5px;
 				font-size: 18px;
-			}
+				
+				a {
+					color: #0090b6;
+					&:hover {
+						color: #1aa4cc;
+						text-decoration: underline;
+					}
+				}
 
+			}
+			
 			ul {
 				margin: 0;
 				width: 230px;
@@ -114,6 +124,7 @@ div.investigation-list {
 div.inv-detail {
 	p {
 		.font(15px, darken(@base-text, 20%));
+		margin: 20px;
 
 		/* this is the image in a discussion, potential for disastrous formatting = high! */
 		a img {
@@ -244,9 +255,15 @@ div.inv-detail {
 					.font(13px, @base-text);
 				}
 			}
-
+			
+			.elgg-body {
+				.elgg-gallery-users {
+					margin-bottom: 25px;
+				}
+			}
+			
 			div.mts a {
-				.orange-link(15px);
+				.orange-link(12px);
 			}
 		}
 
@@ -317,10 +334,7 @@ div.inv-detail {
 						height: 30px;
 					}
 				}
-
-
 			}
-
 		}
 
 		> ul.discussion-list {
@@ -329,9 +343,10 @@ div.inv-detail {
 			border: none;
 			margin: 0;
 			padding: 0;
+			width: 749px;
 
 			li.discussion {
-				width: 725px;
+				width: 100%;
 
 				&:hover {
 					background-color: @offwhite;
@@ -344,7 +359,22 @@ div.inv-detail {
 				.editing {
 					display: none;
 				}
+				
+				.elgg-output {
+				
+					p {
+						padding-left: 15px;
+						line-height: 1.5;
+					}
+					
+				}
+				
+				.tags {
+					padding-left: 35px;
+				}
+					
 			}
+			
 		}
 	}
 }

@@ -44,7 +44,7 @@ div.discussion {
 	.social {
 		float: right;
 		clear: right;
-		margin-top: 5px;
+		margin-right: 10px;
 
 		li {
 			float: left;
@@ -64,7 +64,7 @@ div.discussion {
 		}
 	}
 
-	h3 {
+	h3 { 
 		.font(20px, @blue-text, 700);
 		a {
 			.link(@blue-text);
@@ -74,10 +74,11 @@ div.discussion {
 		margin-top: 10px;
 		.font(12px, @base-text);
 	}
-
+	
 	.tags {
 		clear: both;
 		margin-top: 1em;
+		padding-left: 35px;
 
 		.elgg-icon-tag {
 			background-position: 0 -1242px;
@@ -86,7 +87,6 @@ div.discussion {
 
 	p {
 		.font(15px, darken(@base-text, 20%));
-
 		/* this is the image in a discussion, potential for disastrous formatting = high! */
 		a img {
 			float: left;
