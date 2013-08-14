@@ -13,7 +13,7 @@ if (count($prop) > 0) {
 	<div class="proposal">
 		<?php echo elgg_view('output/url', array(
 			'text' => 'View Original Proposal',
-			'value' => 'file/download/' . $prop[0]->getGUID(),
+			'value' => 'file/download/' . $prop[0]->getGUID() . '/' . $inv->name . '-' . $prop[0]->getGUID() .'.pdf', // assuming all props are pdfs
 			'is_trusted' => true
 		)); ?>
 	</div>
