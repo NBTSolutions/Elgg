@@ -63,8 +63,8 @@ body {
 
 .dataTables_filter {
 	width: 50%;
-	float: right;
-	text-align: right;
+	float: left;
+	text-align: left;
 }
 
 .dataTables_info {
@@ -169,12 +169,16 @@ table.display {
 
 table.display thead th {
 	padding: 15px 18px 15px 10px;
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #e6e4d6;
 	font-weight: bold;
 	cursor: pointer;
 	* cursor: hand;
 	color: #0090b6;
 	text-align: left;
+}
+
+table.display tbody {
+	border: 1px solid #e6e4d6;
 }
 
 table.display tfoot th {
@@ -301,9 +305,9 @@ tr.even {
 	float: none;
 }
 
-.clear {
+/*.clear {
 	clear: both;
-}
+}*/
 
 .dataTables_empty {
 	text-align: center;

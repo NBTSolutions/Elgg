@@ -1,20 +1,81 @@
 @import "functions.less";
 @import "typography.less";
 @import "button2.less";
+@import "rd_corners.less";
 
-@background-base: #fffde8;
+@background-base: #f3f1e4;
 @background-selected: #c6c3b0;
 @reddish: #ab3e4e;
 
 div.elgg-page-body {
 	> div.elgg-inner {
-		.borderline(0, 1px, 0, 1px);
+		/*.borderline(0, 1px, 0, 1px);*/
 		border-top: none;
 	}
 }
 
 // don't show embed content link on discussion
 .elgg-form-investigations-edit {
+	> fieldset {
+		margin-left: 0 !important;
+		> fieldset {
+			> div {
+				> .friends-picker-main-wrapper {
+					margin-top: 10px;
+					> #friends-picker_placeholder1 {
+						> .friends-picker-wrapper {
+						
+							> .friends-picker-navigation {
+								border: none;
+								> ul {
+									> li {
+										padding: .27em;
+										background: none;
+										> a {
+											.round-3px;
+											border: none;
+											background: #e6e4d6;
+											&:hover {
+												background: #0090b6;
+											}
+										} /*a*/
+										> a.current {
+											background: #0090b6;
+										} /*a.current*/
+									} /*li*/
+								} /*ul*/
+							} /*friends-picker-navigation*/
+							
+							> .friends-picker {
+								background: #eae8dc;
+								> .friends-picker-container {
+									padding: 10px;
+									> .panel {
+										> .wrapper {
+											h3 {
+												margin: 10px 0 30px 0;
+												color: #0090b6 !important;
+											}/*h3*/
+										}/*wrapper*/
+									}/*panel*/
+								}/*friends-picker-container*/
+							}/*friends-picker*/
+							
+						} /*friends-picker-wrapper*/
+					} /*friends-picker_placeholder*/
+				} /*friends-picker-main-wrapper*/
+			}/*div*/
+		} /*fieldset*/
+		
+		> .inv-option {
+			display: none;
+		}
+		
+		> .elgg-foot {
+			border: none;
+		}
+	} /*fieldset*/
+	
 	.elgg-menu-longtext {
 		display: none;
 	}
@@ -33,6 +94,7 @@ div.investigation-list {
 	}
 
 	div.inv-search {
+		
 		margin-bottom: 20px;
 
 		.elgg-input-search {
@@ -77,8 +139,17 @@ div.investigation-list {
 			h3 {
 				margin-top: 5px;
 				font-size: 18px;
-			}
+				
+				a {
+					color: #0090b6;
+					&:hover {
+						color: #1aa4cc;
+						text-decoration: underline;
+					}
+				}
 
+			}
+			
 			ul {
 				margin: 0;
 				width: 230px;
@@ -114,6 +185,8 @@ div.investigation-list {
 div.inv-detail {
 	p {
 		.font(15px, darken(@base-text, 20%));
+		margin: 20px;
+		line-height: 1.5;
 
 		/* this is the image in a discussion, potential for disastrous formatting = high! */
 		a img {
@@ -139,6 +212,7 @@ div.inv-detail {
 
 		div.summary-body {
 			margin-top: 1em;
+			margin-left: 225px;
 			.font(15px, darken(@base-text, 20%));
 		}
 	}
@@ -147,7 +221,7 @@ div.inv-detail {
 		margin: 0;
 		padding: 20px 15px;
 		background-color: @background-base;
-		.borderline(0, 1px, 0, 0);
+		/*.borderline(0, 1px, 0, 0);*/
 
 		> ul {
 			margin: 0;
@@ -167,13 +241,15 @@ div.inv-detail {
 				a {
 					.font-normal(13px);
 					line-height: 23px;
-					border: none;
-					background: transparent;
+					border: none !important;
+					background: none !important;
 					&:hover {
-						background: transparent;
+						border: none !important;
+						background: none !important;
 					}
 					&:active {
-						backgroud: transparent;
+						border: none !important;
+						background: none !important;
 					}
 
 					span.color {
@@ -189,7 +265,8 @@ div.inv-detail {
 			div.start {
 				.green-button;
 				padding: 5px;
-				.font(13px, white, 700);
+				.font(13px, white, 400);
+				width: 170px;
 			}
 
 			ul {
@@ -244,9 +321,18 @@ div.inv-detail {
 					.font(13px, @base-text);
 				}
 			}
-
+			
+			.elgg-body {
+				.elgg-gallery-users {
+					margin-bottom: 25px;
+					li {
+						margin: 3px 15px 5px 0;
+					}
+				}
+			}
+			
 			div.mts a {
-				.orange-link(15px);
+				.orange-link(12px);
 			}
 		}
 
@@ -265,7 +351,7 @@ div.inv-detail {
 		padding: 24px 0 0 240px;
 
 		div.head {
-			.borderline(0, 0, 1px, 0);
+			/*.borderline(0, 0, 1px, 0);*/ 
 			padding: 0 12px 40px;
 
 			.hint {
@@ -283,12 +369,24 @@ div.inv-detail {
 				height: 50px;
 
 				li {
-					.borderline;
+					/*.borderline;*/
+					.borderline(1px, 0, 1px, 1px);
 					float: left;
 					text-align: center;
 					width: 119px;
 					height: 49px;
-					box-shadow: 0px 2px 1px white inset;
+					box-shadow: 0px 1px 0 #fbfaf1 inset;
+					background: #e6e4d6;
+					padding: 5px 0;
+					&:hover {
+						background: #d9d6c0;
+					}
+					&:active {
+						background: #c6c3b0;
+						-moz-box-shadow: 0px 1px 4px rgba(130, 127, 113, 1) inset; 
+						-webkit-box-shadow: 0px 1px 4px rgba(130, 127, 113, 1) inset; 
+						box-shadow:0px 1px 4px rgba(130, 127, 113, 1) inset;
+					}
 				}
 				li:first-child {
 					border-bottom-left-radius: 3px;
@@ -297,10 +395,11 @@ div.inv-detail {
 				li:last-child {
 					border-bottom-right-radius: 3px;
 					border-top-right-radius: 3px;
+					.borderline(1px, 1px, 1px, 0);
 				}
 				li.selected {
 					background-color: @background-selected;
-					box-shadow: 0px 1px 4px rgba(0,0,0,0.3) inset;
+					box-shadow: 0px 1px 4px rgba(130, 127, 113, 1) inset;
 				}
 
 				a {
@@ -317,21 +416,27 @@ div.inv-detail {
 						height: 30px;
 					}
 				}
-
-
 			}
-
 		}
 
 		> ul.discussion-list {
 			float: left; /* contains everything within it */
 			clear: none;
 			border: none;
-			margin: 0;
+			margin: 0 0 0 10px;
 			padding: 0;
+			width: 725px;
 
 			li.discussion {
-				width: 725px;
+				width: 100%;
+				.round-5px;
+				background: #f3f1e4;
+				border-color: #d5d7bd;
+				margin-bottom: 20px;
+				
+				> div.discussion {
+					border: 0;
+				}
 
 				&:hover {
 					background-color: @offwhite;
@@ -344,7 +449,22 @@ div.inv-detail {
 				.editing {
 					display: none;
 				}
+				
+				.elgg-output {
+				
+					p {
+						padding-left: 15px;
+						line-height: 1.5;
+					}
+					
+				}
+				
+				.tags {
+					padding-left: 35px;
+				}
+					
 			}
+			
 		}
 	}
 }

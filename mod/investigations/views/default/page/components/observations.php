@@ -82,11 +82,11 @@
 
 ?>
 <!-- start html -->
-<h1 id="obs_measurements_heading">Observation Measurements asdf</h1>
+<h1 id="obs_measurements_heading">Observation Details</h1>
 <p>
     <a href="<?php echo $site->url.'profile/'.$obs_user->username; ?>">
         <img src='<?php echo $obs_user->getIcon("tiny") ?>'><?php echo $obs_user->name; ?></a>
-        on <?php echo date('F nS, Y g:i:s A', strtotime($obs_user_local->timestamp)); ?>
+        <span style="font-weight: bold">on <?php echo date('F nS, Y g:i:s A', strtotime($obs_user_local->timestamp) + (3600 * (1 - date('I', $comment->time_created)))); ?></span>
 </p>
 
 <div id="observation_left_col">
@@ -174,18 +174,15 @@ foreach($obs_categories as $category => $category_image) {
         <div class="elgg-image-block clearfix">
             <div class="elgg-image">
                 <div class="elgg-avatar elgg-avatar-tiny">
-                    <span class="elgg-icon elgg-icon-hover-menu "></span>
-                    <ul class="elgg-menu elgg-menu-hover">
-                        <li><a href="<?php echo $site->url; ?>profile/<?php echo $obs_user->username; ?>"><span class="elgg-heading-basic">admin</span>@admin</a></li>
-                    </ul>
-                    <a href="<?php echo $site->url; ?>profile/<?php $obs_user->username; ?>" class="">
-                        <img src="<?php echo $site->url; ?>_graphics/spacer.gif" alt="admin" title="admin" class="" style="background: url(http://demo.nbtsolutions.com/elgg/mod/profile/icondirect.php?lastcache=1375362698&amp;joindate=1375362461&amp;guid=38&amp;size=tiny) no-repeat;">
+                    <a href="<?php echo $site->url; ?>profile/<?php echo $user->username; ?>" class="">
+                        <img src="<?php echo $site->url; ?>_graphics/spacer.gif" alt="admin" title="admin" class="" style="background: url(<?php echo $user->getIconUrl('tiny'); ?>) no-repeat;">
                     </a>
                 </div>
             </div>
             <div class="elgg-body">
                 <div class="elgg-subtext">
-                    <a href="<?php echo $site->url; ?>profile/<?php echo $user->username; ?>"><?php echo $user->name; ?></a> <acronym title="2 August 2013 @ 8:32am">6 days ago</acronym>
+                    <a href="<?php echo $site->url; ?>profile/<?php echo $user->username; ?>"><?php echo $user->name; ?></a>
+                    <acronym">on <?php echo date('F nS, Y g:i:s A', $comment->time_created + (3600 * (1 - date('I', $comment->time_created)))); ?></acronym>
                 </div>		
                 <div class="clearfix"></div>
                 <div class="elgg-content">

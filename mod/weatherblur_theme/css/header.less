@@ -143,9 +143,15 @@ a.elgg-button-dropdown {
 	color: #b92e2e;
 	font-size: .9em;
 	font-weight: normal;
+	background: none;
+	text-shadow: none;
+	box-shadow: none;
 }
 
-a.elgg-button-dropdown:hover { background: none; }
+a.elgg-button-dropdown:hover { 
+	background: none;
+	text-decoration: underline; 
+}
 
 #login-dropdown > a.elgg-state-active { color: #666;}
 
@@ -266,19 +272,19 @@ a.elgg-heading-site {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	
-	background: #cfcfcf;
-	background-image: -moz-linear-gradient(#e6e6e6, #c0c0c0);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #c0c0c0),color-stop(1, #e6e6e6));
+	background: #efefef;
+	/*background-image: -moz-linear-gradient(#e6e6e6, #c0c0c0);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #c0c0c0),color-stop(1, #e6e6e6));*/
 	
-	-moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset, 0 1px 0 rgba(0, 0, 0, 0.3);
-	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 7) inset, 0 1px 0 rgba(0, 0, 0, 0.3);
-	box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 1px 0 rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset, 0 1px 0 rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset, 0 1px 0 rgba(0, 0, 0, 0.1);
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset, 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .elgg-search > fieldset > .search-submit-button:hover {
-	background: #d3d3d3;
-	background-image: -moz-linear-gradient(#eee, #d3d3d3);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #d3d3d3),color-stop(1, #eee));
+	background: #e0e0e0;
+	/*background-image: -moz-linear-gradient(#eee, #d3d3d3);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #d3d3d3),color-stop(1, #eee));*/
 }
 
 .elgg-search > fieldset > .search-submit-button:active{

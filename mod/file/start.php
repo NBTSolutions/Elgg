@@ -150,7 +150,10 @@ function file_page_handler($page) {
 			break;
 		case 'download':
 			set_input('guid', $page[1]);
+            // added this in so anyone can download an ElggFile
+            $ignore = elgg_set_ignore_access(true);
 			include "$file_dir/download.php";
+            elgg_set_ignore_access($ignore);
 			break;
 		default:
 			return false;
@@ -408,7 +411,7 @@ function file_icon_url_override($hook, $type, $returnvalue, $params) {
 		} else {
 			$ext = '';
 		}
-		
+
 		$url = "mod/file/graphics/icons/{$type}{$ext}.gif";
 		$url = elgg_trigger_plugin_hook('file:icon:url', 'override', $params, $url);
 		return $url;
