@@ -46,12 +46,15 @@ if (!$content) {
 	$content = elgg_echo("file:none");
 }
 
-$sidebar = file_get_type_cloud(elgg_get_page_owner_guid());
-$sidebar = elgg_view('file/sidebar');
+//$sidebar = file_get_type_cloud(elgg_get_page_owner_guid());
+$sidebar = elgg_view('file/sidebar', array('skip_filter' => true));
 
 $params['content'] = $content;
 $params['title'] = $title;
 $params['sidebar'] = $sidebar;
+$params['class'] = 'resources-page';
+$params['header_override'] = elgg_view('resources_page/header');
+$params['filter_override'] = ' ';
 
 $body = elgg_view_layout('content', $params);
 
