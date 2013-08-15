@@ -4,38 +4,38 @@
 
 .elgg-inner {
 	> .elgg-layout {
-		
+
 		/***** SIDEBAR *****/
 		> .elgg-sidebar {
-			
+
 			> ul.elgg-menu-extras {
 				display: none;
 			} /*ul.elgg-menu-extras*/
-			
+
 			> ul.elgg-menu {
 				> li a {
 					.elgg-button-action;
-					
+
 					&:hover {
-						.elgg-button-action-hover;	
+						.elgg-button-action-hover;
 					} /*hover*/
-					
+
 					&:active {
 						.elgg-button-action-active;
 					} /*active*/
 				} /*li a*/
-				
+
 				> li.elgg-state-selected a {
 					background: #c6c3b0;
-					-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset; 
-					-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset; 
+					-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset;
+					-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset;
 					box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset;
 					border: 0;
 				} /*li.elgg-state-selected a*/
 			} /*ul.elgg-menu*/
 
 		} /*elgg-sidebar*/
-		
+
 		/***** BODY *****/
 		> .elgg-body {
 			> .elgg-module {
@@ -43,7 +43,7 @@
 				> .elgg-head {
 					background: #e9e7dc;
 				} /*elgg-head*/
-				
+
 				> .elgg-body {
 					> table.elgg-table-alt {
 						border: 0;
@@ -53,31 +53,31 @@
 									padding: 10px;
 									border-bottom: 1px solid #d5d3c3;
 								} /*td*/
-								
+
 								> td.column-one {
 									color: #0090b6;
-									font-weight: 600; 
+									font-weight: 600;
 								} /*td.column-one*/
 							} /*tr*/
 						} /*tbody*/
 					} /*table.elgg-table-alt*/
 				} /*elgg-body*/
-				
+
 			} /*elgg-module*/
-			
-			
+
+
 			> form {
 				> fieldset {
 					margin-left: 30px;
-					
+
 					> .notification_personal {
-					
+
 						> .elgg-module {
 							> .elgg-head {
 								background: #e9e7dc;
 							} /*elgg-head*/
 						} /*elgg-module*/
-						
+
 						> table#notificationstable {
 							> tbody {
 								> tr {
@@ -88,16 +88,16 @@
 								} /*tr*/
 							} /*tbody*/
 						} /*table#notificationstable*/
-						
+
 					} /*notification_personal*/
-					
+
 					> .elgg-module {
 						margin-left: 30px;
 						width: 674px;
 						> .elgg-head {
 							background: #e9e7dc;
 						} /*elgg-head*/
-						
+
 						> table#notificationstable {
 							margin-top: 20px;
 							> tbody {
@@ -106,24 +106,24 @@
 										padding: 10px;
 										border-bottom: 1px solid #d5d3c3;
 									} /*td*/
-										
+
 									> td.namefield {
 										color: #0090b6;
-										font-weight: 600; 
+										font-weight: 600;
 									} /*td.namefield*/
 								}/*tr*/
 							}/*tbody*/
 						} /*table#notificationstable*/
-						
+
 						> .friends-picker-main-wrapper {
 							margin-top: 10px;
 							> #friends-picker_placeholder1 {
 								> .friends-picker-wrapper {
-									
+
 									> .friends-picker-navigation-l {
 										right: 120px;
 									} /*friends-picker-navigation-l*/
-									
+
 									> .friends-picker-navigation-r {
 										right: 70px;
 									} /*friends-picker-navigation-r*/
@@ -148,7 +148,7 @@
 											} /*li*/
 										} /*ul*/
 									} /*friends-picker-navigation*/
-							
+
 									> .friends-picker {
 										width: 670px;
 										background: #eae8dc;
@@ -174,14 +174,14 @@
 											}/*panel*/
 										}/*friends-picker-container*/
 									}/*friends-picker*/
-							
+
 								} /*friends-picker-wrapper*/
 							} /*friends-picker_placeholder*/
 						} /*friends-picker-main-wrapper*/
-						
-							
+
+
 						> .elgg-body {
-			
+
 							> table#notificationstable {
 								margin-top: 20px;
 								> tbody {
@@ -190,21 +190,51 @@
 										padding: 10px;
 										border-bottom: 1px solid #d5d3c3;
 										} /*td*/
-										
+
 										> td.namefield {
 											color: #0090b6;
-											font-weight: 600; 
+											font-weight: 600;
 										} /*td.namefield*/
 									}/*tr*/
 								}/*tbody*/
 							} /*table#notificationstable*/
-							
+
 						} /*elgg-body*/
 					} /*elgg-module*/
 				} /*fieldset*/
 			} /*form*/
-			
+
 		} /*elgg-body*/
-		
+
 	} /*elgg-layout*/
+
+	/* for the resources page only */
+	div.resources-page {
+		div.elgg-sidebar {
+			ul.elgg-menu-extras {
+				display: block;
+
+				li.elgg-menu-item-rss {
+					display: none;
+				}
+
+				li.elgg-menu-item-file-list a {
+					border: 0;
+					background-color: transparent;
+					&:hover {
+						background-color: transparent;
+					}
+					&:active {
+						border: none;
+						box-shadow: none;
+						-webkit-box-shadow: none;
+						-moz-box-shadow: none;
+						top: 0;
+					}
+				}
+			}
+		}
+	}
 } /*elgg-inner*/
+
+
