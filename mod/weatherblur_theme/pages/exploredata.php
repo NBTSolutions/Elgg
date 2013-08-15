@@ -11,7 +11,6 @@
 	$body = elgg_view_layout("one_column", array('content' => $area2));
 
 	elgg_load_css('jq-smooth');
-	elgg_load_css('jq-tabs');
 	elgg_load_css('enyo-css');
 	elgg_load_css('graph-css');
 	elgg_load_css('tables-css');
@@ -21,7 +20,6 @@
 	elgg_load_js('enyo-js');
 	elgg_load_js('d3');
 	elgg_load_js('moment');
-	//elgg_load_js('require');
 	elgg_load_js('graph');
 	elgg_load_js('exploredata');
 
@@ -57,7 +55,8 @@ var require = {
 	},
 	paths: {
 		"wb/api/main": [
-			"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api"
+			"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api-sans-jquery"
+			//"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api"
 		]
 	}
 };
@@ -108,8 +107,10 @@ $(document).ready(function() {
 							<div id="graph_container"></div>
 							<div id="graph_people">
 								<h3>Whose Observations Do You Want To See?</h3>
-								<div id="use-mine" class="elgg-button elgg-button-action">Use My Own</div>
-								' . elgg_view('explore/graph/personpicker') . '</div>
+								<div id="use-mine" class="elgg-button elgg-button-action">Use My Own Observations</div>
+								' . elgg_view('explore/graph/personpicker', array('title' => "Or Select Another User's:")) . '
+								<div id="use-user" class="elgg-button elgg-button-action">Okay</div>
+							</div>
             </div>
             <div id="tab_mapping">
 				<div><iframe src="http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/" id="explore_page_map"></iframe></div>
@@ -138,7 +139,7 @@ $(document).ready(function() {
 
         </div>
         </div>';
-	$canvas_area = elgg_view_layout('default', array('content' => $content));
+	$canvas_area = elgg_view_layout('default', array('content' => $content, 'class' => 'frank'));
 	echo elgg_view_page($title, $canvas_area);
 
 ?>

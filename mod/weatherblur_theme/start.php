@@ -64,7 +64,6 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		elgg_register_css('graph', $CONFIG->url.'mod/weatherblur_theme/css/graph.css');
 		elgg_load_css('graph');
 
-		elgg_register_css('jq-tabs', $css_dir.'tabs.css');
 		elgg_register_css('enyo-css',
 			'//d3pch6bcnsao4c.cloudfront.net/lib/enyo/enyo-onyx-2.2.0.css');
 		elgg_register_css('graph-css', $css_dir.'graph.css');
@@ -89,11 +88,6 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		elgg_register_js('moment',
 			'//d3pch6bcnsao4c.cloudfront.net/lib/moment.min.js');
 
-		//elgg_register_js('jq-widget', $js_dir . 'jquery.ui.widget.min.js');
-		//elgg_register_js('jq-tabs', $js_dir . 'jquery.ui.tabs.min.js');
-
-		//elgg_register_js('require', '//d3pch6bcnsao4c.cloudfront.net/lib/require.js', 'footer');
-		//elgg_register_js('jquery-require', $js_dir . 'jquery_require.js', 'footer');
 		elgg_register_js('graph', $js_dir . 'graph.js', 'footer');
 		elgg_register_js('exploredata', $js_dir . 'exploredata.js');
 
