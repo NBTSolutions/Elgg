@@ -3,8 +3,8 @@
 //set hosts
 $srv = $_SERVER['SERVER_NAME'];
 
-$url_agg = "http://wb-aggregator.staging.nbt.io";
-$url_elgg = "http://weatherblur.com/";
+$url_agg = "http://wb-aggregator.unstable.nbt.io";
+$url_elgg = "http://".$srv."/";
 
 if ($srv == 'localhost')
 {

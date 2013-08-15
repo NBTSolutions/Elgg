@@ -14,8 +14,9 @@
  
  
  //count investigations
-$user_guid = get_loggedin_userid(); //user's id
+$user_guid = elgg_get_page_owner_guid(); //user's id
 $relations = get_users_membership($user_guid); //get all the groups the user is belonging
+
 
 //count obs
 $obs = elgg_get_entities( array(
