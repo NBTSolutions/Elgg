@@ -1,3 +1,6 @@
+@import "functions.less";
+@import "typography.less";
+
 /*-----------------------------------------------------------------------
 	IFRAME
 -----------------------------------------------------------------------*/
@@ -9,6 +12,10 @@ iframe {
 	margin: 0 auto;
 	padding: 0;
     background: #fff;
+}
+
+.ui-tabs-hide {
+	display: none !important;
 }
 
 /*-----------------------------------------------------------------------
@@ -103,4 +110,47 @@ iframe {
 	
 	position: relative;
 	top: 1px;
+}
+
+/****
+ people page
+*/
+div.people-page {
+	h2 {
+		.font(1.5em, @blue-text, bold);
+		text-align: center;
+	}
+
+	ul.people {
+		margin-top: 25px;
+		text-align: center;
+
+		li.person {
+			float: left;
+			display: inline-block;
+			width: 24%;
+			text-align: center;
+			margin-bottom: 35px;
+
+			a {
+				.font-normal(15px);
+				color: #0090b6;
+				font-weight: 600;
+				&:hover {
+					color: #1aa4cc;
+					text-decoration: underline;
+				}
+			}
+			a:first-child {
+				display: block;
+				height: 210px;
+				margin-bottom: 10px;
+
+				img {
+					/*.borderline(4px, 4px, 4px, 4px, white);*/ /*this isn't working locally for me*/
+					border: 4px solid #fff;
+				}
+			}
+		}
+	}
 }
