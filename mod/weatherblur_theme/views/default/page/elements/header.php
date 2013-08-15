@@ -84,7 +84,7 @@ $(function(){
 
 			<ul class="elgg-menu-site">
 				<li><span id="clipboard" class="nav_icons"></span><a href="<?php echo $CONFIG->url; ?>wbsystem/enterdata">Enter Data</a></li>
-				<li><span id="magnifying_glass" class="nav_icons"></span><a href="/investigate">Investigate</a></li>
+				<li><span id="magnifying_glass" class="nav_icons"></span><a href="<?php echo $CONFIG->url; ?>investigate">Investigate</a></li>
 				<li><span id="map_icon" class="nav_icons"></span><a href="<?php echo $CONFIG->url; ?>wbsystem/exploredata">Explore data</a></li>
 				<li><span id="people" class="nav_icons"></span><a href="<?php echo $CONFIG->url; ?>wbsystem/people">People</a></li>
 				<li><span id="book" class="nav_icons"></span><?php echo elgg_view('output/url', array('text'=>'Resources',href=>'file?list_type=gallery',isTrusted=>true)); ?></li>
