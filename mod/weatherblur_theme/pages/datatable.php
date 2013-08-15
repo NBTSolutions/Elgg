@@ -1,8 +1,20 @@
 <?php
 
+//set hosts
+$srv = $_SERVER['SERVER_NAME'];
+
+$url_agg = "http://wb-aggregator.staging.nbt.io";
+$url_elgg = "http://weatherblur.com/";
+
+if ($srv == 'localhost')
+{
+	$url_agg = "http://wb-aggregator.unstable.nbt.io";
+	$url_elgg = "http://demo.nbtsolutions.com/elgg/";
+}
+
 //get scalar values
 
-$url_sc = "http://wb-aggregator.unstable.nbt.io/api/phenomenon/byUomType?type=scalar";
+$url_sc = $url_agg."/api/phenomenon/byUomType?type=scalar";
 
 $ch = curl_init($url_sc);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -14,7 +26,7 @@ $obj_sc = json_decode($sc_str,true);
 
 //get obs
 $aaData = array();
-$url_obs = "http://wb-aggregator.unstable.nbt.io/api/observations/";
+$url_obs = $url_agg."/api/observations/";
 
 $ch = curl_init($url_obs);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -39,7 +51,7 @@ for($y =0; $y < count($features); $y++)
 	
 	$uname = $features[$y]["properties"]["observer"]["properties"]["label"];
 	
-	$url_meas = "http://wb-aggregator.unstable.nbt.io/api/observation/".$m_id."/measurement";
+	$url_meas = $url_agg."/api/observation/".$m_id."/measurement";
 	
 	$ch = curl_init($url_meas);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -59,7 +71,7 @@ for($y =0; $y < count($features); $y++)
 			if ($obj_meas[$x]["phenomenon"]["name"] == $obj_sc[$u]["name"])
 			{
 				//get investigation
-				$url_inv = elgg_get_site_url()."services/api/rest/json/?method=wb.get_inv_by_agg_id&agg_id=".$m_id;
+				$url_inv = $url_elgg."/services/api/rest/json/?method=wb.get_inv_by_agg_id&agg_id=".$m_id;
 		
 				$ch = curl_init($url_inv);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
