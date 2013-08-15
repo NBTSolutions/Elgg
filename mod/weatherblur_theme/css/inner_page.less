@@ -118,6 +118,7 @@ iframe {
 div.people-page {
 	h2 {
 		.font(1.5em, @blue-text, bold);
+		text-align: center;
 	}
 
 	ul.people {
@@ -125,6 +126,7 @@ div.people-page {
 		text-align: center;
 
 		li.person {
+			float: left;
 			display: inline-block;
 			width: 24%;
 			text-align: center;
@@ -132,6 +134,12 @@ div.people-page {
 
 			a {
 				.font-normal(15px);
+				color: #0090b6;
+				font-weight: 600;
+				&:hover {
+					color: #1aa4cc;
+					text-decoration: underline;
+				}
 			}
 			a:first-child {
 				display: block;
