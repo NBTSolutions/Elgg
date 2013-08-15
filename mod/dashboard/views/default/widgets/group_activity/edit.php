@@ -4,7 +4,7 @@
  */
 
 // once autocomplete is working use that
-$groups = elgg_get_logged_in_user_entity()->getGroups("", 0);
+$groups = elgg_get_logged_in_user_entity()->getGroups(array('limit' => 0));
 $mygroups = array();
 if (!$vars['entity']->group_guid) {
 	$mygroups[0] = '';
@@ -17,7 +17,7 @@ $params = array(
 	'value' => $vars['entity']->group_guid,
 	'options_values' => $mygroups,
 );
-$group_dropdown = elgg_view('input/dropdown', $params);
+$group_dropdown = elgg_view('input/select', $params);
 ?>
 <div>
 	<?php echo elgg_echo('dashboard:widget:group:select'); ?>:
@@ -35,7 +35,7 @@ $params = array(
 	'value' => $vars['entity']->num_display,
 	'options' => array(5, 8, 10, 12, 15, 20),
 );
-$num_dropdown = elgg_view('input/dropdown', $params);
+$num_dropdown = elgg_view('input/select', $params);
 
 ?>
 <div>
@@ -43,3 +43,7 @@ $num_dropdown = elgg_view('input/dropdown', $params);
 	<?php echo $num_dropdown; ?>
 </div>
 
+<?php
+
+$title_input = elgg_view('input/hidden', array('name' => 'title'));
+echo $title_input;

@@ -4,6 +4,7 @@ elgg.provide('elgg.ui.widgets');
  * Widgets initialization
  *
  * @return void
+ * @requires jqueryui.sortable
  */
 elgg.ui.widgets.init = function() {
 
@@ -41,9 +42,7 @@ elgg.ui.widgets.init = function() {
  * @return void
  */
 elgg.ui.widgets.add = function(event) {
-	// elgg-widget-type-<type>
-	var type = $(this).attr('id');
-	type = type.substr(type.indexOf('elgg-widget-type-') + "elgg-widget-type-".length);
+	var type = $(this).data('elgg-widget-type');
 
 	// if multiple instances not allow, disable this widget type add button
 	var multiple = $(this).attr('class').indexOf('elgg-widget-multiple') != -1;
@@ -56,7 +55,7 @@ elgg.ui.widgets.add = function(event) {
 	elgg.action('widgets/add', {
 		data: {
 			handler: type,
-			owner_guid: elgg.get_page_owner_guid(),
+			page_owner_guid: elgg.get_page_owner_guid(),
 			context: $("input[name='widget_context']").val(),
 			show_access: $("input[name='show_access']").val(),
 			default_widgets: $("input[name='default_widgets']").val() || 0
@@ -116,10 +115,9 @@ elgg.ui.widgets.remove = function(event) {
 	var $widget = $(this).closest('.elgg-module-widget');
 
 	// if widget type is single instance type, enable the add buton
-	var type = $widget.attr('class');
-	// elgg-widget-instance-<type>
-	type = type.substr(type.indexOf('elgg-widget-instance-') + "elgg-widget-instance-".length);
-	$button = $('#elgg-widget-type-' + type);
+	var type = $(this).data('elgg-widget-type')
+	$container = $(this).parents('.elgg-layout-widgets').first();
+	$button = $('[data-elgg-widget-type="' + type + '"]', $container);
 	var multiple = $button.attr('class').indexOf('elgg-widget-multiple') != -1;
 	if (multiple == false) {
 		$button.addClass('elgg-state-available');
@@ -175,6 +173,10 @@ elgg.ui.widgets.saveSettings = function(event) {
 		data: $(this).serialize(),
 		success: function(json) {
 			$widgetContent.html(json.output);
+			if (typeof(json.title) != "undefined") {
+				var $widgetTitle = $widgetContent.parent().parent().find('.elgg-widget-title');
+				$widgetTitle.html(json.title);
+			}
 		}
 	});
 	event.preventDefault();

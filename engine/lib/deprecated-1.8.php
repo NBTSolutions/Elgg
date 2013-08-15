@@ -1,79 +1,4 @@
 <?php
-/**
- * ***************************************************************************
- * NOTE: If this is ever removed from Elgg, sites lose the ability to upgrade
- * from 1.7.x and earlier to the latest version of Elgg without upgrading to
- * 1.8 first.
- * ***************************************************************************
- *
- * Upgrade the database schema in an ordered sequence.
- *
- * Executes all upgrade files in elgg/engine/schema/upgrades/ in sequential order.
- * Upgrade files must be in the standard Elgg release format of YYYYMMDDII.sql
- * where II is an incrementor starting from 01.
- *
- * Files that are < $version will be ignored.
- *
- * @warning Plugin authors should not call this function directly.
- *
- * @param int    $version The version you are upgrading from in the format YYYYMMDDII.
- * @param string $fromdir Optional directory to load upgrades from. default: engine/schema/upgrades/
- * @param bool   $quiet   If true, suppress all error messages. Only use for the upgrade from <=1.6.
- *
- * @return int The number of upgrades run.
- * @see upgrade.php
- * @see version.php
- * @deprecated 1.8 Use PHP upgrades for sql changes.
- */
-function db_upgrade($version, $fromdir = "", $quiet = FALSE) {
-	global $CONFIG;
-
-	elgg_deprecated_notice('db_upgrade() is deprecated by using PHP upgrades.', 1.8);
-
-	$version = (int) $version;
-
-	if (!$fromdir) {
-		$fromdir = $CONFIG->path . 'engine/schema/upgrades/';
-	}
-	
-	$i = 0;
-
-	if ($handle = opendir($fromdir)) {
-		$sqlupgrades = array();
-
-		while ($sqlfile = readdir($handle)) {
-			if (!is_dir($fromdir . $sqlfile)) {
-				if (preg_match('/^([0-9]{10})\.(sql)$/', $sqlfile, $matches)) {
-					$sql_version = (int) $matches[1];
-					if ($sql_version > $version) {
-						$sqlupgrades[] = $sqlfile;
-					}
-				}
-			}
-		}
-
-		asort($sqlupgrades);
-
-		if (sizeof($sqlupgrades) > 0) {
-			foreach ($sqlupgrades as $sqlfile) {
-
-				// hide all errors.
-				if ($quiet) {
-					try {
-						run_sql_script($fromdir . $sqlfile);
-					} catch (DatabaseException $e) {
-						error_log($e->getmessage());
-					}
-				} else {
-					run_sql_script($fromdir . $sqlfile);
-				}
-				$i++;
-			}
-		}
-	}
-
-	return $i;
-}
 
 /**
  * Lists entities from an access collection
@@ -759,7 +684,7 @@ function callpath_gatekeeper($path, $include_subdirs = true, $strict_mode = fals
 function elgg_get_entity_owner_where_sql($table, $owner_guids) {
 	elgg_deprecated_notice('elgg_get_entity_owner_where_sql() is deprecated by elgg_get_guid_based_where_sql().', 1.8);
 
-	return elgg_get_guid_based_where_sql("{$table}.owner_guid", $owner_guids);
+	return _elgg_get_guid_based_where_sql("{$table}.owner_guid", $owner_guids);
 }
 
 /**
@@ -778,7 +703,7 @@ function elgg_get_entity_owner_where_sql($table, $owner_guids) {
 function elgg_get_entity_container_where_sql($table, $container_guids) {
 	elgg_deprecated_notice('elgg_get_entity_container_where_sql() is deprecated by elgg_get_guid_based_where_sql().', 1.8);
 
-	return elgg_get_guid_based_where_sql("{$table}.container_guid", $container_guids);
+	return _elgg_get_guid_based_where_sql("{$table}.container_guid", $container_guids);
 }
 
 /**
@@ -796,7 +721,7 @@ function elgg_get_entity_container_where_sql($table, $container_guids) {
 function elgg_get_entity_site_where_sql($table, $site_guids) {
 	elgg_deprecated_notice('elgg_get_entity_site_where_sql() is deprecated by elgg_get_guid_based_where_sql().', 1.8);
 
-	return elgg_get_guid_based_where_sql("{$table}.site_guid", $site_guids);
+	return _elgg_get_guid_based_where_sql("{$table}.site_guid", $site_guids);
 }
 
 /**
@@ -880,7 +805,7 @@ function get_objects_in_group($group_guid, $subtype = "", $owner_guid = 0, $site
 	}
 
 	// Add access controls
-	$query .= get_access_sql_suffix('e');
+	$query .= _elgg_get_access_where_sql();
 	if (!$count) {
 		$query .= " order by $order_by";
 
@@ -1012,7 +937,7 @@ function get_entities_from_metadata_groups($group_guid, $meta_name, $meta_value 
 	}
 
 	// Add access controls
-	$query .= get_access_sql_suffix("e");
+	$query .= _elgg_get_access_where_sql();
 
 	if (!$count) {
 		$query .= " order by $order_by limit $offset, $limit"; // Add order and limit
@@ -1118,7 +1043,7 @@ function get_entities_from_metadata_groups_multi($group_guid, $meta_array, $enti
 	foreach ($where as $w) {
 		$query .= " $w and ";
 	}
-	$query .= get_access_sql_suffix("e"); // Add access controls
+	$query .= _elgg_get_access_where_sql();
 
 	if (!$count) {
 		$query .= " order by $order_by limit $offset, $limit"; // Add order and limit
@@ -1689,16 +1614,16 @@ function regenerate_plugin_list($pluginorder = FALSE) {
 
 	// they're probably trying to set it?
 	if ($pluginorder) {
-		if (elgg_generate_plugin_entities()) {
+		if (_elgg_generate_plugin_entities()) {
 			// sort the plugins by the index numerically since we used
 			// weird indexes in the old system.
 			ksort($pluginorder, SORT_NUMERIC);
-			return elgg_set_plugin_priorities($pluginorder);
+			return _elgg_set_plugin_priorities($pluginorder);
 		}
 		return false;
 	} else {
 		// they're probably trying to regenerate from disk?
-		return elgg_generate_plugin_entities();
+		return _elgg_generate_plugin_entities();
 	}
 }
 
@@ -1724,8 +1649,6 @@ function get_plugin_name($mainfilename = false) {
 
 /**
  * Load and parse a plugin manifest from a plugin XML file.
- *
- * @example plugins/manifest.xml Example 1.8-style manifest file.
  *
  * @deprecated 1.8 Use ElggPlugin->getManifest()
  *
@@ -1758,7 +1681,7 @@ function load_plugin_manifest($plugin) {
 function check_plugin_compatibility($manifest_elgg_version_string) {
 	elgg_deprecated_notice('check_plugin_compatibility() is deprecated by ElggPlugin->canActivate()', 1.8);
 
-	$version = get_version();
+	$version = elgg_get_version();
 
 	if (strpos($manifest_elgg_version_string, '.') === false) {
 		// Using version
@@ -2545,7 +2468,7 @@ $owner_guid = "", $owner_relationship = "") {
 
 			$access = "";
 			if ($details['type'] != 'relationship') {
-				$access = " and " . get_access_sql_suffix('sl');
+				$access = " and " . _elgg_get_access_where_sql(array('table_alias' => 'sl'));
 			}
 
 			$obj_query .= "( sl.object_type='{$details['type']}'
@@ -3171,7 +3094,7 @@ function isadminloggedin() {
  */
 function load_plugins() {
 	elgg_deprecated_notice('load_plugins() is deprecated by elgg_load_plugins()', 1.8);
-	return elgg_load_plugins();
+	return _elgg_load_plugins();
 }
 
 /**
@@ -4472,7 +4395,7 @@ function save_widget_info($widget_guid, $params) {
 				))) {
 					if (is_array($value)) {
 						// @todo Handle arrays securely
-						$widget->setMetaData($name, $value, "", true);
+						$widget->setMetadata($name, $value, "", true);
 					} else {
 						$widget->$name = $value;
 					}
@@ -4581,7 +4504,9 @@ function reorder_widgets_from_panel($panelstring1, $panelstring2, $panelstring3,
 						$return = false;
 					} else {
 						// Remove state cookie
-						setcookie('widget' + $dbguid, null);
+						$cookie = new ElggCookie("widget$dbguid");
+						$cookie->value = NULL;
+						elgg_set_cookie($cookie);
 					}
 				}
 			}
@@ -4771,4 +4696,48 @@ function default_page_handler($page, $handler) {
 	}
 
 	return FALSE;
+}
+
+/**
+ * Invalidate this class's entry in the cache.
+ *
+ * @param int $guid The entity guid
+ *
+ * @return void
+ * @access private
+ * @deprecated 1.8
+ */
+function invalidate_cache_for_entity($guid) {
+	elgg_deprecated_notice('invalidate_cache_for_entity() is a private function and should not be used.', 1.8);
+	_elgg_invalidate_cache_for_entity($guid);
+}
+
+/**
+ * Cache an entity.
+ *
+ * Stores an entity in $ENTITY_CACHE;
+ *
+ * @param ElggEntity $entity Entity to cache
+ *
+ * @return void
+ * @access private
+ * @deprecated 1.8
+ */
+function cache_entity(ElggEntity $entity) {
+	elgg_deprecated_notice('cache_entity() is a private function and should not be used.', 1.8);
+	_elgg_cache_entity($entity);
+}
+
+/**
+ * Retrieve a entity from the cache.
+ *
+ * @param int $guid The guid
+ *
+ * @return ElggEntity|bool false if entity not cached, or not fully loaded
+ * @access private
+ * @deprecated 1.8
+ */
+function retrieve_cached_entity($guid) {
+	elgg_deprecated_notice('retrieve_cached_entity() is a private function and should not be used.', 1.8);
+	return _elgg_retrieve_cached_entity($guid);
 }

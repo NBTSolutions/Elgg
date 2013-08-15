@@ -79,11 +79,7 @@ foreach ($values as $name => $default) {
 
 	switch ($name) {
 		case 'tags':
-			if ($value) {
-				$values[$name] = string_to_tag_array($value);
-			} else {
-				unset ($values[$name]);
-			}
+			$values[$name] = string_to_tag_array($value);
 			break;
 
 		case 'excerpt':
@@ -125,10 +121,7 @@ if ($values['status'] == 'draft') {
 // assign values to the entity, stopping on error.
 if (!$error) {
 	foreach ($values as $name => $value) {
-		if (FALSE === ($blog->$name = $value)) {
-			$error = elgg_echo('blog:error:cannot_save' . "$name=$value");
-			break;
-		}
+		$blog->$name = $value;
 	}
 }
 
@@ -156,10 +149,13 @@ if (!$error) {
 		// add to river if changing status or published, regardless of new post
 		// because we remove it for drafts.
 		if (($new_post || $old_status == 'draft') && $status == 'published') {
-			add_to_river('river/object/blog/create', 'create', $blog->owner_guid, $blog->getGUID());
+			elgg_create_river_item(array(
+				'view' => 'river/object/blog/create',
+				'action_type' => 'create',
+				'subject_guid' => $blog->owner_guid,
+				'object_guid' => $blog->getGUID(),
+			));
 
-			// we only want notifications sent when post published
-			register_notification_object('object', 'blog', elgg_echo('blog:newpost'));
 			elgg_trigger_event('publish', 'object', $blog);
 
 			// reset the creation time for posts that move from draft to published

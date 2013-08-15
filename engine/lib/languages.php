@@ -50,8 +50,7 @@ function elgg_echo($message_key, $args = array(), $language = "") {
 		$string = $CONFIG->translations[$language][$message_key];
 	} else if (isset($CONFIG->translations["en"][$message_key])) {
 		$string = $CONFIG->translations["en"][$message_key];
-		$lang = $CONFIG->translations["en"][$language];
-		elgg_log(sprintf('Missing %s translation for "%s" language key', $lang, $message_key), 'NOTICE');
+		elgg_log(sprintf('Missing %s translation for "%s" language key', $language, $message_key), 'NOTICE');
 	} else {
 		$string = $message_key;
 		elgg_log(sprintf('Missing English translation for "%s" language key', $message_key), 'NOTICE');
@@ -193,7 +192,7 @@ function register_translations($path, $load_all = false) {
 
 	// Get the current language based on site defaults and user preference
 	$current_language = get_current_language();
-	elgg_log("Translations loaded from: $path");
+	elgg_log("Translations loaded from: $path", "INFO");
 
 	// only load these files unless $load_all is true.
 	$load_language_files = array(
@@ -217,9 +216,12 @@ function register_translations($path, $load_all = false) {
 		}
 
 		if (in_array($language, $load_language_files) || $load_all) {
-			if (!include_once($path . $language)) {
+			$result = include_once($path . $language);
+			if (!$result) {
 				$return = false;
 				continue;
+			} elseif (is_array($result)) {
+				add_translation(basename($language, '.php'), $result);
 			}
 		}
 	}

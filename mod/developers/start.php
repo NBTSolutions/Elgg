@@ -15,18 +15,21 @@ function developers_init() {
 	elgg_extend_view('css/elgg', 'developers/css');
 
 	elgg_register_page_handler('theme_preview', 'developers_theme_preview_controller');
+	elgg_register_external_view('developers/ajax'); // for lightbox in sandbox
 
 	$action_base = elgg_get_plugins_path() . 'developers/actions/developers';
 	elgg_register_action('developers/settings', "$action_base/settings.php", 'admin');
 	elgg_register_action('developers/inspect', "$action_base/inspect.php", 'admin');
 
-	elgg_register_js('jquery.jstree', 'mod/developers/vendors/jsTree/jquery.jstree.js', 'footer');
-	elgg_register_css('jquery.jstree', 'mod/developers/vendors/jsTree/themes/default/style.css');
+	elgg_register_js('jquery.jstree', array(
+		'src' => '/mod/developers/vendors/jsTree/jquery.jstree.js',
+		'location' => 'footer',
+		'exports' => 'jQuery.fn.jstree',
+		'deps' => array('jquery'),
+	));
+	elgg_register_css('jquery.jstree', '/mod/developers/vendors/jsTree/themes/default/style.css');
 
-	elgg_load_js('jquery.form');
-
-	elgg_register_js('elgg.dev', 'js/developers/developers.js', 'footer');
-	elgg_load_js('elgg.dev');
+	elgg_require_js('elgg/dev');
 }
 
 function developers_process_settings() {
@@ -143,15 +146,28 @@ function developers_log_events($name, $type) {
 		return;
 	}
 
+	// 0 => this function
+	// 1 => call_user_func_array
+	// 2 => hook class trigger
 	$stack = debug_backtrace();
-	if ($stack[2]['function'] == 'elgg_trigger_event') {
+	if (isset($stack[2]['class']) && $stack[2]['class'] == 'Elgg_EventsService') {
 		$event_type = 'Event';
 	} else {
 		$event_type = 'Plugin hook';
 	}
-	$function = $stack[3]['function'] . '()';
-	if ($function == 'require_once' || $function == 'include_once') {
-		$function = $stack[3]['file'];
+
+	if ($stack[3]['function'] == 'elgg_trigger_event' || $stack[3]['function'] == 'elgg_trigger_plugin_hook') {
+		$index = 4;
+	} else {
+		$index = 3;
+	}
+	if (isset($stack[$index]['class'])) {
+		$function = $stack[$index]['class'] . '::' . $stack[$index]['function'] . '()';
+	} else {
+		$function = $stack[$index]['function'] . '()';
+	}
+	if ($function == 'require_once()' || $function == 'include_once()') {
+		$function = $stack[$index]['file'];
 	}
 
 	$msg = elgg_echo('developers:event_log_msg', array(

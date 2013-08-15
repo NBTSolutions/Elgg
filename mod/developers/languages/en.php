@@ -4,7 +4,7 @@
  *
  */
 
-$english = array(
+return array(
 	// menu
 	'admin:develop_tools' => 'Tools',
 	'admin:develop_tools:preview' => 'Theming Sandbox',
@@ -37,6 +37,7 @@ $english = array(
 	'developers:debug:error' => 'Error',
 	'developers:debug:warning' => 'Warning',
 	'developers:debug:notice' => 'Notice',
+	'developers:debug:info' => 'Info',
 	
 	// inspection
 	'developers:inspect:help' => 'Inspect configuration of the Elgg framework.',
@@ -65,5 +66,3 @@ $english = array(
 	// status messages
 	'developers:settings:success' => 'Settings saved',
 );
-
-add_translation('en', $english);

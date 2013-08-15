@@ -8,10 +8,8 @@ elgg.embed.init = function() {
 
 	// caches the current textarea id
 	$(".embed-control").live('click', function() {
-		var classes = $(this).attr('class');
-		var embedClass = classes.split(/[, ]+/).pop();
-		var textAreaId = embedClass.substr(embedClass.indexOf('embed-control-') + "embed-control-".length);
-		elgg.embed.textAreaId = textAreaId;
+		var textAreaId = /embed-control-(\S)+/.exec($(this).attr('class'))[0];
+		elgg.embed.textAreaId = textAreaId.substr("embed-control-".length);
 	});
 
 	// special pagination helper for lightbox
@@ -24,8 +22,6 @@ elgg.embed.init = function() {
 
 /**
  * Inserts data attached to an embed list item in textarea
- *
- * @todo generalize lightbox closing
  *
  * @param {Object} event
  * @return void
@@ -42,15 +38,14 @@ elgg.embed.insert = function(event) {
 		content = content.replace('size=small', 'size=medium');
 	}
 
-	textArea.val(textArea.val() + content);
 	textArea.focus();
 	
 <?php
-// See the TinyMCE plugin for an example of this view
+// See the ckeditor plugin for an example of this view
 echo elgg_view('embed/custom_insert_js');
 ?>
 
-	$.fancybox.close();
+	elgg.ui.lightbox.close();
 
 	event.preventDefault();
 };

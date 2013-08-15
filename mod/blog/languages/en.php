@@ -4,7 +4,7 @@
  *
  */
 
-$english = array(
+return array(
 	'blog' => 'Blogs',
 	'blog:blogs' => 'Blogs',
 	'blog:revisions' => 'Revisions',
@@ -40,6 +40,7 @@ $english = array(
 	// messages
 	'blog:message:saved' => 'Blog post saved.',
 	'blog:error:cannot_save' => 'Cannot save blog post.',
+	'blog:error:cannot_auto_save' => 'Cannot automatically save blog post.',
 	'blog:error:cannot_write_to_container' => 'Insufficient access to save blog to group.',
 	'blog:messages:warning:draft' => 'There is an unsaved draft of this post!',
 	'blog:edit_revision_notice' => '(Old version)',
@@ -49,6 +50,7 @@ $english = array(
 	'blog:error:missing:title' => 'Please enter a blog title!',
 	'blog:error:missing:description' => 'Please enter the body of your blog!',
 	'blog:error:cannot_edit_post' => 'This post may not exist or you may not have permissions to edit it.',
+	'blog:error:post_not_found' => 'Cannot find specified blog post.',
 	'blog:error:revision_not_found' => 'Cannot find this revision.',
 
 	// river
@@ -56,15 +58,15 @@ $english = array(
 	'river:comment:object:blog' => '%s commented on the blog %s',
 
 	// notifications
-	'blog:newpost' => 'A new blog post',
-	'blog:notification' =>
+	'blog:notify:summary' => 'New blog post called %s',
+	'blog:notify:subject' => 'New blog post: %s',
+	'blog:notify:body' =>
 '
-%s made a new blog post.
+%s published a new blog post: %s
 
 %s
-%s
 
-View and comment on the new blog post:
+View and comment on the blog post:
 %s
 ',
 
@@ -74,5 +76,3 @@ View and comment on the new blog post:
 	'blog:numbertodisplay' => 'Number of blog posts to display',
 	'blog:noblogs' => 'No blog posts'
 );
-
-add_translation('en', $english);

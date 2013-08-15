@@ -10,6 +10,7 @@
  */
 
 ?>
+/* <style> /**/
 
 /* ***************************************
 	RESET CSS
@@ -49,7 +50,7 @@ em, i {
 ins {
 	text-decoration: none;
 }
-del {
+del, strike {
 	text-decoration:line-through;
 }
 strong, b {
@@ -132,6 +133,7 @@ p {
 .elgg-head:after,
 .elgg-foot:after,
 .elgg-col:after,
+.elgg-col-alt:after,
 .elgg-image-block:after {
 	content: ".";
 	display: block;
@@ -250,13 +252,7 @@ p {
 	border: 1px solid blue;
 	font-weight: bold;
 	padding: 3px 0px 3px 10px;
-
-	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
-	-moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
-
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
 .elgg-admin-notices a.elgg-admin-notice {
@@ -336,13 +332,39 @@ p {
 	color: white;
 	padding: 5px;
 	margin-bottom: 10px;
-	
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
 	border-radius: 3px;
 }
 .elgg-module-inline > .elgg-head h3 {
 	color: white;
+}
+.elgg-module-popup {
+	background-color: white;
+	border: 1px solid #ccc;	
+	z-index: 9999;
+	margin-bottom: 0;
+	padding: 5px;
+	border-radius: 6px;
+	box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
+}
+.elgg-module-popup > .elgg-head {
+	margin-bottom: 5px;
+}
+.elgg-module-popup > .elgg-head * {
+	color: #666;
+}
+.elgg-module-featured {
+	border: 1px solid #666;
+	border-radius: 6px;
+}
+.elgg-module-featured > .elgg-head {
+	padding: 5px;
+	background-color: #333;
+}
+.elgg-module-featured > .elgg-head * {
+	color: white;
+}
+.elgg-module-featured > .elgg-body {
+	padding: 10px;
 }
 
 /* ***************************************
@@ -424,6 +446,11 @@ label {
 	color: #333333;
 	font-size: 110%;
 }
+label.elgg-state-disabled,
+input.elgg-state-disabled {
+	opacity: 0.6;
+}
+
 fieldset > div {
 	margin-bottom: 15px;
 }
@@ -435,9 +462,6 @@ input {
 	padding: 5px;
 	border: 1px solid #ccc;
 	color: #666;
-	
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 	margin: 0;
 }
@@ -450,9 +474,6 @@ input {
 .elgg-input-longtext {
 	width: 98%;
 }
-textarea {
-	height: 100px;
-}
 .elgg-input-thin {
 	width: 400px;
 }
@@ -460,15 +481,29 @@ textarea {
 	width: auto;
 }
 
+input[type="radio"] {
+	margin: 0 3px 0 0;
+}
+
+.elgg-fieldset {
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 5px;
+	padding-bottom: 10px;
+	margin-bottom: 15px;
+}
+.elgg-fieldset > legend {
+	color: #333333;
+	font-size: 110%;
+	font-weight: bold;
+	padding: 0 3px;
+}
+
 .elgg-button {
 	font-size: 14px;
 	font-weight: bold;
 	text-decoration: none;
-
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
-
 	width: auto;
 	padding: 2px 4px;
 	cursor: pointer;
@@ -534,8 +569,6 @@ a.elgg-button {
 	border: 1px solid #ccc;
 	background-color: #eee;
 	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
 }
 .ui-datepicker-prev, .ui-datepicker-next {
 	position: absolute;
@@ -606,16 +639,10 @@ a.elgg-button {
 	background-color: white;
 	border: 1px solid #ccc;
 	overflow: hidden;
-
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 }
 .ui-autocomplete .ui-menu-item {
 	padding: 0px 4px;
-
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 }
 .ui-autocomplete .ui-menu-item:hover {
@@ -674,18 +701,11 @@ a.elgg-button {
 	width: 730px;
 	height: auto;
 	background-color: #dedede;
-
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
 	border-radius: 8px;
 }
 .friendspicker-savebuttons {
 	background: white;
-
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
 	border-radius: 8px;
-
 	margin:0 10px 10px;
 }
 .friends-picker .friends-picker-container { /* long container used to house end-to-end panels. Width is calculated in JS  */
@@ -731,9 +751,6 @@ a.elgg-button {
 	display: block;
 	padding: 0;
 	width:20px;
-
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
 .tabHasContent {
@@ -784,11 +801,7 @@ a.elgg-button {
 }
 .friendspicker-members-table {
 	background: #dedede;
-
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
 	border-radius: 8px;
-
 	margin:10px 0 0;
 	padding:10px 10px 0;
 }
@@ -877,9 +890,6 @@ a.elgg-button {
 	text-decoration: none;
 	margin-bottom: 2px;
 	border: 1px solid #CCC;
-
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 }
 .elgg-admin-sidebar-menu a:hover {
@@ -969,9 +979,6 @@ a.elgg-button {
 	border: solid 1px #E5E5E5;
 	border-color: #E5E5E5 #999 #999 #E5E5E5;
 	background-color: #FFF;
-
-	-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.50);
-	-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.50);
 	box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.50);
 }
 .elgg-menu-hover > li {
@@ -1090,8 +1097,10 @@ a.elgg-button {
 /* ***************************************
 	WIDGETS
 *************************************** */
-.elgg-widgets {
+.elgg-layout-widgets > .elgg-widgets {
 	float: right;
+}
+.elgg-widgets {
 	min-height: 30px;
 }
 .elgg-widget-add-control {
@@ -1197,6 +1206,9 @@ a.elgg-widget-collapsed:before {
 .elgg-col {
 	float: left;
 }
+.elgg-col-alt {
+	float: right;
+}
 .elgg-col-1of1 {
 	float: none;
 }
@@ -1296,17 +1308,9 @@ a.elgg-widget-collapsed:before {
 	height: 25px;
 	
 	/* remove the border-radius if you don't want rounded avatars in supported browsers */
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
 	border-radius: 3px;
 	
-	-moz-background-clip:  border;
 	background-clip:  border;
-
-	-webkit-background-size: 25px;
-	-khtml-background-size: 25px;
-	-moz-background-size: 25px;
-	-o-background-size: 25px;
 	background-size: 25px;
 }
 .elgg-avatar-small > a > img {
@@ -1314,17 +1318,8 @@ a.elgg-widget-collapsed:before {
 	height: 40px;
 	
 	/* remove the border-radius if you don't want rounded avatars in supported browsers */
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
-	
-	-moz-background-clip:  border;
 	background-clip:  border;
-
-	-webkit-background-size: 40px;
-	-khtml-background-size: 40px;
-	-moz-background-size: 40px;
-	-o-background-size: 40px;
 	background-size: 40px;
 }
 .elgg-avatar-medium > a > img {
@@ -1354,17 +1349,8 @@ a.elgg-widget-collapsed:before {
 	height: 25px;
 
 	/* remove the border-radius if you don't want rounded avatars in supported browsers */
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
 	border-radius: 3px;
-
-	-moz-background-clip:  border;
-	background-clip:  border;
-
-	-webkit-background-size: 25px;
-	-khtml-background-size: 25px;
-	-moz-background-size: 25px;
-	-o-background-size: 25px;
+	background-clip: border;
 	background-size: 25px;
 }
 .elgg-avatar-small > a > img {
@@ -1372,17 +1358,9 @@ a.elgg-widget-collapsed:before {
 	height: 40px;
 
 	/* remove the border-radius if you don't want rounded avatars in supported browsers */
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 
-	-moz-background-clip:  border;
 	background-clip:  border;
-
-	-webkit-background-size: 40px;
-	-khtml-background-size: 40px;
-	-moz-background-size: 40px;
-	-o-background-size: 40px;
 	background-size: 40px;
 }
 .elgg-avatar-medium > a > img {
@@ -1401,9 +1379,6 @@ a.elgg-widget-collapsed:before {
 	border: 1px solid #999;
 	margin: 0 0 5px;
 	padding: 0 7px 4px 10px;
-
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 }
 .elgg-plugin.elgg-state-draggable > .elgg-image-block .elgg-head {
@@ -1433,13 +1408,34 @@ a.elgg-widget-collapsed:before {
 	text-align: center;
 	background-color: white;
 	border: 1px solid #999;
-
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
 	border-radius: 8px;
 }
 .elgg-plugin-screenshot-lightbox h2 {
 	color: black;
+}
+.elgg-plugin-contributors {
+	list-style-position: inside;
+	list-style-type: circle;
+}
+.elgg-plugin-contributors li {
+	font-style: italic;
+}
+.elgg-plugin-contributors dl,
+.elgg-plugin-contributors dd {
+	display: inline;
+	padding-right: 5px
+}
+.elgg-plugin-contributors dt {
+	display: none;
+}
+.elgg-plugin-contributors dd:after {
+	content: ', ';
+}
+.elgg-plugin-contributors dd.elgg-plugin-contributor-name:after {
+	content: ' - ';
+}
+.elgg-plugin-contributors dd.elgg-plugin-contributor-description:after {
+	content: '';
 }
 .elgg-plugin.elgg-state-active {
 	background: white;
@@ -1461,11 +1457,7 @@ a.elgg-widget-collapsed:before {
 }
 .elgg-plugin-more {
 	background-color: #eee;
-
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
 	border-radius: 8px;
-
 	padding: 5px 10px;
 	margin: 4px 0;
 }
@@ -1546,7 +1538,8 @@ table.mceLayout {
 /* ***************************************
 	HELPERS
 *************************************** */
-.hidden {
+.hidden,
+.elgg-page .hidden {
 	display: none;
 }
 .centered {
@@ -1570,7 +1563,9 @@ table.mceLayout {
 .elgg-discover:hover .elgg-discoverable {
 	display: block;
 }
-.elgg-transition:hover {
+.elgg-transition:hover,
+.elgg-transition:focus,
+:focus > .elgg-transition {
 	opacity: .7;
 }
 

@@ -6,6 +6,7 @@
  * @subpackage UI
  */
 ?>
+/* <style> /**/
 
 /* ***************************************
 	RESET CSS
@@ -40,9 +41,10 @@ img {
 	border-width:0;
 	border-color:transparent;
 }
+/* keep focus styles for a11y
 :focus {
 	outline: 0 none;
-}
+}*/
 ol, ul {
 	list-style: none;
 }
@@ -52,7 +54,7 @@ em, i {
 ins {
 	text-decoration:none;
 }
-del {
+strike, del {
 	text-decoration:line-through;
 }
 strong, b {
@@ -76,4 +78,9 @@ blockquote, q {
 }
 a {
 	text-decoration: none;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+	border: 0;
+	padding: 0;
 }

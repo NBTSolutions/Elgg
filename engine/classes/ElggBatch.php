@@ -52,7 +52,6 @@
  *
  * @package    Elgg.Core
  * @subpackage DataModel
- * @link       http://docs.elgg.org/DataModel/ElggBatch
  * @since      1.8
  */
 class ElggBatch
@@ -150,6 +149,20 @@ class ElggBatch
 	private $incrementOffset = true;
 
 	/**
+	 * Entities that could not be instantiated during a fetch
+	 *
+	 * @var stdClass[]
+	 */
+	private $incompleteEntities = array();
+
+	/**
+	 * Total number of incomplete entities fetched
+	 *
+	 * @var int
+	 */
+	private $totalIncompletes = 0;
+
+	/**
 	 * Batches operations on any elgg_get_*() or compatible function that supports
 	 * an options array.
 	 *
@@ -196,11 +209,7 @@ class ElggBatch
 			$all_results = null;
 
 			foreach ($batch as $result) {
-				if (is_string($callback)) {
-					$result = $callback($result, $getter, $options);
-				} else {
-					$result = call_user_func_array($callback, array($result, $getter, $options));
-				}
+				$result = call_user_func($callback, $result, $getter, $options);
 
 				if (!isset($all_results)) {
 					if ($result === true || $result === false || $result === null) {
@@ -219,6 +228,17 @@ class ElggBatch
 
 			$this->callbackResult = $all_results;
 		}
+	}
+
+	/**
+	 * Tell the process that an entity was incomplete during a fetch
+	 *
+	 * @param stdClass $row
+	 *
+	 * @access private
+	 */
+	public function reportIncompleteEntity(stdClass $row) {
+		$this->incompleteEntities[] = $row;
 	}
 
 	/**
@@ -260,27 +280,47 @@ class ElggBatch
 		if ($this->incrementOffset) {
 			$offset = $this->offset + $this->retrievedResults;
 		} else {
-			$offset = $this->offset;
+			$offset = $this->offset + $this->totalIncompletes;
 		}
 
 		$current_options = array(
 			'limit' => $limit,
-			'offset' => $offset
+			'offset' => $offset,
+			'__ElggBatch' => $this,
 		);
 
 		$options = array_merge($this->options, $current_options);
-		$getter = $this->getter;
 
-		if (is_string($getter)) {
-			$this->results = $getter($options);
-		} else {
-			$this->results = call_user_func_array($getter, array($options));
+		$this->incompleteEntities = array();
+		$this->results = call_user_func($this->getter, $options);
+
+		$num_results = count($this->results);
+		$num_incomplete = count($this->incompleteEntities);
+
+		$this->totalIncompletes += $num_incomplete;
+
+		if ($this->incompleteEntities) {
+			// pad the front of the results with nulls representing the incompletes
+			array_splice($this->results, 0, 0, array_pad(array(), $num_incomplete, null));
+			// ...and skip past them
+			reset($this->results);
+			for ($i = 0; $i < $num_incomplete; $i++) {
+				next($this->results);
+			}
 		}
 
 		if ($this->results) {
 			$this->chunkIndex++;
-			$this->resultIndex = 0;
-			$this->retrievedResults += count($this->results);
+
+			// let the system know we've jumped past the nulls
+			$this->resultIndex = $num_incomplete;
+
+			$this->retrievedResults += ($num_results + $num_incomplete);
+			if ($num_results == 0) {
+				// This fetch was *all* incompletes! We need to fetch until we can either
+				// offer at least one row to iterate over, or give up.
+				return $this->getNextResultsChunk();
+			}
 			return true;
 		} else {
 			return false;
@@ -383,6 +423,6 @@ class ElggBatch
 			return false;
 		}
 		$key = key($this->results);
-		return ($key !== NULL && $key !== FALSE);
+		return ($key !== null && $key !== false);
 	}
 }

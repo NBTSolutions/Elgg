@@ -2,20 +2,22 @@
 /**
  * The wire's JavaScript
  */
-
-$site_url = elgg_get_site_url();
-
 ?>
 
 elgg.provide('elgg.thewire');
 
 elgg.thewire.init = function() {
-	$("#thewire-textarea").live('keydown', function() {
-		elgg.thewire.textCounter(this, $("#thewire-characters-remaining span"), 140);
-	});
-	$("#thewire-textarea").live('keyup', function() {
-		elgg.thewire.textCounter(this, $("#thewire-characters-remaining span"), 140);
-	});
+	if ($("#thewire-characters-remaining span").length) {
+		elgg.thewire.charLimit = parseInt($("#thewire-characters-remaining span").text());
+		if (elgg.thewire.charLimit > 0) {
+			$("#thewire-textarea").live('keydown', function() {
+				elgg.thewire.textCounter(this, $("#thewire-characters-remaining span"), elgg.thewire.charLimit);
+			});
+			$("#thewire-textarea").live('keyup', function() {
+				elgg.thewire.textCounter(this, $("#thewire-characters-remaining span"), elgg.thewire.charLimit);
+			});
+		}
+	}
 
 	$(".thewire-previous").live('click', elgg.thewire.viewPrevious);
 };

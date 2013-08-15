@@ -141,11 +141,9 @@ function get_object_from_log_entry($entry_id) {
 		// surround with try/catch because object could be disabled
 		try {
 			$object = new $class($entry->object_id);
+			return $object;
 		} catch (Exception $e) {
 			
-		}
-		if ($object) {
-			return $object;
 		}
 	}
 
@@ -182,12 +180,15 @@ function system_log($object, $event) {
 
 		// Has loggable interface, extract the necessary information and store
 		$object_id = (int)$object->getSystemLogID();
-		$object_class = $object->getClassName();
+		$object_class = get_class($object);
 		$object_type = $object->getType();
 		$object_subtype = $object->getSubtype();
 		$event = sanitise_string($event);
 		$time = time();
-		$ip_address = sanitise_string($_SERVER['REMOTE_ADDR']);
+		$ip_address = sanitize_string(_elgg_services()->request->getClientIp());
+		if (!$ip_address) {
+			$ip_address = '0.0.0.0';
+		}
 		$performed_by = elgg_get_logged_in_user_guid();
 
 		if (isset($object->access_id)) {

@@ -4,47 +4,9 @@
  *
  * @tip Plugins should never use the $CONFIG array directly.
  *
- * @package Elgg.Core
+ * @package    Elgg.Core
  * @subpackage Configuration
  */
-
-/**
- * Event information for the events subsystem.
- *
- * Events are added with {@link elgg_register_event_handler()} and
- * can be removed in >= 1.8 with {@link elgg_unregister_event_handler()}.
- *
- * Events are stored as a multidimensional array in the format:
- * <code>
- * $CONFIG->events[str $event_name][str $event_type][int priority] = str callback_function
- * </code>
- *
- * @global array $CONFIG->events
- * @name $CONFIG->events
- * @see events()
- * @see elgg_register_event_handler()
- * @see elgg_unregister_event_handler()
- * @see elgg_trigger_event()
- */
-$CONFIG->events;
-
-/**
- * Plugin Hook information for the plugin hooks subsystem.
- *
- * Hooks are added with {@link elgg_register_plugin_hook_handler()} and
- * can be removed in >= 1.8 with {@link elgg_unregister_plugin_hook_handler()}.
- *
- * Hooks are stored as a multidimensional array in the format:
- * <code>
- * $CONFIG->hooks[str $hook_name][str $hook_type][int priority] = str callback_function
- * </code>
- *
- * @global array $CONFIG->hooks
- * @see elgg_register_plugin_hook_handler()
- * @see elgg_unregister_plugin_hook_handler()
- * @see elgg_trigger_plugin_hook()
- */
-$CONFIG->hooks;
 
 /**
  * Paths to scan for autoloading languages.
@@ -86,13 +48,6 @@ $CONFIG->language_paths;
 $CONFIG->translations;
 
 /**
- * Stores input used by {@link set_input()} and {@link get_input()}.
- *
- * @global array $CONFIG->input
- */
-$CONFIG->input;
-
-/**
  * An array of metadata names to be used as tags.
  *
  * Because tags are simply names of meatdata, This is used
@@ -102,29 +57,6 @@ $CONFIG->input;
  * @global array $CONFIG->registered_tag_metadata_names
  */
 $CONFIG->registered_tag_metadata_names;
-
-/**
- * An associative array of page handlers and their function names.
- *
- * Page handlers must be registered by {@link elgg_register_page_handler()} and
- * will be dispatched by {@link engine/handlers/pagehandler.php} to the
- * proper function.
- *
- *  @global array $CONFIG->pagehandler
- */
-$CONFIG->pagehandler;
-
-/**
- * An object holding valid widgets and their configurations.
- *
- * This object stores the valid context for widgets, and the handlers
- * registered, as well as a description of the widget.
- *
- * Widgets are added with {@link add_widget_type()}.
- *
- *  @global stdClass $CONFIG->widgets
- */
-$CONFIG->widgets;
 
 /**
  * The full path where Elgg is installed.
@@ -297,13 +229,6 @@ $CONFIG->menu_items_featured_urls;
 $CONFIG->menu_items_custom_items;
 
 /**
- * A list of registered actions, their file locations, and access permissions.
- *
- * @global array $CONFIG->actions
- */
-$CONFIG->actions;
-
-/**
  * Holds information about views.
  *
  * @global object $CONFIG->views
@@ -344,25 +269,11 @@ $CONFIG->view_types;
 $CONFIG->pluginlistcache;
 
 /**
- * Holds URL handler information for ElggExtender objects.
- *
- * @global array $CONFIG->extender_url_handler
- */
-$CONFIG->extender_url_handler;
-
-/**
  * A list of registered entities and subtypes.  Used in search.
  *
  * @global array $CONFIG->registered_entities
  */
 $CONFIG->registered_entities;
-
-/**
- * A list of URL handlers for {@link ElggEntity::getURL()}
- *
- * @global array $CONFIG->entity_url_handler
- */
-$CONFIG->entity_url_handler;
 
 /**
  * A list of entity types and subtypes that have metadata whose access permission

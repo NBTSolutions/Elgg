@@ -19,7 +19,7 @@ function elgg_get_page_owner_guid($guid = 0) {
 	static $page_owner_guid;
 
 	if ($guid) {
-		$page_owner_guid = $guid;
+		$page_owner_guid = (int)$guid;
 	}
 
 	if (isset($page_owner_guid)) {
@@ -27,7 +27,7 @@ function elgg_get_page_owner_guid($guid = 0) {
 	}
 
 	// return guid of page owner entity
-	$guid = elgg_trigger_plugin_hook('page_owner', 'system', NULL, 0);
+	$guid = (int)elgg_trigger_plugin_hook('page_owner', 'system', null, 0);
 
 	if ($guid) {
 		$page_owner_guid = $guid;
@@ -73,15 +73,15 @@ function elgg_set_page_owner_guid($guid) {
  * Sets the page owner based on request
  *
  * Tries to figure out the page owner by looking at the URL or a request
- * parameter. The request parameters used are 'username' and 'owner_guid'. If
- * the page request is going through the page handling system, this function
- * attempts to figure out the owner if the url fits the patterns of:
- *   <handler>/owner/<username>
- *   <handler>/friends/<username>
- *   <handler>/view/<entity guid>
- *   <handler>/add/<container guid>
- *   <handler>/edit/<entity guid>
- *   <handler>/group/<group guid>
+ * parameter. The request parameters used are 'username' and 'owner_guid'.
+ * Otherwise, this function attempts to figure out the owner if the url
+ * fits the patterns of:
+ *   <identifier>/owner/<username>
+ *   <identifier>/friends/<username>
+ *   <identifier>/view/<entity guid>
+ *   <identifier>/add/<container guid>
+ *   <identifier>/edit/<entity guid>
+ *   <identifier>/group/<group guid>
  *
  * @note Access is disabled while finding the page owner for the group gatekeeper functions.
  *
@@ -137,35 +137,33 @@ function default_page_owner_handler($hook, $entity_type, $returnvalue, $params) 
 	}
 
 	// @todo feels hacky
-	if (get_input('page', FALSE)) {
-		$segments = explode('/', $path);
-		if (isset($segments[1]) && isset($segments[2])) {
-			switch ($segments[1]) {
-				case 'owner':
-				case 'friends':
-					$user = get_user_by_username($segments[2]);
-					if ($user) {
-						elgg_set_ignore_access($ia);
-						return $user->getGUID();
-					}
-					break;
-				case 'view':
-				case 'edit':
-					$entity = get_entity($segments[2]);
-					if ($entity) {
-						elgg_set_ignore_access($ia);
-						return $entity->getContainerGUID();
-					}
-					break;
-				case 'add':
-				case 'group':
-					$entity = get_entity($segments[2]);
-					if ($entity) {
-						elgg_set_ignore_access($ia);
-						return $entity->getGUID();
-					}
-					break;
-			}
+	$segments = explode('/', $path);
+	if (isset($segments[1]) && isset($segments[2])) {
+		switch ($segments[1]) {
+			case 'owner':
+			case 'friends':
+				$user = get_user_by_username($segments[2]);
+				if ($user) {
+					elgg_set_ignore_access($ia);
+					return $user->getGUID();
+				}
+				break;
+			case 'view':
+			case 'edit':
+				$entity = get_entity($segments[2]);
+				if ($entity) {
+					elgg_set_ignore_access($ia);
+					return $entity->getContainerGUID();
+				}
+				break;
+			case 'add':
+			case 'group':
+				$entity = get_entity($segments[2]);
+				if ($entity) {
+					elgg_set_ignore_access($ia);
+					return $entity->getGUID();
+				}
+				break;
 		}
 	}
 
@@ -217,7 +215,7 @@ function elgg_set_context($context) {
  *
  * Since context is a stack, this is equivalent to a peek.
  *
- * @return string|NULL
+ * @return string|null
  * @since 1.8.0
  */
 function elgg_get_context() {
@@ -246,7 +244,7 @@ function elgg_push_context($context) {
 /**
  * Removes and returns the top context string from the stack
  *
- * @return string|NULL
+ * @return string|null
  * @since 1.8.0
  */
 function elgg_pop_context() {
@@ -288,9 +286,17 @@ function page_owner_boot() {
 	// Bootstrap the context stack by setting its first entry to the handler.
 	// This is the first segment of the URL and the handler is set by the rewrite rules.
 	// @todo this does not work for actions
-	$handler = get_input('handler', FALSE);
-	if ($handler) {
-		elgg_set_context($handler);
+
+	$request = _elgg_services()->request;
+
+	// don't do this for *_handler.php, etc.
+	if (basename($request->server->get('SCRIPT_FILENAME')) === 'index.php') {
+		$context = $request->getFirstUrlSegment();
+		if (!$context) {
+			$content = 'main';
+		}
+
+		elgg_set_context($context);
 	}
 }
 

@@ -38,7 +38,7 @@ function get_entity_statistics($owner_guid = 0) {
 	$types = get_data($query);
 	foreach ($types as $type) {
 		// assume there are subtypes for now
-		if (!is_array($entity_stats[$type->type])) {
+		if (!isset($entity_stats[$type->type]) || !is_array($entity_stats[$type->type])) {
 			$entity_stats[$type->type] = array();
 		}
 
@@ -74,7 +74,7 @@ function get_number_users($show_deactivated = false) {
 	$access = "";
 
 	if (!$show_deactivated) {
-		$access = "and " . get_access_sql_suffix();
+		$access = "and " . _elgg_get_access_where_sql(array('table_alias' => ''));
 	}
 
 	$query = "SELECT count(*) as count
@@ -95,13 +95,17 @@ function get_number_users($show_deactivated = false) {
  * @return string
   */
 function get_online_users() {
-	$count = find_active_users(600, 10, 0, true);
-	$objects = find_active_users(600, 10);
+	$limit = max(0, (int) get_input("limit", 10));
+	$offset = max(0, (int) get_input("offset", 0));
+	
+	$count = find_active_users(600, $limit, $offset, true);
+	$objects = find_active_users(600, $limit, $offset);
 
 	if ($objects) {
 		return elgg_view_entity_list($objects, array(
 			'count' => $count,
-			'limit' => 10,
+			'limit' => $limit,
+			'offset' => $offset,
 		));
 	}
 	return '';

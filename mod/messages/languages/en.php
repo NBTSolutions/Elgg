@@ -5,7 +5,7 @@
 * @package ElggMessages
 */
 
-$english = array(
+return array(
 	/**
 	* Menu items and titles
 	*/
@@ -21,6 +21,7 @@ $english = array(
 	'messages:message' => "Message",
 	'messages:title' => "Subject",
 	'messages:to' => "To",
+	'messages:to:help' => "Write recipient's username here.",
 	'messages:from' => "From",
 	'messages:fly' => "Send",
 	'messages:replying' => "Message replying to",
@@ -76,7 +77,7 @@ $english = array(
 
 	%s
 
-	You cannot reply to this email.",
+	Please do not reply to this email.",
 
 	/**
 	* Error messages
@@ -89,9 +90,8 @@ $english = array(
 	'messages:nomessages' => "There are no messages.",
 	'messages:user:nonexist' => "We could not find the recipient in the user database.",
 	'messages:user:blank' => "You did not select someone to send this to.",
+	'messages:user:self' => "You cannot send a message to yourself.",
 
 	'messages:deleted_sender' => 'Deleted user',
 
 );
-		
-add_translation("en", $english);

@@ -7,19 +7,16 @@
  */
 
 $owner = elgg_get_page_owner_entity();
-if (!$owner) {
-	// unknown user so send away (@todo some sort of 404 error)
-	forward();
-}
 
 $title = elgg_echo("friends:of:owned", array($owner->name));
 
 $options = array(
 	'relationship' => 'friend',
 	'relationship_guid' => $owner->getGUID(),
-	'inverse_relationship' => TRUE,
+	'inverse_relationship' => true,
 	'type' => 'user',
-	'full_view' => FALSE
+	'full_view' => false,
+	'no_results' => elgg_echo('friends:none'),
 );
 $content = elgg_list_entities_from_relationship($options);
 if (!$content) {

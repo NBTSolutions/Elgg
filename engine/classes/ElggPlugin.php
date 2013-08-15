@@ -31,38 +31,45 @@ class ElggPlugin extends ElggObject {
 	}
 
 	/**
-	 * Loads the plugin by GUID or path.
+	 * Creates a new plugin from path
+	 *
+	 * @internal also supports database objects
 	 *
 	 * @warning Unlike other ElggEntity objects, you cannot null instantiate
-	 *          ElggPlugin. You must point it to an actual plugin GUID or location.
+	 *          ElggPlugin. You must provide the path to the plugin directory.
 	 *
-	 * @param mixed $plugin The GUID of the ElggPlugin object or the path of the plugin to load.
+	 * @param string $path The absolute path of the plugin
 	 *
 	 * @throws PluginException
 	 */
-	public function __construct($plugin) {
-		if (!$plugin) {
-			throw new PluginException(elgg_echo('PluginException:NullInstantiated'));
+	public function __construct($path) {
+		if (!$path) {
+			throw new PluginException("ElggPlugin cannot be null instantiated. You must pass a full path.");
 		}
 
-		// ElggEntity can be instantiated with a guid or an object.
-		// @todo plugins w/id 12345
-		if (is_numeric($plugin) || is_object($plugin)) {
-			parent::__construct($plugin);
+		if (is_object($path)) {
+			// database object
+			parent::__construct($path);
+			$this->path = elgg_get_plugins_path() . $this->getID();
+		} else if (is_numeric($path)) {
+			// guid
+			// @todo plugins with directory names of '12345'
+			elgg_deprecated_notice("Use elgg_get_plugin_from_id() to load a plugin.", 1.9);
+			parent::__construct($path);
 			$this->path = elgg_get_plugins_path() . $this->getID();
 		} else {
-			$plugin_path = elgg_get_plugins_path();
+			$mod_dir = elgg_get_plugins_path();
 
-			// not a full path, so assume an id
-			// use the default path
-			if (strpos($plugin, $plugin_path) !== 0) {
-				$plugin = $plugin_path . $plugin;
+			// not a full path, so assume a directory name and use the default path
+			if (strpos($path, $mod_dir) !== 0) {
+				elgg_deprecated_notice("You should pass a full path to ElggPlugin.", 1.9);
+				$path = $mod_dir . $path;
 			}
 
 			// path checking is done in the package
-			$plugin = sanitise_filepath($plugin);
-			$this->path = $plugin;
-			$path_parts = explode('/', rtrim($plugin, '/'));
+			$path = sanitise_filepath($path);
+			$this->path = $path;
+			$path_parts = explode('/', rtrim($path, '/'));
 			$plugin_id = array_pop($path_parts);
 			$this->pluginID = $plugin_id;
 
@@ -98,7 +105,7 @@ class ElggPlugin extends ElggObject {
 		if (parent::save()) {
 			// make sure we have a priority
 			$priority = $this->getPriority();
-			if ($priority === FALSE || $priority === NULL) {
+			if ($priority === false || $priority === null) {
 				return $this->setPriority('last');
 			}
 		} else {
@@ -178,7 +185,7 @@ class ElggPlugin extends ElggObject {
 	 * @return int
 	 */
 	public function getPriority() {
-		$name = elgg_namespace_plugin_private_setting('internal', 'priority');
+		$name = _elgg_namespace_plugin_private_setting('internal', 'priority');
 		return $this->$name;
 	}
 
@@ -197,11 +204,11 @@ class ElggPlugin extends ElggObject {
 		}
 
 		$db_prefix = get_config('dbprefix');
-		$name = elgg_namespace_plugin_private_setting('internal', 'priority');
+		$name = _elgg_namespace_plugin_private_setting('internal', 'priority');
 		// if no priority assume a priority of 1
 		$old_priority = (int) $this->getPriority();
 		$old_priority = (!$old_priority) ? 1 : $old_priority;
-		$max_priority = elgg_get_max_plugin_priority();
+		$max_priority = _elgg_get_max_plugin_priority();
 
 		// can't use switch here because it's not strict and
 		// php evaluates +1 == 1
@@ -246,12 +253,12 @@ class ElggPlugin extends ElggObject {
 				AND name = '$name'
 				AND $where";
 
-			if (!update_data($q)) {
+			if (!$this->getDatabase()->updateData($q)) {
 				return false;
 			}
 
 			// set this priority
-			if ($this->set($name, $priority)) {
+			if ($this->setPrivateSetting($name, $priority)) {
 				return true;
 			} else {
 				return false;
@@ -288,8 +295,8 @@ class ElggPlugin extends ElggObject {
 
 		$db_prefix = elgg_get_config('dbprefix');
 		// need to remove all namespaced private settings.
-		$us_prefix = elgg_namespace_plugin_private_setting('user_setting', '', $this->getID());
-		$is_prefix = elgg_namespace_plugin_private_setting('internal', '', $this->getID());
+		$us_prefix = _elgg_namespace_plugin_private_setting('user_setting', '', $this->getID());
+		$is_prefix = _elgg_namespace_plugin_private_setting('internal', '', $this->getID());
 
 		// Get private settings for user
 		$q = "SELECT * FROM {$db_prefix}private_settings
@@ -297,7 +304,7 @@ class ElggPlugin extends ElggObject {
 			AND name NOT LIKE '$us_prefix%'
 			AND name NOT LIKE '$is_prefix%'";
 
-		$private_settings = get_data($q);
+		$private_settings = $this->getDatabase()->getData($q);
 
 		if ($private_settings) {
 			$return = array();
@@ -327,7 +334,7 @@ class ElggPlugin extends ElggObject {
 			return false;
 		}
 
-		return $this->set($name, $value);
+		return $this->setPrivateSetting($name, $value);
 	}
 
 	/**
@@ -346,17 +353,20 @@ class ElggPlugin extends ElggObject {
 	 *
 	 * @todo Should be a better way to do this without dropping to raw SQL.
 	 * @todo If we could namespace the plugin settings this would be cleaner.
+	 * @todo this shouldn't work because ps_prefix will be empty string
 	 * @return bool
 	 */
 	public function unsetAllSettings() {
 		$db_prefix = get_config('dbprefix');
-		$ps_prefix = elgg_namespace_plugin_private_setting('setting', '');
+		$us_prefix = elgg_namespace_plugin_private_setting('user_setting', '', $this->getID());
+		$is_prefix = elgg_namespace_plugin_private_setting('internal', '', $this->getID());
 
 		$q = "DELETE FROM {$db_prefix}private_settings
 			WHERE entity_guid = $this->guid
-			AND name NOT LIKE '$ps_prefix%'";
+			AND name NOT LIKE '$us_prefix%'
+			AND name NOT LIKE '$is_prefix%'";
 
-		return delete_data($q);
+		return $this->getDatabase()->deleteData($q);
 	}
 
 
@@ -370,7 +380,7 @@ class ElggPlugin extends ElggObject {
 	 *
 	 * @return mixed The setting string value or false
 	 */
-	public function getUserSetting($name, $user_guid = null) {
+	public function getUserSetting($name, $user_guid = 0) {
 		$user_guid = (int)$user_guid;
 
 		if ($user_guid) {
@@ -383,7 +393,7 @@ class ElggPlugin extends ElggObject {
 			return false;
 		}
 
-		$name = elgg_namespace_plugin_private_setting('user_setting', $name, $this->getID());
+		$name = _elgg_namespace_plugin_private_setting('user_setting', $name, $this->getID());
 		return get_private_setting($user->guid, $name);
 	}
 
@@ -395,7 +405,7 @@ class ElggPlugin extends ElggObject {
 	 * @param int $user_guid The user GUID. Defaults to logged in.
 	 * @return array An array of key/value pairs.
 	 */
-	public function getAllUserSettings($user_guid = null) {
+	public function getAllUserSettings($user_guid = 0) {
 		$user_guid = (int)$user_guid;
 
 		if ($user_guid) {
@@ -410,7 +420,7 @@ class ElggPlugin extends ElggObject {
 
 		$db_prefix = elgg_get_config('dbprefix');
 		// send an empty name so we just get the first part of the namespace
-		$ps_prefix = elgg_namespace_plugin_private_setting('user_setting', '', $this->getID());
+		$ps_prefix = _elgg_namespace_plugin_private_setting('user_setting', '', $this->getID());
 		$ps_prefix_len = strlen($ps_prefix);
 
 		// Get private settings for user
@@ -418,7 +428,7 @@ class ElggPlugin extends ElggObject {
 			WHERE entity_guid = {$user->guid}
 			AND name LIKE '$ps_prefix%'";
 
-		$private_settings = get_data($q);
+		$private_settings = $this->getDatabase()->getData($q);
 
 		if ($private_settings) {
 			$return = array();
@@ -445,7 +455,7 @@ class ElggPlugin extends ElggObject {
 	 *
 	 * @return mixed The new setting ID or false
 	 */
-	public function setUserSetting($name, $value, $user_guid = null) {
+	public function setUserSetting($name, $value, $user_guid = 0) {
 		$user_guid = (int)$user_guid;
 
 		if ($user_guid) {
@@ -469,11 +479,10 @@ class ElggPlugin extends ElggObject {
 		), $value);
 
 		// set the namespaced name.
-		$name = elgg_namespace_plugin_private_setting('user_setting', $name, $this->getID());
+		$name = _elgg_namespace_plugin_private_setting('user_setting', $name, $this->getID());
 
 		return set_private_setting($user->guid, $name, $value);
 	}
-
 
 	/**
 	 * Removes a user setting name and value.
@@ -482,7 +491,7 @@ class ElggPlugin extends ElggObject {
 	 * @param int    $user_guid The user GUID
 	 * @return bool
 	 */
-	public function unsetUserSetting($name, $user_guid = null) {
+	public function unsetUserSetting($name, $user_guid = 0) {
 		$user_guid = (int)$user_guid;
 
 		if ($user_guid) {
@@ -496,29 +505,32 @@ class ElggPlugin extends ElggObject {
 		}
 
 		// set the namespaced name.
-		$name = elgg_namespace_plugin_private_setting('user_setting', $name, $this->getID());
+		$name = _elgg_namespace_plugin_private_setting('user_setting', $name, $this->getID());
 
 		return remove_private_setting($user->guid, $name);
 	}
 
 	/**
-	 * Removes all User Settings for this plugin
+	 * Removes all User Settings for this plugin for a particular user
 	 *
 	 * Use {@link removeAllUsersSettings()} to remove all user
 	 * settings for all users.  (Note the plural 'Users'.)
+	 *
+	 * @warning 0 does not equal logged in user for this method!
+	 * @todo fix that
 	 *
 	 * @param int $user_guid The user GUID to remove user settings.
 	 * @return bool
 	 */
 	public function unsetAllUserSettings($user_guid) {
 		$db_prefix = get_config('dbprefix');
-		$ps_prefix = elgg_namespace_plugin_private_setting('user_setting', '', $this->getID());
+		$ps_prefix = _elgg_namespace_plugin_private_setting('user_setting', '', $this->getID());
 
 		$q = "DELETE FROM {$db_prefix}private_settings
 			WHERE entity_guid = $user_guid
 			AND name LIKE '$ps_prefix%'";
 
-		return delete_data($q);
+		return $this->getDatabase()->deleteData($q);
 	}
 
 	/**
@@ -531,12 +543,12 @@ class ElggPlugin extends ElggObject {
 	 */
 	public function unsetAllUsersSettings() {
 		$db_prefix = get_config('dbprefix');
-		$ps_prefix = elgg_namespace_plugin_private_setting('user_setting', '', $this->getID());
+		$ps_prefix = _elgg_namespace_plugin_private_setting('user_setting', '', $this->getID());
 
 		$q = "DELETE FROM {$db_prefix}private_settings
 			WHERE name LIKE '$ps_prefix%'";
 
-		return delete_data($q);
+		return $this->getDatabase()->deleteData($q);
 	}
 
 
@@ -546,13 +558,13 @@ class ElggPlugin extends ElggObject {
 	 * Returns if the plugin is complete, meaning has all required files
 	 * and Elgg can read them and they make sense.
 	 *
-	 * @todo bad name? This could be confused with isValid() from ElggPackage.
+	 * @todo bad name? This could be confused with isValid() from ElggPluginPackage.
 	 *
 	 * @return bool
 	 */
 	public function isValid() {
 		if (!$this->getID()) {
-			$this->errorMsg = elgg_echo('ElggPlugin:NoId', array($this->guid));
+			$this->errorMsg = elgg_echo('ElggPlugin:MissingID', array($this->guid));
 			return false;
 		}
 
@@ -797,7 +809,7 @@ class ElggPlugin extends ElggObject {
 			throw new PluginException($msg);
 		}
 
-		while (FALSE !== ($view_type = readdir($handle))) {
+		while (false !== ($view_type = readdir($handle))) {
 			$view_type_dir = $view_dir . $view_type;
 
 			if ('.' !== substr($view_type, 0, 1) && is_dir($view_type_dir)) {
@@ -847,33 +859,26 @@ class ElggPlugin extends ElggObject {
 	protected function registerClasses() {
 		$classes_path = "$this->path/classes";
 
-		// don't need to have classes
-		if (!is_dir($classes_path)) {
-			return true;
+		if (is_dir($classes_path)) {
+			_elgg_services()->autoloadManager->addClasses($classes_path);
 		}
-
-		elgg_register_classes($classes_path);
 
 		return true;
 	}
 
-
-	// generic helpers and overrides
-
 	/**
-	 * Get a value from private settings.
+	 * Get an attribute or private setting value
 	 *
-	 * @param string $name Name
-	 *
+	 * @param string $name Name of the attribute or private setting
 	 * @return mixed
 	 */
-	public function get($name) {
+	public function __get($name) {
 		// rewrite for old and inaccurate plugin:setting
 		if (strstr($name, 'plugin:setting:')) {
 			$msg = 'Direct access of user settings is deprecated. Use ElggPlugin->getUserSetting()';
 			elgg_deprecated_notice($msg, 1.8);
 			$name = str_replace('plugin:setting:', '', $name);
-			$name = elgg_namespace_plugin_private_setting('user_setting', $name);
+			$name = _elgg_namespace_plugin_private_setting('user_setting', $name, $this->getID());
 		}
 
 		// See if its in our base attribute
@@ -881,38 +886,48 @@ class ElggPlugin extends ElggObject {
 			return $this->attributes[$name];
 		}
 
+		// @todo clean below - getPrivateSetting() should return null now
 		// No, so see if its in the private data store.
 		// get_private_setting() returns false if it doesn't exist
 		$meta = $this->getPrivateSetting($name);
 
 		if ($meta === false) {
 			// Can't find it, so return null
-			return NULL;
+			return null;
 		}
 
 		return $meta;
 	}
 
 	/**
-	 * Save a value as private setting or attribute.
+	 * Get a value from private settings.
+	 *
+	 * @param string $name Name
+	 * @return mixed
+	 * @deprecated 1.9
+	 */
+	public function get($name) {
+		elgg_deprecated_notice("Use -> instead of get()", 1.9);
+		return $this->__get($name);
+	}
+
+	/**
+	 * Set a value as private setting or attribute.
 	 *
 	 * Attributes include title and description.
 	 *
-	 * @param string $name  Name
-	 * @param mixed  $value Value
-	 *
-	 * @return bool
+	 * @param string $name  Name of the attribute or private_setting
+	 * @param mixed  $value Value to be set
+	 * @return void
 	 */
-	public function set($name, $value) {
+	public function __set($name, $value) {
 		if (array_key_exists($name, $this->attributes)) {
 			// Check that we're not trying to change the guid!
 			if ((array_key_exists('guid', $this->attributes)) && ($name == 'guid')) {
-				return false;
+				return;
 			}
 
 			$this->attributes[$name] = $value;
-
-			return true;
 		} else {
 			// Hook to validate setting
 			$value = elgg_trigger_plugin_hook('setting', 'plugin', array(
@@ -922,8 +937,24 @@ class ElggPlugin extends ElggObject {
 				'value' => $value
 			), $value);
 
-			return $this->setPrivateSetting($name, $value);
+			$this->setPrivateSetting($name, $value);
 		}
+	}
+
+	/**
+	 * Save a value as private setting or attribute.
+	 *
+	 * Attributes include title and description.
+	 *
+	 * @param string $name  Name
+	 * @param mixed  $value Value
+	 * @return bool
+	 */
+	public function set($name, $value) {
+		elgg_deprecated_notice("Use -> instead of set()", 1.9);
+		$this->__set($name, $value);
+
+		return true;
 	}
 
 	/**
@@ -950,10 +981,14 @@ class ElggPlugin extends ElggObject {
 		}
 
 		if ($active) {
-			return add_entity_relationship($this->guid, 'active_plugin', $site->guid);
+			$result = add_entity_relationship($this->guid, 'active_plugin', $site->guid);
 		} else {
-			return remove_entity_relationship($this->guid, 'active_plugin', $site->guid);
+			$result = remove_entity_relationship($this->guid, 'active_plugin', $site->guid);
 		}
+
+		_elgg_invalidate_plugins_provides_cache();
+
+		return $result;
 	}
 
 	/**

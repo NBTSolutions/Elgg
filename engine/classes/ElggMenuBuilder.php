@@ -128,8 +128,10 @@ class ElggMenuBuilder {
 					$parent_name = $menu_item->getParentName();
 					if (array_key_exists($parent_name, $current_gen)) {
 						$next_gen[$menu_item->getName()] = $menu_item;
-						$current_gen[$parent_name]->addChild($menu_item);
-						$menu_item->setParent($current_gen[$parent_name]);
+						if (!in_array($menu_item, $current_gen[$parent_name]->getData('children'))) {
+							$current_gen[$parent_name]->addChild($menu_item);
+							$menu_item->setParent($current_gen[$parent_name]);
+						}
 						unset($children[$index]);
 					}
 				}
@@ -163,7 +165,7 @@ class ElggMenuBuilder {
 		// scan looking for a selected item
 		foreach ($this->menu as $menu_item) {
 			if ($menu_item->getHref()) {
-				if (elgg_http_url_is_identical(full_url(), $menu_item->getHref())) {
+				if (elgg_http_url_is_identical(current_page_url(), $menu_item->getHref())) {
 					$menu_item->setSelected(true);
 					return $menu_item;
 				}
@@ -192,7 +194,7 @@ class ElggMenuBuilder {
 				$sort_callback = array('ElggMenuBuilder', 'compareByName');
 				break;
 			case 'priority':
-				$sort_callback = array('ElggMenuBuilder', 'compareByWeight');
+				$sort_callback = array('ElggMenuBuilder', 'compareByPriority');
 				break;
 			case 'register':
 				// use registration order - usort breaks this
@@ -274,12 +276,30 @@ class ElggMenuBuilder {
 	 * @param ElggMenuItem $a Menu item
 	 * @param ElggMenuItem $b Menu item
 	 * @return bool
+	 * @since 1.9.0
+	 */
+	public static function compareByPriority($a, $b) {
+		$aw = $a->getPriority();
+		$bw = $b->getPriority();
+
+		if ($aw == $bw) {
+			return $a->getData('original_order') - $b->getData('original_order');
+		}
+		return $aw - $bw;
+	}
+
+	/**
+	 * Compare two menu items by their priority
 	 *
-	 * @todo change name to compareByPriority
+	 * @param ElggMenuItem $a Menu item
+	 * @param ElggMenuItem $b Menu item
+	 * @return bool
+	 * @deprecated 1.9 Use compareByPriority()
 	 */
 	public static function compareByWeight($a, $b) {
-		$aw = $a->getWeight();
-		$bw = $b->getWeight();
+		elgg_deprecated_notice("ElggMenuBuilder::compareByWeight() deprecated by ElggMenuBuilder::compareByPriority", 1.9);
+		$aw = $a->getPriority();
+		$bw = $b->getPriority();
 
 		if ($aw == $bw) {
 			return $a->getData('original_order') - $b->getData('original_order');

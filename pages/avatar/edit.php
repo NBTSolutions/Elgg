@@ -4,13 +4,19 @@
  */
 
 // Only logged in users
-gatekeeper();
+elgg_gatekeeper();
 
-elgg_set_context('profile_edit');
+elgg_push_context('settings');
+elgg_push_context('profile_edit');
 
 $title = elgg_echo('avatar:edit');
 
 $entity = elgg_get_page_owner_entity();
+if (!elgg_instanceof($entity, 'user') || !$entity->canEdit()) {
+	register_error(elgg_echo('avatar:noaccess'));
+	forward(REFERER);
+}
+
 $content = elgg_view('core/avatar/upload', array('entity' => $entity));
 
 // only offer the crop view if an avatar has been uploaded

@@ -9,6 +9,7 @@ function dashboard_init() {
 	elgg_register_page_handler('dashboard', 'dashboard_page_handler');
 
 	elgg_extend_view('css/elgg', 'dashboard/css');
+	elgg_extend_view('js/elgg', 'dashboard/js');
 
 	elgg_register_menu_item('topbar', array(
 		'name' => 'dashboard',
@@ -22,7 +23,7 @@ function dashboard_init() {
 			'group_activity',
 			elgg_echo('dashboard:widget:group:title'),
 			elgg_echo('dashboard:widget:group:desc'),
-			'dashboard',
+			array('dashboard'),
 			true
 	);
 
@@ -35,7 +36,7 @@ function dashboard_init() {
  */
 function dashboard_page_handler() {
 	// Ensure that only logged-in users can see this page
-	gatekeeper();
+	elgg_gatekeeper();
 
 	// Set context and title
 	elgg_set_context('dashboard');
@@ -52,7 +53,10 @@ function dashboard_page_handler() {
 	);
 	$widgets = elgg_view_layout('widgets', $params);
 
-	$body = elgg_view_layout('one_column', array('content' => $widgets));
+	$body = elgg_view_layout('one_column', array(
+		'title' => false,
+		'content' => $widgets
+	));
 
 	echo elgg_view_page($title, $body);
 	return true;

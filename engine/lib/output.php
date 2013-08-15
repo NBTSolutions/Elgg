@@ -27,16 +27,16 @@ function parse_urls($text) {
 	// By default htmlawed rewrites tags to this format.
 	// if PHP supported conditional negative lookbehinds we could use this:
 	// $r = preg_replace_callback('/(?<!=)(?<![ ])?(?<!["\'])((ht|f)tps?:\/\/[^\s\r\n\t<>"\'\!\(\),]+)/i',
-	$r = preg_replace_callback('/(?<!=)(?<!["\'])((ht|f)tps?:\/\/[^\s\r\n\t<>"\'\(\)]+)/i',
+	$r = preg_replace_callback('/(?<![=\/"\'])((ht|f)tps?:\/\/[^\s\r\n\t<>"\']+)/i',
 	create_function(
 		'$matches',
 		'
 			$url = $matches[1];
-			$punc = \'\';
+			$punc = "";
 			$last = substr($url, -1, 1);
-			if (in_array($last, array(".", "!", ","))) {
+			if (in_array($last, array(".", "!", ",", "(", ")"))) {
 				$punc = $last;
-				$url = rtrim($url, ".!,");
+				$url = rtrim($url, ".!,()");
 			}
 			$urltext = str_replace("/", "/<wbr />", $url);
 			return "<a href=\"$url\" rel=\"nofollow\">$urltext</a>$punc";
@@ -49,25 +49,12 @@ function parse_urls($text) {
 /**
  * Create paragraphs from text with line spacing
  *
- * @param string $pee The string
- * @deprecated Use elgg_autop instead
- * @todo Add deprecation warning in 1.9
- *
- * @return string
- **/
-function autop($pee) {
-	return elgg_autop($pee);
-}
-
-/**
- * Create paragraphs from text with line spacing
- *
  * @param string $string The string
  *
  * @return string
  **/
 function elgg_autop($string) {
-	return ElggAutoP::getInstance()->process($string);
+	return _elgg_services()->autoP->process($string);
 }
 
 /**
@@ -95,7 +82,7 @@ function elgg_get_excerpt($text, $num_chars = 250) {
 	$space = elgg_strrpos($excerpt, ' ', 0);
 
 	// don't crop if can't find a space.
-	if ($space === FALSE) {
+	if ($space === false) {
 		$space = $num_chars;
 	}
 	$excerpt = trim(elgg_substr($excerpt, 0, $space));
@@ -129,7 +116,7 @@ function elgg_format_url($url) {
  * @return string HTML attributes to be inserted into a tag (e.g., <tag $attrs>)
  */
 function elgg_format_attributes(array $attrs) {
-	$attrs = elgg_clean_vars($attrs);
+	$attrs = _elgg_clean_vars($attrs);
 	$attributes = array();
 
 	if (isset($attrs['js'])) {
@@ -145,12 +132,12 @@ function elgg_format_attributes(array $attrs) {
 	foreach ($attrs as $attr => $val) {
 		$attr = strtolower($attr);
 
-		if ($val === TRUE) {
-			$val = $attr; //e.g. checked => TRUE ==> checked="checked"
+		if ($val === true) {
+			$val = $attr; //e.g. checked => true ==> checked="checked"
 		}
 
 		// ignore $vars['entity'] => ElggEntity stuff
-		if ($val !== NULL && $val !== false && (is_array($val) || !is_object($val))) {
+		if ($val !== null && $val !== false && (is_array($val) || !is_object($val))) {
 
 			// allow $vars['class'] => array('one', 'two');
 			// @todo what about $vars['style']? Needs to be semi-colon separated...
@@ -167,6 +154,67 @@ function elgg_format_attributes(array $attrs) {
 }
 
 /**
+ * Format an HTML element
+ *
+ * @param array $vars Array in format:
+ *
+ *   tag_name    => (string, required) The tagName of the element. e.g. "div"
+ *
+ *   text        => (string) The content of the element. Assumed to be HTML unless encode_text is true
+ *
+ *   encode_text => (bool, default false) If true, the content will be HTML-escaped. Already-escaped entities
+ *                  will not be double-escaped.
+ *
+ *   is_void     => (bool) If given, this determines whether the function will return just the open tag.
+ *                  Otherwise this will be determined by the tag name according to this list:
+ *                  http://www.w3.org/html/wg/drafts/html/master/single-page.html#void-elements
+ *
+ *   is_xml      => (bool, default false) If true, void elements will be formatted like "<tag />"
+ *
+ *   All other keys will be formatted as attributes using elgg_format_attributes().
+ *
+ * @return string
+ * @throws InvalidArgumentException
+ * @since 1.9.0
+ */
+function elgg_format_element(array $vars) {
+	if (empty($vars['tag_name'])) {
+		throw new InvalidArgumentException('$spec["tag_name"] is required');
+	}
+	$tag_name = strtolower($vars['tag_name']);
+
+	if (isset($vars['is_void'])) {
+		$is_void = (bool)$vars['is_void'];
+	} else {
+		$is_void = in_array($tag_name, array(
+			'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem',
+			'meta', 'param', 'source', 'track', 'wbr'
+		));
+	}
+
+	$is_xml = empty($vars['is_xml']) ? false : true;
+
+	$content = isset($vars['text']) ? (string)$vars['text'] : '';
+
+	if (!empty($vars['encode_text'])) {
+		$content = htmlspecialchars($content, ENT_QUOTES, 'UTF-8', false);
+	}
+
+	unset($vars['tag_name'], $vars['is_void'], $vars['is_xml'], $vars['text'], $vars['encode_text']);
+
+	$attrs = elgg_format_attributes($vars);
+	if ($attrs !== '') {
+		$attrs = " $attrs";
+	}
+
+	if ($is_void) {
+		return $is_xml ? "<{$tag_name}{$attrs} />" : "<{$tag_name}{$attrs}>";
+	} else {
+		return "<{$tag_name}{$attrs}>$content</$tag_name>";
+	}
+}
+
+/**
  * Preps an associative array for use in {@link elgg_format_attributes()}.
  *
  * Removes all the junk that {@link elgg_view()} puts into $vars.
@@ -180,19 +228,23 @@ function elgg_format_attributes(array $attrs) {
  * @return array The array, ready to be used in elgg_format_attributes().
  * @access private
  */
-function elgg_clean_vars(array $vars = array()) {
+function _elgg_clean_vars(array $vars = array()) {
 	unset($vars['config']);
 	unset($vars['url']);
 	unset($vars['user']);
 
 	// backwards compatibility code
 	if (isset($vars['internalname'])) {
-		$vars['name'] = $vars['internalname'];
+		if (!isset($vars['__ignoreInternalname'])) {
+			$vars['name'] = $vars['internalname'];
+		}
 		unset($vars['internalname']);
 	}
 
 	if (isset($vars['internalid'])) {
-		$vars['id'] = $vars['internalid'];
+		if (!isset($vars['__ignoreInternalid'])) {
+			$vars['id'] = $vars['internalid'];
+		}
 		unset($vars['internalid']);
 	}
 
@@ -277,14 +329,14 @@ function elgg_normalize_url($url) {
  *
  * @param string $title The title
  *
- * @return string The optimised title
+ * @return string The optimized title
  * @since 1.7.2
  */
 function elgg_get_friendly_title($title) {
 
 	// return a URL friendly title to short circuit normal title formatting
 	$params = array('title' => $title);
-	$result = elgg_trigger_plugin_hook('format', 'friendly:title', $params, NULL);
+	$result = elgg_trigger_plugin_hook('format', 'friendly:title', $params, null);
 	if ($result) {
 		return $result;
 	}
@@ -292,7 +344,7 @@ function elgg_get_friendly_title($title) {
 	// titles are often stored HTML encoded
 	$title = html_entity_decode($title, ENT_QUOTES, 'UTF-8');
 	
-	$title = ElggTranslit::urlize($title);
+	$title = Elgg_Translit::urlize($title);
 
 	return $title;
 }
@@ -302,62 +354,54 @@ function elgg_get_friendly_title($title) {
  *
  * @see elgg_view_friendly_time()
  *
- * @param int $time A UNIX epoch timestamp
+ * @param int $time         A UNIX epoch timestamp
+ * @param int $current_time Current UNIX epoch timestamp (optional)
  *
  * @return string The friendly time string
  * @since 1.7.2
  */
-function elgg_get_friendly_time($time) {
+function elgg_get_friendly_time($time, $current_time = null) {
+	
+	if (!$current_time) {
+		$current_time = time();
+	}
 
 	// return a time string to short circuit normal time formatting
-	$params = array('time' => $time);
-	$result = elgg_trigger_plugin_hook('format', 'friendly:time', $params, NULL);
+	$params = array('time' => $time, 'current_time' => $current_time);
+	$result = elgg_trigger_plugin_hook('format', 'friendly:time', $params, null);
 	if ($result) {
 		return $result;
 	}
 
-	$diff = time() - (int)$time;
+	$diff = abs((int)$current_time - (int)$time);
 
 	$minute = 60;
 	$hour = $minute * 60;
 	$day = $hour * 24;
 
 	if ($diff < $minute) {
-			return elgg_echo("friendlytime:justnow");
-	} else if ($diff < $hour) {
-		$diff = round($diff / $minute);
-		if ($diff == 0) {
-			$diff = 1;
-		}
-
-		if ($diff > 1) {
-			return elgg_echo("friendlytime:minutes", array($diff));
-		} else {
-			return elgg_echo("friendlytime:minutes:singular", array($diff));
-		}
-	} else if ($diff < $day) {
-		$diff = round($diff / $hour);
-		if ($diff == 0) {
-			$diff = 1;
-		}
-
-		if ($diff > 1) {
-			return elgg_echo("friendlytime:hours", array($diff));
-		} else {
-			return elgg_echo("friendlytime:hours:singular", array($diff));
-		}
-	} else {
-		$diff = round($diff / $day);
-		if ($diff == 0) {
-			$diff = 1;
-		}
-
-		if ($diff > 1) {
-			return elgg_echo("friendlytime:days", array($diff));
-		} else {
-			return elgg_echo("friendlytime:days:singular", array($diff));
-		}
+		return elgg_echo("friendlytime:justnow");
 	}
+	
+	if ($diff < $hour) {
+		$granularity = ':minutes';
+		$diff = round($diff / $minute);
+	} else if ($diff < $day) {
+		$granularity = ':hours';
+		$diff = round($diff / $hour);
+	} else {
+		$granularity = ':days';
+		$diff = round($diff / $day);
+	}
+
+	if ($diff == 0) {
+		$diff = 1;
+	}
+	
+	$future = ((int)$current_time - (int)$time < 0) ? ':future' : '';
+	$singular = ($diff == 1) ? ':singular' : '';
+
+	return elgg_echo("friendlytime{$future}{$granularity}{$singular}", array($diff));
 }
 
 /**
@@ -423,7 +467,7 @@ function _elgg_html_decode($string) {
 /**
  * Unit tests for Output
  *
- * @param string  $hook   unit_test
+ * @param string $hook   unit_test
  * @param string $type   system
  * @param mixed  $value  Array of tests
  * @param mixed  $params Params
@@ -431,20 +475,20 @@ function _elgg_html_decode($string) {
  * @return array
  * @access private
  */
-function output_unit_test($hook, $type, $value, $params) {
+function _elgg_output_unit_test($hook, $type, $value, $params) {
 	global $CONFIG;
-	$value[] = $CONFIG->path . 'engine/tests/api/output.php';
+	$value[] = "{$CONFIG->path}engine/tests/ElggCoreOutputAutoPTest.php";
 	return $value;
 }
 
 /**
- * Initialise the Output subsystem.
+ * Initialize the output subsystem.
  *
  * @return void
  * @access private
  */
-function output_init() {
-	elgg_register_plugin_hook_handler('unit_test', 'system', 'output_unit_test');
+function _elgg_output_init() {
+	elgg_register_plugin_hook_handler('unit_test', 'system', '_elgg_output_unit_test');
 }
 
-elgg_register_event_handler('init', 'system', 'output_init');
+elgg_register_event_handler('init', 'system', '_elgg_output_init');

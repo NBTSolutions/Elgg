@@ -6,7 +6,7 @@
 
 $owner = elgg_get_page_owner_entity();
 if (!$owner) {
-	forward('thewire/all');
+	forward('', '404');
 }
 
 $title = elgg_echo('thewire:user', array($owner->name));
@@ -26,7 +26,7 @@ $content .= elgg_list_entities(array(
 	'type' => 'object',
 	'subtype' => 'thewire',
 	'owner_guid' => $owner->guid,
-	'limit' => 15,
+	'limit' => get_input('limit', 15),
 ));
 
 $body = elgg_view_layout('content', array(

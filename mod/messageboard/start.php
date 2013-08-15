@@ -20,7 +20,7 @@ function messageboard_init() {
 	elgg_register_page_handler('messageboard', 'messageboard_page_handler');
 
 	// messageboard widget - only for profile for now
-	elgg_register_widget_type('messageboard', elgg_echo("messageboard:board"), elgg_echo("messageboard:desc"), "profile");
+	elgg_register_widget_type('messageboard', elgg_echo("messageboard:board"), elgg_echo("messageboard:desc"), array("profile"));
 
 	// actions
 	$action_path = dirname(__FILE__) . '/actions';
@@ -45,14 +45,6 @@ function messageboard_init() {
  * @return bool
  */
 function messageboard_page_handler($page) {
-	$new_section_one = array('owner', 'add', 'group');
-
-	// if the first part is a username, forward to new format
-	if (isset($page[0]) && !in_array($page[0], $new_section_one) && get_user_by_username($page[0])) {
-		register_error(elgg_echo("changebookmark"));
-		$url = "messageboard/owner/{$page[0]}";
-		forward($url);
-	}
 
 	$pages = dirname(__FILE__) . '/pages/messageboard';
 
@@ -79,7 +71,7 @@ function messageboard_page_handler($page) {
 			break;
 
 		case 'group':
-			group_gatekeeper();
+			elgg_group_gatekeeper();
 			$owner_guid = elgg_extract(1, $page);
 			set_input('page_owner_guid', $owner_guid);
 			include "$pages/owner.php";
@@ -101,19 +93,20 @@ function messageboard_page_handler($page) {
  * @return bool
  */
 function messageboard_add($poster, $owner, $message, $access_id = ACCESS_PUBLIC) {
-	$result = $owner->annotate('messageboard', $message, $access_id, $poster->guid);
+	$result_id = $owner->annotate('messageboard', $message, $access_id, $poster->guid);
 
-	if (!$result) {
+	if (!$result_id) {
 		return false;
 	}
 
-	add_to_river('river/object/messageboard/create',
-				'messageboard',
-				$poster->guid,
-				$owner->guid,
-				$access_id,
-				0,
-				$result);
+	elgg_create_river_item(array(
+		'view' => 'river/object/messageboard/create',
+		'action_type' => 'messageboard',
+		'subject_guid' => $poster->guid,
+		'object_guid' => $owner->guid,
+		'access_id' => $access_id,
+		'annotation_id' => $result_id,
+	));
 
 	// only send notification if not self
 	if ($poster->guid != $owner->guid) {
@@ -129,7 +122,7 @@ function messageboard_add($poster, $owner, $message, $access_id = ACCESS_PUBLIC)
 		notify_user($owner->guid, $poster->guid, $subject, $body);
 	}
 
-	return $result;
+	return $result_id;
 }
 
 

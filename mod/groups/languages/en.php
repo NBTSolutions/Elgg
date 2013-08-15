@@ -5,7 +5,7 @@
  * @package ElggGroups
  */
 
-$english = array(
+return array(
 
 	/**
 	 * Menu items and titles
@@ -41,6 +41,9 @@ $english = array(
 	'groups:members:title' => 'Members of %s',
 	'groups:members:more' => "View all members",
 	'groups:membership' => "Group membership permissions",
+	'groups:content_access_mode' => "Accessibility of group content",
+	'groups:content_access_mode:unrestricted' => "Unrestricted - Access depends on content-level settings",
+	'groups:content_access_mode:membersonly' => "Members Only - Non-members can never access group content",
 	'groups:access' => "Access permissions",
 	'groups:owner' => "Owner",
 	'groups:owner:warning' => "Warning: if you change this value, you will no longer be the owner of this group.",
@@ -75,14 +78,16 @@ $english = array(
 	'groups:search_in_group' => "Search in this group",
 	'groups:acl' => "Group: %s",
 
-	'discussion:notification:topic:subject' => 'New group discussion post',
-	'groups:notification' =>
-'%s added a new discussion topic to %s:
+	'discussion:topic:notify:summary' => 'New discussion topic called %s',
+	'discussion:topic:notify:subject' => 'New discussion topic: %s',
+	'discussion:topic:notify:body' =>
+'%s added a new discussion topic to the group %s:
+
+Title: %s
 
 %s
-%s
 
-View and reply to the discussion:
+View and reply to the discussion topic:
 %s
 ',
 
@@ -126,8 +131,11 @@ View and reply to the discussion:
 	'groups:access:private' => 'Closed - Users must be invited',
 	'groups:access:public' => 'Open - Any user may join',
 	'groups:access:group' => 'Group members only',
-	'groups:closedgroup' => 'This group has a closed membership.',
-	'groups:closedgroup:request' => 'To ask to be added, click the "request membership" menu link.',
+	'groups:closedgroup' => "This group's membership is closed.",
+	'groups:closedgroup:request' => 'To ask to be added, click the "Request membership" menu link.',
+	'groups:closedgroup:membersonly' => "This group's membership is closed and its content is accessible only by members.",
+	'groups:opengroup:membersonly' => "This group's content is accessible only by members.",
+	'groups:opengroup:membersonly:join' => 'To be a member, click the "Join group" menu link.',
 	'groups:visibility' => 'Who can see this group?',
 
 	/*
@@ -174,6 +182,7 @@ View and reply to the discussion:
 	'groups:newest' => 'Newest',
 	'groups:popular' => 'Popular',
 	'groupspost:success' => 'Your reply was succesfully posted',
+	'groupspost:failure' => 'There was problem while posting your reply',
 	'groups:alldiscussion' => 'Latest discussion',
 	'groups:edittopic' => 'Edit topic',
 	'groups:topicmessage' => 'Topic message',
@@ -188,7 +197,6 @@ View and reply to the discussion:
 	'groups:topicclosed' => 'Closed',
 	'groups:topicresolved' => 'Resolved',
 	'grouptopic:created' => 'Your topic was created.',
-	'groupstopic:deleted' => 'The topic has been deleted.',
 	'groups:topicsticky' => 'Sticky',
 	'groups:topicisclosed' => 'This discussion is closed.',
 	'groups:topiccloseddesc' => 'This discussion is closed and is not accepting new comments.',
@@ -293,7 +301,6 @@ or click below to view the group's join requests:
 	// ecml
 	'groups:ecml:discussion' => 'Group Discussions',
 	'groups:ecml:groupprofile' => 'Group profiles',
-
 );
 
 add_translation("en", $english);

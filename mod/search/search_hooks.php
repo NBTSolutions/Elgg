@@ -136,7 +136,7 @@ function search_users_hook($hook, $type, $value, $params) {
 	
 	// get the where clauses for the md names
 	// can't use egef_metadata() because the n_table join comes too late.
-	$clauses = elgg_entities_get_metastrings_options('metadata', array(
+	$clauses = _elgg_entities_get_metastrings_options('metadata', array(
 		'metadata_names' => $profile_fields,
 	));
 
@@ -250,7 +250,7 @@ function search_tags_hook($hook, $type, $value, $params) {
 	$params['joins'][] = "JOIN {$db_prefix}metastrings msn on md.name_id = msn.id";
 	$params['joins'][] = "JOIN {$db_prefix}metastrings msv on md.value_id = msv.id";
 
-	$access = get_access_sql_suffix('md');
+	$access = _elgg_get_access_where_sql(array('table_alias' => 'md'));
 	$sanitised_tags = array();
 
 	foreach ($search_tag_names as $tag) {
@@ -383,8 +383,8 @@ function search_comments_hook($hook, $type, $value, $params) {
 		$container_and = 'AND e.container_guid = ' . sanitise_int($params['container_guid']);
 	}
 
-	$e_access = get_access_sql_suffix('e');
-	$a_access = get_access_sql_suffix('a');
+	$e_access = _elgg_get_access_where_sql(array('table_alias' => 'e'));
+	$a_access = _elgg_get_access_where_sql(array('table_alias' => 'a'));
 	// @todo this can probably be done through the api..
 	$q = "SELECT count(DISTINCT a.id) as total FROM {$db_prefix}annotations a
 		JOIN {$db_prefix}metastrings msn ON a.name_id = msn.id
@@ -405,14 +405,19 @@ function search_comments_hook($hook, $type, $value, $params) {
 	
 	// don't continue if nothing there...
 	if (!$count) {
-		return array ('entities' => array(), 'count' => 0);
+		return array('entities' => array(), 'count' => 0);
 	}
-	
-	$order_by = search_get_order_by_sql('e', null, $params['sort'], $params['order']);
+
+	// no full text index on metastrings table
+	if ($params['sort'] == 'relevance') {
+		$params['sort'] = 'created';
+	}
+
+	$order_by = search_get_order_by_sql('a', null, $params['sort'], $params['order']);
 	if ($order_by) {
 		$order_by = "ORDER BY $order_by";
 	}
-	
+
 	$q = "SELECT DISTINCT a.*, msv.string as comment FROM {$db_prefix}annotations a
 		JOIN {$db_prefix}metastrings msn ON a.name_id = msn.id
 		JOIN {$db_prefix}metastrings msv ON a.value_id = msv.id
@@ -450,10 +455,17 @@ function search_comments_hook($hook, $type, $value, $params) {
 		}
 
 		$comment_str = search_get_highlighted_relevant_substrings($comment->comment, $query);
-		$entity->setVolatileData('search_match_annotation_id', $comment->id);
-		$entity->setVolatileData('search_matched_comment', $comment_str);
-		$entity->setVolatileData('search_matched_comment_owner_guid', $comment->owner_guid);
-		$entity->setVolatileData('search_matched_comment_time_created', $comment->time_created);
+		$comments_data = $entity->getVolatileData('search_comments_data');
+		if (!$comments_data) {
+			$comments_data = array();
+		}
+		$comments_data[] = array(
+			'annotation_id' => $comment->id,
+			'text' => $comment_str,
+			'owner_guid' => $comment->owner_guid,
+			'time_created' => $comment->time_created,
+		);
+		$entity->setVolatileData('search_comments_data', $comments_data);
 		$entities[] = $entity;
 	}
 
