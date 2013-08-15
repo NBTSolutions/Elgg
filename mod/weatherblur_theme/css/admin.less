@@ -53,6 +53,27 @@
 									> li a:active {
 										.elgg-button-action-active;
 									} /*li a:active*/
+									
+									> li.elgg-state-selected > a {
+										background: #c6c3b0;
+										-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset; 
+										-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset; 
+										box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset;
+										border: 0;
+									}/*li.elgg-state-selected > a*/
+									
+									> li.elgg-state-selected {
+										> ul.elgg-child-menu {
+											> li.elgg-state-selected > a {
+												background: #c6c3b0;
+												-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset; 
+												-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset; 
+												box-shadow: 0 1px 2px rgba(0, 0, 0, .5) inset;
+												border: 0;
+											}/*li.elgg-state-selected > a*/
+										} /*ul.elgg-child-menu*/
+									} /*li.elgg-state-selected*/
+									
 								} /*ul.elgg-menu*/
 							} /*elgg-body*/
 						} /*elgg-admin-sidebar-menu*/

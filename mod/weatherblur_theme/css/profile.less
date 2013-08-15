@@ -23,12 +23,14 @@
 		> #profile-owner-block {
 			background: none; 
 			width: 240px;
+			
 			> .profile-action-menu li  { 
 				display: inline-block;
 				width: 100px;
 				margin-right: 5px;
 				> .elgg-button-action {
 					.elgg-button;
+					height: 35px /*Makes "Report User" button the same height*/
 				} /*elgg-button-action*/
 				> .elgg-button-action:hover {
 					.elgg-button-hover;
@@ -40,6 +42,32 @@
 			> .elgg-menu-owner-block {
 				display: none;
 			} /*elgg-menu-owner-block*/
+			
+			> .profile-admin-menu-wrapper {
+				width: 200px;
+
+				> li a {
+					.elgg-button-action;
+
+					&:hover {
+						.elgg-button-action-hover;
+						text-decoration: none;
+					} /*hover*/
+					
+					&:active {
+						.elgg-button-action-active;
+					} /*active*/	
+				} /*li a*/
+				
+				> li {
+					> .profile-admin-menu {
+							width: 170px;
+							float: right;
+						}/*profile-admin-menu */
+				}/*li*/
+				
+			}/*.profile-admin-menu-wrapper*/
+			
 		} /*profile-owner-block*/
 		
 		/***** Profile Details *****/

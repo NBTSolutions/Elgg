@@ -9,7 +9,7 @@
 
 div.elgg-page-body {
 	> div.elgg-inner {
-		.borderline(0, 1px, 0, 1px);
+		/*.borderline(0, 1px, 0, 1px);*/
 		border-top: none;
 	}
 }
@@ -17,6 +17,7 @@ div.elgg-page-body {
 // don't show embed content link on discussion
 .elgg-form-investigations-edit {
 	> fieldset {
+		margin-left: 0 !important;
 		> fieldset {
 			> div {
 				> .friends-picker-main-wrapper {
@@ -46,12 +47,14 @@ div.elgg-page-body {
 							} /*friends-picker-navigation*/
 							
 							> .friends-picker {
+								background: #eae8dc;
 								> .friends-picker-container {
 									padding: 10px;
 									> .panel {
 										> .wrapper {
 											h3 {
 												margin: 10px 0 30px 0;
+												color: #0090b6 !important;
 											}/*h3*/
 										}/*wrapper*/
 									}/*panel*/
@@ -238,13 +241,15 @@ div.inv-detail {
 				a {
 					.font-normal(13px);
 					line-height: 23px;
-					border: none;
-					background: transparent;
+					border: none !important;
+					background: none !important;
 					&:hover {
-						background: transparent;
+						border: none !important;
+						background: none !important;
 					}
 					&:active {
-						backgroud: transparent;
+						border: none !important;
+						background: none !important;
 					}
 
 					span.color {
