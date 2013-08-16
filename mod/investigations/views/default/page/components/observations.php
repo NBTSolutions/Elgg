@@ -86,7 +86,7 @@
 <p>
     <a href="<?php echo $site->url.'profile/'.$obs_user->username; ?>">
         <img src='<?php echo $obs_user->getIcon("tiny") ?>'><?php echo $obs_user->name; ?></a>
-        <span style="font-weight: bold">on <?php echo date('F nS, Y g:i:s A', strtotime($obs_user_local->timestamp) + (3600 * (1 - date('I', $comment->time_created)))); ?></span>
+        <span style="font-weight: bold">on <?php echo date('F nS, Y g:i:s A', strtotime($obs_user_local->properties->timestamp) + (3600 * (1 - date('I', $comment->time_created)))); ?></span>
 </p>
 
 <div id="observation_left_col">
