@@ -1,3 +1,4 @@
+@import "buttons.less";
 @import "functions.less";
 @import "typography.less";
 
@@ -51,9 +52,71 @@ iframe {
 .elgg-image-block:hover { background: #fff; }
 
 /*-----------------------------------------------------------------------
-	LEFT CONTENT
+	RIGHT CONTENT: Resources styles are in here for now
 -----------------------------------------------------------------------*/
-.elgg-layout { background: #fffde8; }
+.elgg-layout { 
+	background: #fffde8;
+	> .elgg-main {
+	
+		> .elgg-menu-hz {
+			border: none;
+			width: 400px;
+			margin: 0 auto;
+			
+			> li {
+				border: none !important;
+				background: none !important;
+				
+				> a {
+					.elgg-button; 
+					border-radius: 3px;
+					-moz-border-radius: 3px;
+					-webkit-border-radius: 3px;
+					width: 100px;
+					&:hover {
+						.elgg-button-hover;
+					}/*&:hover*/
+					&:active {
+						.elgg-button-active;
+					}/*&:active*/
+				} /*a*/
+			}/*li*/
+			
+			> li.elgg-state-selected  {
+					> a {
+						background: #0090b6;
+						.elgg-button-active;
+						border: 0;
+					}
+				}/*li.elgg-state-selected a*/
+				
+		}/*.elgg-menu-hz*/
+		
+		> ul.elgg-list {
+			margin-top: 30px;
+		}/*ul.elgg-list*/
+			
+		> ul.elgg-gallery {
+			margin-top: 40px;
+		}/*ul.elgg-gallery*/
+
+		> .elgg-head {
+			
+			/***** Upload Button *****/
+			> ul.elgg-menu {
+				> li.elgg-menu-item-add {
+					> a:hover {
+						.elgg-button-action-hover;
+					}/*a:hover*/
+					> a:active {
+						.elgg-button-action-active;
+					}/*a:active*/
+				}/*li.elgg-menu-item-add*/
+			}/*ul.elgg-menu*/
+						
+		}/*elgg-head*/
+	}/*elgg-main*/
+}/*elgg-layout*/
 
 /*-----------------------------------------------------------------------
 	SIDEBAR
