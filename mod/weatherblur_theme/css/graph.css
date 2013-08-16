@@ -1577,6 +1577,18 @@ td {
   width: 300px;
   bottom: 0;
 }
+#graph-spinner {
+  padding: 15px;
+  border-top: 1px solid #d5d7bd;
+  border-right: 1px solid #d5d7bd;
+  border-bottom: 1px solid #d5d7bd;
+  border-left: 1px solid #d5d7bd;
+  background-color: #f3f1e4;
+}
+#graph-spinner .icon-spinner {
+  font-size: 20px;
+  color: #666666;
+}
 #graph_graphView {
   position: relative;
   width: 800px;
@@ -1653,6 +1665,7 @@ div.data_popup {
 }
 div.data_popup .value div {
   display: inline-block;
+  margin: 0 3px;
 }
 div.data_popup > div:last-child {
   font-size: 12px;
@@ -1680,5 +1693,11 @@ div.data_popup > div:last-child {
 }
 #graph_people .friends-picker-wrapper ul li a.tabHasContent {
   background-color: #f3f1e4;
+}
+#graph_popup {
+  text-align: center;
+}
+#graph_popup #graph_popup_message {
+  margin-bottom: 15px;
 }
 
