@@ -1142,6 +1142,7 @@ If you requested this, click on the link below. Otherwise ignore this email.
 	'comments:count' => "%s comments",
 
 	'river:comment:object:default' => '%s commented on %s',
+	'river:comment:site:default' => '%s commented on %s',
 
 	'generic_comments:add' => "Leave a comment",
 	'generic_comments:post' => "Post comment",

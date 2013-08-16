@@ -44,9 +44,6 @@
 #map {
   background: #1C4266;
 }
-iframe#explore_page_map {
-	width: 990px;
-}
 /* onyx-classes.less - combined CSS (less) files for all released Onyx controls
    into single onyx.less file to avoid IE bug that allows
    a maximum of 31 style sheets to be loaded before silently failing */
@@ -1392,15 +1389,215 @@ iframe#explore_page_map {
 
 /* css/Graph.less */
 
+/********* TYPOGRAPHY - LESS VARIABLES *******/
+/* colors */
+/* simple font functions */
+/*--------------------------------------------------------------
+	NAVIGATION LINKS
+--------------------------------------------------------------*/
+.top-nav {
+  color: #248ebb;
+  font-size: .7em;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.top-nav-hover {
+  color: #2eb8f3;
+  text-decoration: underline;
+}
+.nav-link {
+  color: #555;
+  font-size: .7em;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.nav-link-hover-active {
+  color: #369;
+}
+/*--------------------------------------------------------------
+	H1
+--------------------------------------------------------------*/
+.h1-style {
+  font-size: 1.2em;
+  color: #a28d71;
+  font-weight: 700;
+  font-style: normal;
+  text-decoration: none;
+  font-family: 'Open Sans', Arial, sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 0 1px #ffffff;
+}
+/*--------------------------------------------------------------
+	H2
+--------------------------------------------------------------*/
+.h2-gray {
+  color: #555555;
+}
+.h2-style-blue {
+  color: #0090b6;
+  font-size: 1.2em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.5);
+}
+.h2-style-red {
+  color: #993333;
+  font-size: 1.2em;
+  font-weight: 700;
+}
+/*--------------------------------------------------------------
+	H3
+--------------------------------------------------------------*/
+.h3-blue {
+  color: #0090b6;
+}
+.h3-style-gray {
+  color: #333;
+  font-size: .9em;
+  font-weight: 700;
+}
+/*--------------------------------------------------------------
+	H4
+--------------------------------------------------------------*/
+.h4-style-gray {
+  color: #888;
+  font-size: .7em;
+  font-weight: 400;
+}
+.h4-style-gray-2 {
+  color: #666;
+  font-size: 1em;
+  font-weight: 400;
+}
+/*--------------------------------------------------------------
+	PARAGRAPH
+--------------------------------------------------------------*/
+.p-style {
+  color: #333333;
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.5em;
+}
+/*--------------------------------------------------------------
+	SPAN
+--------------------------------------------------------------*/
+.span-style {
+  color: #b84530;
+}
+/*----------------------------------------------------------------
+	 STYLE TAGS HERE
+-----------------------------------------------------------------*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+th {
+  color: #0090b6;
+}
+p,
+dt,
+dd {
+  color: #333;
+}
+td {
+  color: #666;
+}
 #graph {
   text-align: center;
 }
+#graph div.row {
+  margin-top: 20px;
+}
+#graph div.row:first-child > div {
+  width: 32%;
+}
+#graph div.row.measure {
+  text-align: left;
+  margin-bottom: 20px;
+  border-top: 1px solid #d5d7bd;
+  border-right: 1px solid #d5d7bd;
+  border-bottom: 1px solid #d5d7bd;
+  border-left: 1px solid #d5d7bd;
+  padding-bottom: 1em;
+  border-radius: 5px;
+}
+#graph div.row.measure h4 {
+  text-align: center;
+  margin: 12px 0;
+}
+#graph div.row.measure div.measure-block {
+  text-align: center;
+}
+#graph div.row.measure div.measure-block > div {
+  text-align: left;
+  display: inline-block;
+  width: 225px;
+}
+#graph div.parameter-block {
+  display: inline-block;
+  position: relative;
+}
+#graph div.parameter-block > div.display,
+#graph div.parameter-block div.choice-display {
+  position: relative;
+  display: inline-block;
+  font-size: 15px;
+  color: #666666;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: none;
+  font-family: 'Open Sans', Arial, sans-serif;
+  line-height: 1.2em;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  margin-right: 6px;
+}
+#graph div.parameter-block div.choice-display {
+  width: 125px;
+  height: 21px;
+  border-radius: 5px;
+  border-top: 1px solid #d5d7bd;
+  border-right: 1px solid #d5d7bd;
+  border-bottom: 1px solid #d5d7bd;
+  border-left: 1px solid #d5d7bd;
+  background-color: white;
+  padding: 2px 4px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+#graph div.parameter-block .elgg-button {
+  padding: 2px 4px;
+}
+#graph div.parameter-block .calendar-popup {
+  width: 300px;
+  bottom: 0;
+}
+#graph-spinner {
+  padding: 15px;
+  border-top: 1px solid #d5d7bd;
+  border-right: 1px solid #d5d7bd;
+  border-bottom: 1px solid #d5d7bd;
+  border-left: 1px solid #d5d7bd;
+  background-color: #f3f1e4;
+}
+#graph-spinner .icon-spinner {
+  font-size: 20px;
+  color: #666666;
+}
 #graph_graphView {
   position: relative;
-  width: 960px; /*default: 800px*/
+  width: 800px;
   height: 300px;
   margin: 0 auto;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid #d5d7bd;
+  border-right: 1px solid #d5d7bd;
+  border-bottom: 1px solid #d5d7bd;
+  border-left: 1px solid #d5d7bd;
   border-radius: 5px;
   background-color: #eee;
 }
@@ -1444,7 +1641,7 @@ iframe#explore_page_map {
 div.column {
   display: inline-block;
   vertical-align: top;
-  width: 300px;
+  width: 400px;
   margin: 20px;
   text-align: left;
 }
@@ -1461,61 +1658,6 @@ div.nbt-checkbox i {
 div.nbt-checkbox i {
   width: 20px;
 }
-div.parameter-block {
-  display: block;
-  padding: 6px 18px;
-  text-align: left;
-}
-div.parameter-block > div {
-  position: relative;
-  display: inline-block;
-  color: #666;
-}
-div.parameter-block .elgg-button {
-  padding: 2px 4px;
-}
-/****** GRAPH CONTROLS ******/
-#graph_graphControls_control3,
-#graph_graphControls_control8,
-#graph_graphControls_control10,
-#graph_graphControls_control13 {
-	margin-right: 7px;
-}
-
-#graph_graphControls_control9,
-#graph_graphControls_control12 {/*Location & Radius*/
-	display: none;
-}
-
-.date-display { 
-	background: #fff;
-	padding: 3px;
-}
-
-.icon-calendar { 
-}
-
-#graph_graphControls_fromPicker {
-	width: 20% !important;
-}
-
-div.parameter-block #graph_graphControls_measurePopup {
-  vertical-align: top;
-  position: absolute;
-  border-radius: 5px;
-  background-color: white;
-  border: 1px solid #ccc;
-}
-div.parameter-block .onyx-popup {
-  position: absolute;
-}
-div.date-display {
-  width: 175px;
-  height: 21px;
-  border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  margin-right: 5px;
-}
 div.data_popup {
   background-color: white;
   border: 1px solid #aaa;
@@ -1523,8 +1665,39 @@ div.data_popup {
 }
 div.data_popup .value div {
   display: inline-block;
+  margin: 0 3px;
 }
 div.data_popup > div:last-child {
   font-size: 12px;
+}
+/* elgg nesting */
+#graph_people {
+  display: none;
+  position: absolute;
+  background-color: #f3f1e4;
+  border: 1px solid #d5d7bd;
+  left: 0;
+  bottom: 0;
+  border-radius: 5px;
+  padding: 25px;
+  width: 910px;
+}
+#graph_people h3 {
+  margin-bottom: 25px;
+}
+#graph_people #use-mine {
+  margin-bottom: 15px;
+}
+#graph_people label {
+  margin-bottom: 10px;
+}
+#graph_people .friends-picker-wrapper ul li a.tabHasContent {
+  background-color: #f3f1e4;
+}
+#graph_popup {
+  text-align: center;
+}
+#graph_popup #graph_popup_message {
+  margin-bottom: 15px;
 }
 
