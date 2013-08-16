@@ -11,7 +11,6 @@
 	$body = elgg_view_layout("one_column", array('content' => $area2));
 
 	elgg_load_css('jq-smooth');
-	elgg_load_css('jq-tabs');
 	elgg_load_css('enyo-css');
 	elgg_load_css('graph-css');
 	elgg_load_css('tables-css');
@@ -21,10 +20,9 @@
 	elgg_load_js('enyo-js');
 	elgg_load_js('d3');
 	elgg_load_js('moment');
-	elgg_load_js('underscore');
-	elgg_load_js('jq-widget');
-	elgg_load_js('jq-tabs');
 	elgg_load_js('graph');
+	elgg_load_js('exploredata');
+
 	elgg_load_js('datatables');
 	elgg_load_js('table-tools');
 	elgg_load_js('table-tools-zc');
@@ -34,21 +32,48 @@
 	echo elgg_view_page($title, $body, $canvas_area);
 	$site_url = elgg_get_site_url();
 
-    $content = '
-        <script>
-          $(function() {
-                $( "#tabs" ).tabs({
+	$content = '
+			<script>
+$(function() {
+	$( "#tabs" ).tabs({
 
-				 show: function(ui, event)
-				 {
-					ttInstances = TableTools.fnGetMasters();
-					for (i in ttInstances) {
-						if (ttInstances[i].fnResizeRequired()) ttInstances[i].fnResizeButtons();
-					}
-				}
-				});
-					});
-				</script>
+		show: function(ui, event)	{
+			ttInstances = TableTools.fnGetMasters();
+			for (i in ttInstances) {
+				if (ttInstances[i].fnResizeRequired()) ttInstances[i].fnResizeButtons();
+			}
+		}
+	});
+});
+
+
+var require = {
+	config: {
+		"wb/main": {
+			apiPath: "http://wb-aggregator.unstable.nbt.io/api"
+		}
+	},
+	paths: {
+		"wb/api/main": [
+			"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api-sans-jquery"
+			//"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api"
+		]
+	}
+};
+
+uid = ' . elgg_get_logged_in_user_guid() . '
+	</script>
+<script src="//d3pch6bcnsao4c.cloudfront.net/lib/require.js"></script>
+<script>
+define("jquery", [], function() { return jQuery; });
+require(["wb/api/main"], function(wb) {
+	require(["require"], function() {
+		$.ajaxSetup({ cache: true });
+		app = new wb.Graph().renderInto(document.getElementById("graph_container"));
+	});
+});
+
+		</script>
 		<script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 
@@ -67,7 +92,6 @@ $(document).ready(function() {
 			} );
 		</script>
 
-
         <div class="wb-body">
         <h2 style="text-align:center;padding: 20px">Explore Data</h2>
         <div id="tabs">
@@ -81,7 +105,13 @@ $(document).ready(function() {
                 <div><img src="'.$site_url.'mod/weatherblur_theme/graphics/observation_explorer.png"></div>
             </div>
             <div id="tab_graphing">
-                <div id="graph_container"></div>
+							<div id="graph_container"></div>
+							<div id="graph_people">
+								<h3>Whose Observations Do You Want To See?</h3>
+								<div id="use-mine" class="elgg-button elgg-button-action">Use My Own Observations</div>
+								' . elgg_view('explore/graph/personpicker', array('title' => "Or Select Another User's:")) . '
+								<div id="use-user" class="elgg-button elgg-button-action">Okay</div>
+							</div>
             </div>
             <div id="tab_mapping">
 				<div><iframe src="http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/" id="explore_page_map"></iframe></div>
@@ -110,7 +140,7 @@ $(document).ready(function() {
 
         </div>
         </div>';
-	$canvas_area = elgg_view_layout('default', array('content' => $content));
+	$canvas_area = elgg_view_layout('default', array('content' => $content, 'class' => 'frank'));
 	echo elgg_view_page($title, $canvas_area);
 
 ?>
