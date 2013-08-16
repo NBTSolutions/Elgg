@@ -7,7 +7,7 @@
 
 //elgg_push_breadcrumb(elgg_echo('file'));
 
-if (elgg_get_logged_in_user_entity()->isAdmin()) {
+if (elgg_is_logged_in() && elgg_get_logged_in_user_entity()->isAdmin()) {
 	elgg_register_title_button();
 }
 
