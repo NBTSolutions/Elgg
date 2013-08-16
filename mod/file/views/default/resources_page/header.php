@@ -5,7 +5,7 @@
 
 $buttons = '';
 // consider adding list/gallery toggle here.
-if (elgg_get_logged_in_user_entity()->isAdmin()) {
+if (elgg_is_logged_in() && elgg_get_logged_in_user_entity()->isAdmin()) {
 	$buttons = elgg_view_menu('title', array(
 		'sort_by' => 'priority',
 		'class' => 'elgg-menu-hz',
