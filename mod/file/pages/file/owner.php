@@ -47,7 +47,7 @@ if (!$content) {
 }
 
 //$sidebar = file_get_type_cloud(elgg_get_page_owner_guid());
-$sidebar = elgg_view('file/sidebar', array('skip_filter' => true));
+$sidebar = elgg_view('file/sidebar');
 
 $params['content'] = $content;
 $params['title'] = $title;
