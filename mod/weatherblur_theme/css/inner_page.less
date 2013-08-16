@@ -52,73 +52,6 @@ iframe {
 .elgg-image-block:hover { background: #fff; }
 
 /*-----------------------------------------------------------------------
-	RIGHT CONTENT: Resources styles are in here for now
------------------------------------------------------------------------*/
-.elgg-layout { 
-	background: #fffde8;
-	> .elgg-main {
-	
-		> .elgg-menu-hz {
-			border: none;
-			width: 400px;
-			margin: 0 auto;
-			
-			> li {
-				border: none !important;
-				background: none !important;
-				
-				> a {
-					.elgg-button; 
-					border-radius: 3px;
-					-moz-border-radius: 3px;
-					-webkit-border-radius: 3px;
-					width: 100px;
-					&:hover {
-						.elgg-button-hover;
-					}/*&:hover*/
-					&:active {
-						.elgg-button-active;
-					}/*&:active*/
-				} /*a*/
-			}/*li*/
-			
-			> li.elgg-state-selected  {
-					> a {
-						background: #0090b6;
-						.elgg-button-active;
-						border: 0;
-					}
-				}/*li.elgg-state-selected a*/
-				
-		}/*.elgg-menu-hz*/
-		
-		> ul.elgg-list {
-			margin-top: 30px;
-		}/*ul.elgg-list*/
-			
-		> ul.elgg-gallery {
-			margin-top: 40px;
-		}/*ul.elgg-gallery*/
-
-		> .elgg-head {
-			
-			/***** Upload Button *****/
-			> ul.elgg-menu {
-				> li.elgg-menu-item-add {
-					> a:hover {
-						.elgg-button-action-hover;
-					}/*a:hover*/
-					> a:active {
-						.elgg-button-action-active;
-					}/*a:active*/
-				}/*li.elgg-menu-item-add*/
-			}/*ul.elgg-menu*/
-						
-		}/*elgg-head*/
-	}/*elgg-main*/
-}/*elgg-layout*/
-
-/*-----------------------------------------------------------------------
 	SIDEBAR
 -----------------------------------------------------------------------*/
 .elgg-sidebar {/*
@@ -175,9 +108,9 @@ iframe {
 	top: 1px;
 }
 
-/****
- people page
-*/
+/*-----------------------------------------------------------------------
+	PEOPLE PAGE
+-----------------------------------------------------------------------*/
 div.people-page {
 	h2 {
 		.font(1.5em, @blue-text, bold);
@@ -217,20 +150,138 @@ div.people-page {
 	}
 }
 
-.resources-page {
-	.elgg-menu-filter {
-		border: 0;
-		padding: 0;
-		margin: 0;
+/*-----------------------------------------------------------------------
+	RESOURCES PAGE
+-----------------------------------------------------------------------*/
+.resources-page { 
+	/***** SIDEBAR *****/
+	> .elgg-sidebar {
+		
+		> ul.elgg-menu {
+			> li.elgg-menu-item-bookmark {
+				> a {
+					border: none !important;
+					background: none !important;
+				}/*a*/
+			}/*li.elgg-menu-item-bookmark*/
+		}/*elgg-menu*/
+		
+		> ul.elgg-menu-filter {
+			border: 0;
+			padding: 0;
+			margin: 0;
 
-		li {
-			float: none;
-			display: block;
-			border: none;
-			margin: 0 0 10px 0;
-		}
-		li.elgg-state-selected {
-			background-color: transparent;
-		}
-	}
-}
+			> li {
+				float: none;
+				display: block;
+				margin: 0 0 10px 0;
+				border: none !important;
+				background: none !important;
+				
+				> a {
+					.elgg-button; 
+					border-radius: 3px;
+					-moz-border-radius: 3px;
+					-webkit-border-radius: 3px;
+					width: 100px;
+					&:hover {
+						.elgg-button-hover;
+					}/*&:hover*/
+					&:active {
+						.elgg-button-active;
+					}/*&:active*/
+				} /*a*/
+			}/*li*/
+			
+			> li.elgg-state-selected  {
+				> a {
+					background: #0090b6;
+					.elgg-button-active;
+					border: 0;
+				}/*a*/
+			}/*li.elgg-state-selected*/
+			
+		} /*ul.elgg-menu-filter*/
+		
+	}/*elgg-sidebar*/
+	
+	/***** RIGHT CONTENT*****/
+	> .elgg-main {
+		
+		> .resources-head {
+			margin-top: 20px;
+			
+			/***** Upload Button *****/
+			> ul.elgg-menu {
+				> li.elgg-menu-item-add {
+					> a:hover {
+						.elgg-button-action-hover;
+					}/*a:hover*/
+					> a:active {
+						.elgg-button-action-active;
+					}/*a:active*/
+				}/*li.elgg-menu-item-add*/
+			}/*ul.elgg-menu*/
+						
+		}/*resources-head*/
+		
+		/***** LIST VIEW *****/		
+		> ul.elgg-list {
+			margin-top: 30px;
+			
+			> .elgg-item {
+				> .elgg-image-block {
+					> .elgg-body {
+					
+						> h3 {
+							margin-bottom: 10px;
+						}/*h3*/
+						
+						> .elgg-subtext {
+							margin-bottom: 10px;
+						}/*elgg-subtext*/
+						
+					}/*elgg-body*/
+				}/*elgg-image-block*/
+			}/*elgg-item*/
+			
+		}/*ul.elgg-list*/
+		
+		/***** GALLERY VIEW *****/	
+		> ul.elgg-gallery {
+			margin-top: 40px;
+			> li {
+				> .file-gallery-item {
+					width: 220px;
+					margin: 0 10px 10px 0;
+					border: 2px solid #eae8d9;
+					border-radius: 5px;
+					-moz-border-radius: 5px;
+					-webkit-border-radius: 5px;
+					&:hover {
+						border: 2px solid #0090b6;
+					}/*&:hover*/
+					
+					> h3 {
+						margin: 10px 0 10px 0;
+						font-weight: 600;
+						color: #666;
+					}/*h3*/
+					> p.subtitle {
+						> a {
+							display: block;
+						}/*a*/
+						> acronym {
+							display: block;
+							font-size: .8em;
+							color: #777;
+							padding-bottom: 20px;
+						}/*acronym*/
+					}/*p.subtitle*/
+				}/*file-gallery-item*/
+			}/*li*/
+						
+		}/*ul.elgg-gallery*/
+
+	}/*elgg-main*/
+}/*resources-page*/

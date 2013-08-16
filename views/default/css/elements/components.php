@@ -2,7 +2,7 @@
 /**
  * Layout Object CSS
  *
- * Image blocks, lists, tables, gallery, messages
+ * Image blocks, lists, tables, gallery, 
  *
  * @package Elgg.Core
  * @subpackage UI
