@@ -1,6 +1,7 @@
 @import "buttons.less";
 @import "functions.less";
 @import "typography.less";
+@import "rd_corners.less";
 
 /*-----------------------------------------------------------------------
 	IFRAME
@@ -18,6 +19,11 @@ iframe {
 .ui-tabs-hide {
 	display: none !important;
 }
+
+iframe#explore_page_map {
+	width: 960px;
+}
+
 
 /*-----------------------------------------------------------------------
 	BREADCRUMBS
@@ -285,3 +291,98 @@ div.people-page {
 
 	}/*elgg-main*/
 }/*resources-page*/
+
+/*-----------------------------------------------------------------------
+	OBSERVATION GALLERY
+-----------------------------------------------------------------------*/
+h2.obs_heading {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+ul.inv-listing {
+	
+	> li.obs {
+		display: inline-block;
+		width: 160px;
+		height: 100px;
+		margin: 5px;
+		padding: 5px;
+		border: 2px solid #eae8d9;
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		&:hover {
+			border: 2px solid #0090b6;
+		}/*&:hover*/
+		
+		> .obs_container {
+			> a {
+				&:hover {
+					text-decoration: none;
+				}
+				
+				> img.obs_image {
+				}/*img.obs_image*/
+				
+				> p.obs_owner {
+					color: #0090b6;
+					margin: 0;
+					&:hover {
+						text-decoration: underline;
+					}
+				}/*p.obs_owner*/
+				
+				> p.obs_date {
+					font-size: .8em;
+					color: #777;
+				}/*p.obs_date*/
+			
+			}/*a*/
+		}/*obs_container*/
+				
+	}/*li.obs*/
+	
+}/*ul.inv-listing*/
+
+/***** Pagination *****/
+.elgg-main {
+
+	> ul.elgg-pagination {
+		float: right;
+		margin: 40px 40px 0 0;
+		> li {
+			display: inline-block;
+			margin: 10px 0 20px 10px;
+		} /*li*/
+	
+		> li a {
+			.elgg-button-action;
+			padding: 7px 10px;
+			&:hover {
+				.elgg-button-action-hover;
+			}/*hover*/
+			&:active {
+				.elgg-button-action-active;
+			}/*active*/
+		} /*li a*/
+	
+		> li.elgg-state-selected span {
+			background: #0090b6;
+			border: 0;
+			color: #fff;
+			padding: 7px 10px;
+		} /*li.elgg-selected span*/
+		
+		> li.elgg-state-disabled span {
+			background: #e6e4d6;
+			border: 0;
+			color: #666;
+			padding: 7px 10px;
+		} /*li.elgg-disabled span*/
+	
+	} /*ul.elgg-pagination*/
+
+}/*elgg-main*/
+
+

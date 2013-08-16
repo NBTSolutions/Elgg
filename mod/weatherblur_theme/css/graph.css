@@ -1654,6 +1654,7 @@ div.column:first-child {
 div.nbt-checkbox div,
 div.nbt-checkbox i {
   display: inline-block;
+  margin-bottom: 5px;
 }
 div.nbt-checkbox i {
   width: 20px;
