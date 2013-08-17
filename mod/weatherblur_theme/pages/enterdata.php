@@ -14,7 +14,7 @@
 	
 	$content = '<div class="wb-body">
 	<h2 style="text-align:center;padding: 20px">Enter Data</h2>
-    <iframe src="http://weatherblur-staging.herokuapp.com/collect/"></iframe>';
+    <iframe src="http://s3.amazonaws.com/nbt-static/weatherblur/collect/unstable/index.html"></iframe>';
 	
 	$canvas_area = elgg_view_layout('default', array('content' => $content));
 	echo elgg_view_page($title, $canvas_area);
