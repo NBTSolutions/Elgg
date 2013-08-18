@@ -105,7 +105,7 @@ $(document).ready(function() {
             </ul>
             <div id="tab_explore">
                 <!--<div>'.list_all_observations().'</div>-->
-                <div><iframe src="http://s3.amazonaws.com/nbt-static/weatherblur/gallery/unstable/index.html"></iframe></div>
+                <div><iframe id="explore_obs_gallery" src="http://s3.amazonaws.com/nbt-static/weatherblur/gallery/unstable/index.html"></iframe></div>
             </div>
             <div id="tab_graphing">
 							<div id="graph_container"></div>
