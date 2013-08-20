@@ -44,10 +44,14 @@ $(function() {
 			for (i in ttInstances) {
 				if (ttInstances[i].fnResizeRequired()) ttInstances[i].fnResizeButtons();
 			}
+            $("[aria-controls=\'tab_mapping\']").click(function() { 
+                if($("#tab_mapping").children().length < 1) {
+                    $("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/index.html\" id=\"explore_page_map\"></iframe></div>");
+                }
+            });
 		}
 	});
 });
-
 
 var require = {
 	config: {
@@ -116,9 +120,7 @@ $(document).ready(function() {
 								<div id="use-user" class="elgg-button elgg-button-action">Okay</div>
 							</div>
             </div>
-            <div id="tab_mapping">
-				<div><iframe src="http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/" id="explore_page_map"></iframe></div>
-            </div>
+            <div id="tab_mapping"></div>
 			<div id="tab_data">
 				<div id="dynamic" width="100%">
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="wb-data">
