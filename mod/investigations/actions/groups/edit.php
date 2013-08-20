@@ -176,7 +176,6 @@ if ($adv && count($adv) > 0) {
     if(!$group->isMember($advisor_user)) {
        investigations_join_investigation($group, $advisor_user);
     }
-    xdebug_break();
 }
 
 // group saved so clear sticky form
