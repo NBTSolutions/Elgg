@@ -168,8 +168,15 @@ if ($brief && strlen($brief) > 255) {
 $adv = get_input('advisor_guid');
 if ($adv && count($adv) > 0) {
 	$advisor = $adv[0];
+    $advisor_user = get_user($advisor);
 	remove_entity_relationships($group->guid, 'advisor', true);
 	add_entity_relationship($advisor, 'advisor', $group->guid);
+
+    //if not a member add to investigation
+    if(!$group->isMember($advisor_user)) {
+       investigations_join_investigation($group, $advisor_user);
+    }
+    xdebug_break();
 }
 
 // group saved so clear sticky form
