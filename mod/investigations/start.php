@@ -162,7 +162,7 @@ function investigations_init() {
         false,
         false
     );
-    
+
     expose_function(
         "wb.get_likes",
         "get_likes",
@@ -270,7 +270,7 @@ function investigations_init() {
         false,
         false
     );
-	
+
 	expose_function(
         "wb.get_inv_by_agg_id",
         "get_inv_by_agg_id",
@@ -455,6 +455,8 @@ function investigation_setup_sidebar_menus() {
  */
 function investigation_page_handler($page) {
 	global $CONFIG;
+	elgg_unregister_css('admin');
+	elgg_unregister_css('settings');
 	elgg_register_css('functions', elgg_get_site_url() . 'mod/weatherblur_theme/css/functions.less');
 	elgg_load_css('functions');
 	elgg_register_css('button', elgg_get_site_url() . 'mod/weatherblur_theme/css/button2.less');
@@ -1525,7 +1527,7 @@ function get_obs_by_user_type($user_type, $min_date, $max_date) {
 function toggle_like_obs($observation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
-    $token = is_logged_in(); 
+    $token = is_logged_in();
     $user_guid = validate_user_token($token, null);
     if($user_guid) {
 
@@ -1562,7 +1564,7 @@ function toggle_like_obs($observation_guid) {
 }
 
 function toggle_like_obs_by_agg_id($agg_guid) {
-    
+
     $results = elgg_get_entities_from_metadata(array(
         "type_subtype_pair"	=>	array('object' => 'observation'),
         "metadata_name_value_pairs" => array('agg_id' => $agg_id)
@@ -1588,7 +1590,7 @@ function get_likes($observation_guid) {
 }
 
 function get_likes_by_agg_id($agg_id) {
-    
+
     $results = elgg_get_entities_from_metadata(array(
         "type_subtype_pair"	=>	array('object' => 'observation'),
         "metadata_name_value_pairs" => array('agg_id' => $agg_id)
@@ -1617,7 +1619,7 @@ function get_my_obs_like($observation_guid) {
                 $my_like = 1;
             }
         }
-        
+
         return $my_like;
 
     }
@@ -1628,7 +1630,7 @@ function get_my_obs_like($observation_guid) {
 }
 
 function get_my_obs_like_by_agg_id($agg_id) {
-    
+
     $results = elgg_get_entities_from_metadata(array(
         "type_subtype_pair"	=>	array('object' => 'observation'),
         "metadata_name_value_pairs" => array('agg_id' => $agg_id)
@@ -1698,7 +1700,7 @@ function comment_on_obs($observation_guid, $comment, $token) {
 
 // list of observations by date/user
 function is_logged_in() {
-   
+
     if(elgg_is_logged_in()) {
         $token = get_user_tokens(elgg_get_logged_in_user_guid());
         if($token) {
@@ -1729,7 +1731,7 @@ function get_user_info_by_agg_id($agg_id, $icon_size) {
 
     //$results = elgg_get_entity_metadata_where_sql("e", "metadata", null, null, array('name' => 'agg_id', 'value' => '10'));
 
-    if($results) 
+    if($results)
 	{
         return get_user_info($results[0]->owner_guid, $icon_size);
     }
@@ -1745,12 +1747,12 @@ function get_inv_by_agg_id($agg_id) {
     ));
 
     if($results) {
-       
+
 		$obs = get_entity($results[0]->guid);
 		$inv_guid = $obs->parent_guid;
 		$inv = get_entity($inv_guid);
 		if ($inv)
-		{	
+		{
 			return array(
 				"guid" => $inv->guid,
 				"name" => $inv->name
@@ -1759,7 +1761,7 @@ function get_inv_by_agg_id($agg_id) {
 		else
 		{
 			return 0;
-		}  
+		}
     }
     else {
         return 0;
