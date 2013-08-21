@@ -98,7 +98,7 @@ $comments = $num_replies;
 	<h3><?php echo elgg_view('output/url', array('href' => $topic->getURL(), 'text' => $topic->title)); ?></h3>
 	<ul class="social">
 		<li><?php echo elgg_view('likes/button', array('entity'=>$topic)); echo $likes; ?> likes</li>
-		<li><span class="elgg-icon bubble"></span><?php echo $comments; ?> comments</li>
+		<li><?php echo elgg_view('output/url', array('href' => $topic->getURL() . '#group-replies', 'text' => '<span class="elgg-icon bubble"></span>')) .  $comments; ?> comments</li>
 	</ul>
 	<div class="subtext"><?php echo $subtitle; ?></div>
 	<?php echo $body; ?>

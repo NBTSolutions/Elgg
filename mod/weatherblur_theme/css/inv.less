@@ -24,7 +24,7 @@ div.elgg-page-body {
 					margin-top: 10px;
 					> #friends-picker_placeholder1 {
 						> .friends-picker-wrapper {
-						
+
 							> .friends-picker-navigation {
 								border: none;
 								> ul {
@@ -45,7 +45,7 @@ div.elgg-page-body {
 									} /*li*/
 								} /*ul*/
 							} /*friends-picker-navigation*/
-							
+
 							> .friends-picker {
 								background: #eae8dc;
 								> .friends-picker-container {
@@ -60,22 +60,22 @@ div.elgg-page-body {
 									}/*panel*/
 								}/*friends-picker-container*/
 							}/*friends-picker*/
-							
+
 						} /*friends-picker-wrapper*/
 					} /*friends-picker_placeholder*/
 				} /*friends-picker-main-wrapper*/
 			}/*div*/
 		} /*fieldset*/
-		
+
 		> .inv-option {
 			display: none;
 		}
-		
+
 		> .elgg-foot {
 			border: none;
 		}
 	} /*fieldset*/
-	
+
 	.elgg-menu-longtext {
 		display: none;
 	}
@@ -94,7 +94,7 @@ div.investigation-list {
 	}
 
 	div.inv-search {
-		
+
 		margin-bottom: 20px;
 
 		.elgg-input-search {
@@ -139,7 +139,7 @@ div.investigation-list {
 			h3 {
 				margin-top: 5px;
 				font-size: 18px;
-				
+
 				a {
 					color: #0090b6;
 					&:hover {
@@ -149,7 +149,7 @@ div.investigation-list {
 				}
 
 			}
-			
+
 			ul {
 				margin: 0;
 				width: 230px;
@@ -234,14 +234,15 @@ div.inv-detail {
 				margin: 0 0 6px;
 				padding: 0 0 0 40px;
 				border: none;
-				background-image: url('../graphics/icon.png');
-				background-position: center left;
+				background-image: url('../graphics/inv-icons.png');
+				background-position: 0px 0px;
 				background-repeat: no-repeat;
 
 				a {
 					.font-normal(13px);
 					line-height: 23px;
 					border: none !important;
+					padding: 3px 0 0 !important;
 					background: none !important;
 					&:hover {
 						border: none !important;
@@ -256,6 +257,15 @@ div.inv-detail {
 						background-color: @reddish;
 					}
 				}
+			}
+			li.elgg-menu-item-investigations-edit {
+				background-position: 0 -25px;
+			}
+			li.elgg-menu-item-investigations-invite {
+				background-position: 0 -50px;
+			}
+			li.elgg-menu-item-investigations-join {
+				background-position: 0 -75px;
 			}
 		}
 
@@ -321,7 +331,7 @@ div.inv-detail {
 					.font(13px, @base-text);
 				}
 			}
-			
+
 			.elgg-body {
 				.elgg-gallery-users {
 					margin-bottom: 25px;
@@ -330,7 +340,7 @@ div.inv-detail {
 					}
 				}
 			}
-			
+
 			div.mts a {
 				.orange-link(12px);
 			}
@@ -351,7 +361,7 @@ div.inv-detail {
 		padding: 24px 0 0 240px;
 
 		div.head {
-			/*.borderline(0, 0, 1px, 0);*/ 
+			/*.borderline(0, 0, 1px, 0);*/
 			padding: 0 12px 40px;
 
 			.hint {
@@ -383,8 +393,8 @@ div.inv-detail {
 					}
 					&:active {
 						background: #c6c3b0;
-						-moz-box-shadow: 0px 1px 4px rgba(130, 127, 113, 1) inset; 
-						-webkit-box-shadow: 0px 1px 4px rgba(130, 127, 113, 1) inset; 
+						-moz-box-shadow: 0px 1px 4px rgba(130, 127, 113, 1) inset;
+						-webkit-box-shadow: 0px 1px 4px rgba(130, 127, 113, 1) inset;
 						box-shadow:0px 1px 4px rgba(130, 127, 113, 1) inset;
 					}
 				}
@@ -435,7 +445,7 @@ div.inv-detail {
 				margin-bottom: 20px;
 				padding-bottom: 20px;
 				float: left;
-				
+
 				> div.discussion {
 					border: 0;
 				}
@@ -451,22 +461,22 @@ div.inv-detail {
 				.editing {
 					display: none;
 				}
-				
+
 				.elgg-output {
-				
+
 					p {
 						padding-left: 15px;
 						line-height: 1.5;
 					}
-					
+
 				}
-				
+
 				.tags {
 					padding-left: 35px;
 				}
-					
+
 			}
-			
+
 		}
 	}
 }
