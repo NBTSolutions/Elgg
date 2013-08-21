@@ -9,7 +9,9 @@
 
     $obs_measurement = curl_exec($ch);
 
-    $observation = json_decode($obs_measurement);
+    //convert to utf8
+    $utf8_data = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($obs_measurement));
+    $observation = json_decode($utf8_data);
 
     curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
@@ -20,7 +22,7 @@
     curl_close($ch);
 
     $obs_user_local = json_decode($obs_user_local_response);
-
+    
     date_default_timezone_set("EST");
 
     // get the obs_guid
@@ -136,7 +138,7 @@ foreach($obs_categories as $category => $category_image) {
                     <?php echo $measurement->value; ?>
                     <?php 
                     if($measurement->phenomenon->unit) {
-                        echo $measurement->phenomenon->unit->abbrev;
+                        echo htmlentities($measurement->phenomenon->unit->abbrev);
                     }
                     ?>
                 </td>
