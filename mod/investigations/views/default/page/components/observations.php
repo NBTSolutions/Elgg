@@ -138,7 +138,7 @@ foreach($obs_categories as $category => $category_image) {
                     <?php echo $measurement->value; ?>
                     <?php 
                     if($measurement->phenomenon->unit) {
-                        echo htmlentities($measurement->phenomenon->unit->abbrev);
+                        echo $measurement->phenomenon->unit->abbrev;
                     }
                     ?>
                 </td>
