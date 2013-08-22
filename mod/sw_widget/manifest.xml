@@ -31,5 +31,5 @@
 		<type>plugin</type>
 
 	</requires>
-	
+    <activate_on_install>true</activate_on_install>
 </plugin_manifest>
