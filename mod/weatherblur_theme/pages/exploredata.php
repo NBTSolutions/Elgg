@@ -14,7 +14,8 @@
 
 	elgg_load_css('jq-smooth');
 	elgg_load_css('enyo-css');
-	elgg_load_css('graph-css');
+	elgg_load_css('graph');
+	elgg_load_css('gallery');
 	elgg_load_css('tables-css');
 	elgg_load_css('font-awesome');
 	elgg_load_css('tabletools-css');
@@ -23,6 +24,7 @@
 	elgg_load_js('d3');
 	elgg_load_js('moment');
 	elgg_load_js('graph');
+	elgg_load_js('gallery');
 	elgg_load_js('exploredata');
 
 	elgg_load_js('datatables');
@@ -44,7 +46,7 @@ $(function() {
 			for (i in ttInstances) {
 				if (ttInstances[i].fnResizeRequired()) ttInstances[i].fnResizeButtons();
 			}
-            $("[aria-controls=\'tab_mapping\']").click(function() { 
+            $("[aria-controls=\'tab_mapping\']").click(function() {
                 if($("#tab_mapping").children().length < 1) {
                     $("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/index.html\" id=\"explore_page_map\"></iframe></div>");
                 }
@@ -75,10 +77,15 @@ define("jquery", [], function() { return jQuery; });
 require(["wb/api/main"], function(wb) {
 	require(["require"], function() {
 		$.ajaxSetup({ cache: true });
-		app = new wb.Graph().renderInto(document.getElementById("graph_container"));
+		graph = new wb.Graph().renderInto(document.getElementById("graph_container"));
 	});
 });
 
+require(["wb/api/main"], function(wb) {
+	require(["require"], function() {
+		gallery = new wb.Gallery().renderInto(document.getElementById("gallery_container"));
+	});
+});
 		</script>
 		<script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
@@ -108,8 +115,7 @@ $(document).ready(function() {
 				 <li><a href="#tab_data">Data</a></li>
             </ul>
             <div id="tab_explore">
-                <!--<div>'.list_all_observations().'</div>-->
-                <div><iframe id="explore_obs_gallery" src="http://s3.amazonaws.com/nbt-static/weatherblur/gallery/unstable/index.html"></iframe></div>
+                <div id="gallery_container"></div>
             </div>
             <div id="tab_graphing">
 							<div id="graph_container"></div>
