@@ -1712,9 +1712,13 @@
   color: #173552;
   cursor: pointer;
 }
+#gallery {
+  min-height: 600px;
+  background: transparent url(http://www.weatherblur.com/mod/weatherblur_theme/css/../graphics/green_bkgd.png) 0 0 repeat;
+}
 .gallery {
   background: transparent url(http://www.weatherblur.com/mod/weatherblur_theme/css/../graphics/green_bkgd.png) 0 0 repeat;
-  height: 100%;
+  min-height: 600px;
 }
 .gallery .gallery-panel {
   padding: 14px !important;

@@ -524,7 +524,8 @@ published: {
 observation: null,
 categories: null,
 image: null,
-video: null
+video: null,
+likesLoaded: !1
 },
 components: [ {
 name: "container",
@@ -601,7 +602,7 @@ return this.categories[e].length;
 }, this);
 this.$.thumbnail.setSrc("../mod/weatherblur_theme/graphics/gallery/" + s + "-150x150.png"), this.$.thumbnail.addClass("category-icon");
 }
-this.doILikeThisObservation(), this.doLikesCount(), this.doCommentsCount();
+this.likesLoaded || (this.doILikeThisObservation(), this.doLikesCount(), this.doCommentsCount(), this.likesLoaded = !0);
 },
 doILikeThisObservation: function() {
 var e = {
@@ -619,7 +620,7 @@ agg_id: this.observation.get("id")
 }, t = function(e, t, n) {
 if (t.status == 0) {
 var r = "";
-t.result.all_likes > 0 && (r = "(" + t.result.all_likes + ")"), this.$.likesCount.setContent(r);
+t.result.all_likes > 0 && (r = "(" + t.result.all_likes + ")"), this.$.likesCount && this.$.likesCount.setContent(r);
 }
 }, n = this.doElggAjax(e, t);
 },
@@ -630,12 +631,12 @@ agg_id: this.observation.get("id")
 }, t = function(e, t, n) {
 if (t.status == 0) {
 var r = "";
-t.result.length > 0 && (r = "(" + t.result.length + ")"), this.$.commentsCount.setContent(r);
+t.result.length > 0 && (r = "(" + t.result.length + ")"), this.$.commentsCount && this.$.commentsCount.setContent(r);
 }
 }, n = this.doElggAjax(e, t);
 },
 imageChanged: function(e) {
-this.$.image.setSrc(this.image);
+this.$.image && this.$.image.setSrc(this.image);
 },
 handleMeasurementsResponse: function(e, t, n) {
 var r = _(this.categories.media).contains("video") ? "video" : "image", i = _(t).findWhere({
@@ -1553,7 +1554,7 @@ components: [ {
 name: "sky",
 kind: "onyx.Checkbox",
 classes: "filter-checkbox",
-checked: !1,
+checked: !0,
 filter: "Sky",
 onchange: "handleCategoryFilterChange"
 }, {
@@ -1571,7 +1572,7 @@ components: [ {
 name: "preciptitation",
 kind: "onyx.Checkbox",
 classes: "filter-checkbox",
-checked: !1,
+checked: !0,
 filter: "Precipitation",
 onchange: "handleCategoryFilterChange"
 }, {
@@ -1589,7 +1590,7 @@ components: [ {
 name: "ocean",
 kind: "onyx.Checkbox",
 classes: "filter-checkbox",
-checked: !1,
+checked: !0,
 filter: "Ocean",
 onchange: "handleCategoryFilterChange"
 }, {
@@ -1607,7 +1608,7 @@ components: [ {
 name: "media",
 kind: "onyx.Checkbox",
 classes: "filter-checkbox",
-checked: !1,
+checked: !0,
 filter: "Media",
 onchange: "handleCategoryFilterChange"
 }, {
@@ -1691,7 +1692,7 @@ this.inherited(arguments), (enyo.dom.getWindowWidth() <= 760 || wb.constants.isG
 handleUserLayerReady: function(e, t) {
 _.each(t.hide, function(e) {
 this.$[e] && this.$[e].setShowing(!1);
-}, this), this.collection = new wb.api.ObservationCollection, this.selectedPhenomenonCategories = [], this.setDateRange({
+}, this), this.collection = new wb.api.ObservationCollection, this.selectedPhenomenonCategories = [ "Sky", "Precipitation", "Ocean", "Media" ], this.setDateRange({
 begin: moment().subtract("months", 1),
 end: moment()
 });
@@ -1716,7 +1717,7 @@ return e.toLowerCase();
 if (wb.constants.isGallery) {
 this.gallerySubset || (this.gallerySubset = this.collection.first(25));
 var n = _(this.gallerySubset).filter(function(e) {
-var n = _(e.get("categories")).keys(), r = _(n).intersection(t), i = r.length == t.length && this.$[e.get("observer").get("elggGroup").toLowerCase()].getValue();
+var n = _(e.get("categories")).keys(), r = _(n).intersection(t), i = n.length > 0 && r.length > 0 && this.$[e.get("observer").get("elggGroup").toLowerCase()].getValue();
 return i;
 }, this);
 this.doObservationCollectionResponse({
