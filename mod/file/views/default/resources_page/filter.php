@@ -11,16 +11,22 @@ if (elgg_is_logged_in()) {
 	$tabs = array(
 		'all' => array(
 			'text' => elgg_echo('all'),
-			'href' => (isset($vars['all_link'])) ? $vars['all_link'] : "$context/all",
+			'href' => "file/all",
 			'selected' => ($filter_context == 'all'),
 			'priority' => 200,
 		),
-		'mine' => array(
+		'plans' => array(
+			'text' => 'Lesson Plans',
+			'href' => "file?type=plans",
+			'selected' => ($filter_context == 'plans'),
+			'priority' => 300
+		)
+		/*'mine' => array(
 			'text' => elgg_echo('mine'),
 			'href' => (isset($vars['mine_link'])) ? $vars['mine_link'] : "$context/owner/$username",
 			'selected' => ($filter_context == 'mine'),
 			'priority' => 300,
-		)
+		)*/
 	);
 
 	foreach ($tabs as $name => $tab) {

@@ -16,6 +16,6 @@
 //
 
 if (! isset($vars['skip_filter']) || !$vars['skip_filter']) {
-	echo elgg_view('resources_page/filter');
+	echo elgg_view('resources_page/filter', $vars);
 }
 
