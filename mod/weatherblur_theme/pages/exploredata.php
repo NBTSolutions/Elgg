@@ -36,6 +36,9 @@
 	echo elgg_view_page($title, $body, $canvas_area);
 	$site_url = elgg_get_site_url();
 
+	$app_env = getenv("APP_ENV");
+	$app_env = $app_env ? $app_env : "unstable";
+
 	$content = '
 			<script>
 $(function() {
@@ -58,7 +61,7 @@ $(function() {
 var require = {
 	config: {
 		"wb/main": {
-			apiPath: "http://wb-aggregator.unstable.nbt.io/api"
+			apiPath: "http://wb-aggregator.' . $app_env . '.nbt.io/api"
 		}
 	},
 	paths: {
