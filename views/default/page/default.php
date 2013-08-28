@@ -35,6 +35,8 @@ header("Content-type: text/html; charset=UTF-8");
 
 $lang = get_current_language();
 
+$body_class = isset($vars['bodyclass']) ? $vars['bodyclass'] : '';
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $lang; ?>" lang="<?php echo $lang; ?>">
@@ -46,7 +48,7 @@ $lang = get_current_language();
 	<div class="elgg-page-messages">
 		<?php echo $messages; ?>
 	</div>
-	
+
 	<?php if (elgg_is_logged_in()){ ?>
 	<div class="elgg-page-topbar">
 		<div class="elgg-inner">
@@ -54,13 +56,13 @@ $lang = get_current_language();
 		</div>
 	</div>
 	<?php } ?>
-	
+
 	<div class="elgg-page-header">
 		<div class="elgg-inner">
 			<?php echo $header; ?>
 		</div>
 	</div>
-	<div class="elgg-page-body">
+	<div class="elgg-page-body <?php echo $body_class; ?>">
 		<div class="elgg-inner">
 			<?php echo $body; ?>
 		</div>

@@ -179,6 +179,11 @@ if (get_input('global', false)) {
 	create_metadata($file->getGUID(), 'file category', 'global', 'text');
 }
 
+// we need to tag lesson plans specifically...
+if (get_input('lesson_plan', false)) {
+	create_metadata($file->getGUID(), 'lesson plan', 'yes', 'text');
+}
+
 // file saved so clear sticky form
 elgg_clear_sticky_form('file');
 

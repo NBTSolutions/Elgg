@@ -31,7 +31,7 @@ switch ($subtype_get) {
 $options = array(
     'type' => 'object',
     'subtypes' => $subtype,
-    'limit' => 2,
+    'limit' => 10,
     'order_by' => 'e.last_action desc',
     'container_guid' => $guid,
     'full_view' => false,

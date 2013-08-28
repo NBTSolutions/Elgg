@@ -17,7 +17,8 @@
 
 	elgg_load_css('jq-smooth');
 	elgg_load_css('enyo-css');
-	elgg_load_css('graph-css');
+	elgg_load_css('graph');
+	elgg_load_css('gallery');
 	elgg_load_css('tables-css');
 	elgg_load_css('font-awesome');
 	elgg_load_css('tabletools-css');
@@ -26,6 +27,7 @@
 	elgg_load_js('d3');
 	elgg_load_js('moment');
 	elgg_load_js('graph');
+	elgg_load_js('gallery');
 	elgg_load_js('exploredata');
 
 	elgg_load_js('datatables');
@@ -37,6 +39,9 @@
 	echo elgg_view_page($title, $body, $canvas_area);
 	$site_url = elgg_get_site_url();
 
+	$app_env = getenv("APP_ENV");
+	$app_env = $app_env ? $app_env : "unstable";
+
 	$content = '
 			<script>
 $(function() {
@@ -47,7 +52,7 @@ $(function() {
 			for (i in ttInstances) {
 				if (ttInstances[i].fnResizeRequired()) ttInstances[i].fnResizeButtons();
 			}
-            $("[aria-controls=\'tab_mapping\']").click(function() { 
+            $("[aria-controls=\'tab_mapping\']").click(function() {
                 if($("#tab_mapping").children().length < 1) {
                     $("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/'.$app_env.'/index.html\" id=\"explore_page_map\"></iframe></div>");
                 }
@@ -59,7 +64,7 @@ $(function() {
 var require = {
 	config: {
 		"wb/main": {
-			apiPath: "http://wb-aggregator.'.$app_env.'.nbt.io/api"
+			apiPath: "http://wb-aggregator.' . $app_env . '.nbt.io/api"
 		}
 	},
 	paths: {
@@ -78,10 +83,15 @@ define("jquery", [], function() { return jQuery; });
 require(["wb/api/main"], function(wb) {
 	require(["require"], function() {
 		$.ajaxSetup({ cache: true });
-		app = new wb.Graph().renderInto(document.getElementById("graph_container"));
+		graph = new wb.Graph().renderInto(document.getElementById("graph_container"));
 	});
 });
 
+require(["wb/api/main"], function(wb) {
+	require(["require"], function() {
+		gallery = new wb.Gallery().renderInto(document.getElementById("gallery_container"));
+	});
+});
 		</script>
 		<script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
@@ -111,8 +121,12 @@ $(document).ready(function() {
 				 <li><a href="#tab_data">Data</a></li>
             </ul>
             <div id="tab_explore">
+<<<<<<< HEAD
                 <!--<div>'.list_all_observations().'</div>-->
                 <div><iframe id="explore_obs_gallery" src="http://s3.amazonaws.com/nbt-static/weatherblur/gallery/'.$app_env.'/index.html"></iframe></div>
+=======
+                <div id="gallery_container"></div>
+>>>>>>> 248549fd4db090461add54924bc677a8ed00f7ef
             </div>
             <div id="tab_graphing">
 							<div id="graph_container"></div>

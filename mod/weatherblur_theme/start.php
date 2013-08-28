@@ -55,7 +55,7 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		//ADMIN.CSS
 		elgg_register_css('admin', $css_dir.'admin.less');
 		elgg_load_css('admin');
-		
+
 		//SETTINGS.CSS
 		elgg_register_css('settings', $css_dir.'settings.less');
 		elgg_load_css('settings');
@@ -64,13 +64,14 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		elgg_register_css('typography', $css_dir.'typography.less');
 		elgg_load_css('typography');
 
-		//GRAPH.CSS
-		elgg_register_css('graph', $CONFIG->url.'mod/weatherblur_theme/css/graph.css');
-		elgg_load_css('graph');
+		//GRAPH.CSS built from graph enyo app
+		elgg_register_css('graph', $css_dir.'graph.css');
+
+		// obs gallery css built from gallery enyo app
+		elgg_register_css('gallery', $css_dir.'gallery.css');
 
 		elgg_register_css('enyo-css',
 			'//d3pch6bcnsao4c.cloudfront.net/lib/enyo/enyo-onyx-2.2.0.css');
-		elgg_register_css('graph-css', $css_dir.'graph.css');
 		elgg_register_css('tables-css', $css_dir.'wb-table.css');
 		elgg_register_css('tabletools-css', $site_url.'mod/weatherblur_theme/media/css/TableTools.css');
 
@@ -93,6 +94,7 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 			'//d3pch6bcnsao4c.cloudfront.net/lib/moment.min.js');
 
 		elgg_register_js('graph', $js_dir . 'graph.js', 'footer');
+		elgg_register_js('gallery', $js_dir . 'gallery.js', 'footer');
 		elgg_register_js('exploredata', $js_dir . 'exploredata.js');
 
 		elgg_register_event_handler('pagesetup', 'system', 'kill_friends_link');
@@ -133,17 +135,17 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		}
 		if ($segments[0] == 'exploredata')
 		{
-            elgg_unregister_js('jquery');
-            
-            elgg_register_js('jquery191', '//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js');
-            elgg_load_js('jquery191');
-            elgg_register_js('jquery-migrate', '//ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-1.1.1.min.js');
-            elgg_load_js('jquery-migrate');
+			elgg_unregister_js('jquery');
 
-            elgg_unregister_js('jquery-ui');
-            elgg_register_js('jquery191-ui', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/jquery-ui.min.js');
-            elgg_load_js('jquery191-ui');
-            elgg_register_css('jq-smooth', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/themes/smoothness/jquery-ui.css');
+			elgg_register_js('jquery191', '//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js');
+			elgg_load_js('jquery191');
+			elgg_register_js('jquery-migrate', '//ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-1.1.1.min.js');
+			elgg_load_js('jquery-migrate');
+
+			elgg_unregister_js('jquery-ui');
+			elgg_register_js('jquery191-ui', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/jquery-ui.min.js');
+			elgg_load_js('jquery191-ui');
+			elgg_register_css('jq-smooth', '//ajax.aspnetcdn.com/ajax/jquery.ui/1.9.1/themes/smoothness/jquery-ui.css');
 
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/exploredata.php';
 			return true;

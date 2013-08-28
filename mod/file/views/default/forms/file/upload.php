@@ -50,6 +50,10 @@ if ($categories) {
 
 ?>
 <div>
+	<label>Is This File Upload a Lesson Plan?</label>
+	<?php echo elgg_view('input/radio', array('name' => 'lesson_plan', 'options' => array('Yes'=>1, 'No'=>0), 'value' => 0)); ?>
+</div>
+<div>
 	<label><?php echo elgg_echo('access'); ?></label><br />
 	<?php echo elgg_view('input/access', array('name' => 'access_id', 'value' => $access_id)); ?>
 </div>
