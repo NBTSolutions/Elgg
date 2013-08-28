@@ -121,12 +121,7 @@ $(document).ready(function() {
 				 <li><a href="#tab_data">Data</a></li>
             </ul>
             <div id="tab_explore">
-<<<<<<< HEAD
-                <!--<div>'.list_all_observations().'</div>-->
-                <div><iframe id="explore_obs_gallery" src="http://s3.amazonaws.com/nbt-static/weatherblur/gallery/'.$app_env.'/index.html"></iframe></div>
-=======
                 <div id="gallery_container"></div>
->>>>>>> 248549fd4db090461add54924bc677a8ed00f7ef
             </div>
             <div id="tab_graphing">
 							<div id="graph_container"></div>
