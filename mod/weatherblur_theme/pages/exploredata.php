@@ -2,6 +2,9 @@
 	// Load Elgg engine
 	include_once dirname(dirname(dirname(dirname(__FILE__)))) . "/engine/start.php";
 
+    $app_env = getenv("APP_ENV");
+    $app_env = $app_env ? $app_env : "unstable";
+
     elgg_load_library('elgg:investigations');
 
 	$title = elgg_echo('Explore Data');
@@ -46,7 +49,7 @@ $(function() {
 			}
             $("[aria-controls=\'tab_mapping\']").click(function() { 
                 if($("#tab_mapping").children().length < 1) {
-                    $("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/index.html\" id=\"explore_page_map\"></iframe></div>");
+                    $("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/'.$app_env.'/index.html\" id=\"explore_page_map\"></iframe></div>");
                 }
             });
 		}
@@ -56,7 +59,7 @@ $(function() {
 var require = {
 	config: {
 		"wb/main": {
-			apiPath: "http://wb-aggregator.unstable.nbt.io/api"
+			apiPath: "http://wb-aggregator.'.$app_env.'.nbt.io/api"
 		}
 	},
 	paths: {
@@ -109,7 +112,7 @@ $(document).ready(function() {
             </ul>
             <div id="tab_explore">
                 <!--<div>'.list_all_observations().'</div>-->
-                <div><iframe id="explore_obs_gallery" src="http://s3.amazonaws.com/nbt-static/weatherblur/gallery/unstable/index.html"></iframe></div>
+                <div><iframe id="explore_obs_gallery" src="http://s3.amazonaws.com/nbt-static/weatherblur/gallery/'.$app_env.'/index.html"></iframe></div>
             </div>
             <div id="tab_graphing">
 							<div id="graph_container"></div>
