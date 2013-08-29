@@ -38,6 +38,7 @@
 
 	$app_env = getenv("APP_ENV");
 	$app_env = $app_env ? $app_env : "unstable";
+//	$app_env = 'prod';
 
 	$content = '
 			<script>
@@ -76,6 +77,7 @@ uid = ' . elgg_get_logged_in_user_guid() . '
 	</script>
 <script src="//d3pch6bcnsao4c.cloudfront.net/lib/require.js"></script>
 <script>
+$(document).ready(function() {
 define("jquery", [], function() { return jQuery; });
 require(["wb/api/main"], function(wb) {
 	require(["require"], function() {
@@ -88,6 +90,7 @@ require(["wb/api/main"], function(wb) {
 	require(["require"], function() {
 		gallery = new wb.Gallery().renderInto(document.getElementById("gallery_container"));
 	});
+});
 });
 		</script>
 		<script type="text/javascript" charset="utf-8">
@@ -125,6 +128,7 @@ $(document).ready(function() {
 							<div id="graph_people">
 								<h3>Whose Observations Do You Want To See?</h3>
 								<div id="use-mine" class="elgg-button elgg-button-action">Use My Own Observations</div>
+								<div id="use-any" class="elgg-button elgg-button-action">Use anyone\'s Observations</div>
 								' . elgg_view('explore/graph/personpicker', array('title' => "Or Select Another User's:")) . '
 								<div id="use-user" class="elgg-button elgg-button-action">Okay</div>
 							</div>
