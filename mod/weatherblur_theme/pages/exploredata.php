@@ -2,6 +2,9 @@
 	// Load Elgg engine
 	include_once dirname(dirname(dirname(dirname(__FILE__)))) . "/engine/start.php";
 
+    $app_env = getenv("APP_ENV");
+    $app_env = $app_env ? $app_env : "unstable";
+
     elgg_load_library('elgg:investigations');
 
 	$title = elgg_echo('Explore Data');
@@ -52,7 +55,7 @@ $(function() {
 			}
             $("[aria-controls=\'tab_mapping\']").click(function() {
                 if($("#tab_mapping").children().length < 1) {
-                    $("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/unstable/index.html\" id=\"explore_page_map\"></iframe></div>");
+                    $("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/'.$app_env.'/index.html\" id=\"explore_page_map\"></iframe></div>");
                 }
             });
 		}
