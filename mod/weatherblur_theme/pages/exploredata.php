@@ -76,7 +76,9 @@ require(["wb/api/main"], function(wb) {
 		</script>
 		<script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-
+				
+				var d = new Date()
+				var nz = d.getTimezoneOffset();
 				var oTable = $("#wb-data").dataTable( {
 				    "sDom": \'T<"clear">lfrtip\',
 					"bProcessing": true,
@@ -86,7 +88,7 @@ $(document).ready(function() {
 						"aButtons": [ "copy", "print","csv","pdf"],
 						"sSwfPath": "'.$site_url.'mod/weatherblur_theme/media/swf/copy_csv_xls_pdf.swf",
 					},
-					"sAjaxSource": "'.$site_url.'mod/weatherblur_theme/pages/datatable.php"
+					"sAjaxSource": "'.$site_url.'mod/weatherblur_theme/pages/datatable.php?tzo="+nz
 				} );
 
 			} );
@@ -122,11 +124,11 @@ $(document).ready(function() {
 					<thead>
 						<tr>
 							<th width="20%">User</th>
-							<th width="20%">Investigation</th>
-							<th width="20%">Measurement</th>
+							<th width="15%">Investigation</th>
+							<th width="15%">Measurement</th>
 							<th width="5%">Value</th>
 							<th width="5%">Unit</th>
-							<th width="25%">Date</th>
+							<th width="40%">Date</th>
 						</tr>
 					</thead>
 					<tbody>
