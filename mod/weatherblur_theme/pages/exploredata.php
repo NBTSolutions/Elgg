@@ -40,8 +40,13 @@
 	$site_url = elgg_get_site_url();
 
 	$app_env = getenv("APP_ENV");
+	$elggHost = 'localhost:9999/elgg';
+
 	$app_env = $app_env ? $app_env : "unstable";
-//	$app_env = 'prod';
+	//	$app_env = 'prod';
+	if ($app_env == 'prod') {
+		$elggHost = 'www.weatherblur.com';
+	}
 
 	$content = '
 			<script>
@@ -53,11 +58,21 @@ $(function() {
 			for (i in ttInstances) {
 				if (ttInstances[i].fnResizeRequired()) ttInstances[i].fnResizeButtons();
 			}
-            $("[aria-controls=\'tab_mapping\']").click(function() {
-                if($("#tab_mapping").children().length < 1) {
-                    $("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/'.$app_env.'/index.html\" id=\"explore_page_map\"></iframe></div>");
-                }
-            });
+
+			$("[aria-controls=\'tab_mapping\']").click(function() {
+				if($("#tab_mapping").children().length < 1) {
+					$("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/'.$app_env.'/index.html\" id=\"explore_page_map\"></iframe></div>");
+				}
+			});
+
+			$("[aria-controls=\'tab_graphing\']").click(function() {
+				if (!graph.showOnce) {
+					graph.$.graphView.drawEmptyGraph();
+				}
+				graph.showOnce = true;
+				// this would be a great place to use intro.js to explain how to use the graph.
+			});
+
 		}
 	});
 });
@@ -71,12 +86,12 @@ var require = {
 	paths: {
 		"wb/api/main": [
 			"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api-sans-jquery"
-			//"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api"
 		]
 	}
 };
 
-uid = ' . elgg_get_logged_in_user_guid() . '
+window.elggHost = "' . $elggHost . '";
+window.uid = ' . elgg_get_logged_in_user_guid() . ';
 	</script>
 <script src="//d3pch6bcnsao4c.cloudfront.net/lib/require.js"></script>
 <script>
