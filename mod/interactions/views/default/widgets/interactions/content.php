@@ -21,10 +21,10 @@ $relations = get_users_membership($user_guid); //get all the groups the user is 
 //count obs
 $obs = elgg_get_entities( array(
   'owner_guid' => $user_guid,
-  'type' => 'object',
-  'subtype' => 'observations',
+  'type_subtype_pair'	=>	array('object' => 'observation'),
   'limit' => false
 ));
+
 
 //count maps
 $maps = elgg_get_entities( array(
