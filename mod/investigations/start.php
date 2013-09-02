@@ -62,6 +62,19 @@ function investigations_init() {
     // expose get investigations
 	// The authentication token api
 	expose_function(
+		"wb.login_user",
+		"login_user",
+		array(
+			'username' => array ('type' => 'string'),
+			'password' => array ('type' => 'string')
+		),
+		'Get List of Investigations for a given user',
+		'GET',
+		false,
+		false
+	);
+
+	expose_function(
 		"wb.get_invs",
 		"get_invs",
 		array(
@@ -73,6 +86,18 @@ function investigations_init() {
 		false,
 		false
 	);
+
+    expose_function(
+        "wb.get_invs_by_token",
+        "get_invs_by_token",
+        array(
+            'token' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
 
     expose_function(
         "wb.create_obs",
@@ -1356,6 +1381,15 @@ function investigations_run_upgrades() {
 	}
 }
 
+function login_user($username, $password) {
+	if (true === elgg_authenticate($username, $password)) {
+		return create_user_token($username, PHP_INT_MAX);
+	}
+    else {
+	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+    }
+}
+
 function get_invs($username, $password) {
 	if (true === elgg_authenticate($username, $password)) {
 		$token = create_user_token($username, PHP_INT_MAX);
@@ -1385,6 +1419,41 @@ function get_invs($username, $password) {
     $investigations = array(
         'user_guid' => intval($user_guid),
         'username' => $username,
+        'token' => $token,
+        'investigations' => array()
+    );
+    foreach($results as $result) {
+        $investigations['investigations'][] = array(
+            'name' => $result->name,
+            'guid' => $result->guid
+        );
+    }
+    return $investigations;
+}
+
+function get_invs_by_token($token) {
+    
+    $user_guid = validate_user_token($token, null);
+    $user = get_user($user_guid);
+
+    login($user, false);
+
+    $dbprefix = elgg_get_config('dbprefix');
+
+	$results = elgg_get_entities_from_relationship(array(
+        'type_subtype_pair'	=>	array('group' => 'investigation'),
+		'relationship' => 'member',
+		'relationship_guid' => $user_guid,
+		'inverse_relationship' => false,
+		'full_view' => false,
+		'joins' => array("JOIN {$dbprefix}groups_entity ge ON e.guid = ge.guid"),
+		'order_by' => 'ge.name asc'
+	));
+
+    // build out our list of investigation names/ids
+    $investigations = array(
+        'user_guid' => intval($user_guid),
+        'username' => $user->name,
         'token' => $token,
         'investigations' => array()
     );
