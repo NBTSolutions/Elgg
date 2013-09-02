@@ -2,9 +2,12 @@
     // get all of our data from the aggregator
     $ch = curl_init();
 
+    $app_env = getenv("APP_ENV");
+    $app_env = $app_env ? $app_env : "unstable";
+
     curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_URL => "http://wb-aggregator.unstable.nbt.io/api/observation/" . $vars['observation_agg_id'] . "/measurements"
+        CURLOPT_URL => "http://wb-aggregator.".$app_env.".nbt.io/api/observation/" . $vars['observation_agg_id'] . "/measurements"
     ));
 
     $obs_measurement = curl_exec($ch);
@@ -15,7 +18,7 @@
 
     curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_URL => "http://wb-aggregator.unstable.nbt.io/api/observation/" . $vars['observation_agg_id']
+        CURLOPT_URL => "http://wb-aggregator.".$app_env.".nbt.io/api/observation/" . $vars['observation_agg_id']
     ));
 
     $obs_user_local_response = curl_exec($ch);
