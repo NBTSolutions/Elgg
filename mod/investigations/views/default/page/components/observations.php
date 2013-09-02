@@ -187,7 +187,7 @@ foreach($obs_categories as $category => $category_image) {
             <div class="elgg-body">
                 <div class="elgg-subtext">
                     <a href="<?php echo $site->url; ?>profile/<?php echo $user->username; ?>"><?php echo $user->name; ?></a>
-                    <acronym">on <?php echo date('F nS, Y g:i:s A', $comment->time_created + (3600 * (1 - date('I', $comment->time_created)))); ?></acronym>
+                    <acronym">on <?php echo date('F jS, Y g:i:s A', $comment->time_created + (3600 * (1 - date('I', $comment->time_created)))); ?></acronym>
                 </div>		
                 <div class="clearfix"></div>
                 <div class="elgg-content">
