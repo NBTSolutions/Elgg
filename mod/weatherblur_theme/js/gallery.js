@@ -390,8 +390,8 @@ constants: {}
 wb.map.assets = {}, wb.map.env = {
 aggregatorService: location.hostname.indexOf("heroku") !== -1 ? "" : "//localhost:7777/wb-aggregator",
 momentDateFormat: "MM/DD/YYYY"
-}, wb.constants = {
-elggHost: "www.weatherblur.com",
+}, wb.constants = wb.constants || {
+elggHost: window.elggHost || "www.weatherblur.com",
 isGallery: !0
 }, wb.gallery = {
 userImages: {}
@@ -584,23 +584,25 @@ name: "likesCount"
 rendered: function() {
 this.inherited(arguments), this.categories = this.observation.get("categories");
 var e = this.observation.get("observer"), t = null;
-wb.gallery.userImages[e.get("elggId")] && (t = wb.gallery.userImages[e.get("elggId")]), this.$.username.setContent(e.get("label")), this.$.date.setContent(moment(this.observation.get("timestamp")).format("MMM DD, YYYY"));
-if (t) this.$.userIcon.setSrc(t); else var n = {
+wb.gallery.userImages[e.get("elggId")] && (t = wb.gallery.userImages[e.get("elggId")], this.$.userIcon.setSrc(t)), this.$.username.setContent(e.get("label")), this.$.date.setContent(moment(this.observation.get("timestamp")).format("MMM DD, YYYY"));
+if (!t) var n = {
 method: "wb.get_user_info",
 user_guid: e.get("elggId"),
 icon_size: "medium"
-}, r = function(t, n, r) {
+}, r = (new enyo.Ajax({
+url: "//" + wb.constants.elggHost + "/services/api/rest/json"
+})).response(enyo.bind(this, function(t, n, r) {
 n.status === 0 && (wb.gallery.userImages[e.get("elggId")] = n.result.image, this.$.userIcon.setSrc(n.result.image));
-}, i = this.doElggAjax(n, r);
-if (this.categories.media) this.observation.set({
+})).go(n);
+if (this.categories.media) this.observation.get("measurements").length > 0 ? this.handleMeasurementsResponse(this.observation.get("measurements")) : (this.observation.set({
 measurements: this.observation.id
 }), this.observation.fetchRelated("measurements", {
 success: enyo.bind(this, "handleMeasurementsResponse")
-}); else {
-var s = _(_(this.categories).keys()).max(function(e) {
+})); else {
+var i = _(_(this.categories).keys()).max(function(e) {
 return this.categories[e].length;
 }, this);
-this.$.thumbnail.setSrc("../mod/weatherblur_theme/graphics/gallery/" + s + "-150x150.png"), this.$.thumbnail.addClass("category-icon");
+this.$.thumbnail.setSrc("../mod/weatherblur_theme/graphics/gallery/" + i + "-150x150.png"), this.$.thumbnail.addClass("category-icon");
 }
 this.likesLoaded || (this.doILikeThisObservation(), this.doLikesCount(), this.doCommentsCount(), this.likesLoaded = !0);
 },
@@ -639,10 +641,10 @@ imageChanged: function(e) {
 this.$.image && this.$.image.setSrc(this.image);
 },
 handleMeasurementsResponse: function(e, t, n) {
-var r = _(this.categories.media).contains("video") ? "video" : "image", i = _(t).findWhere({
+var r = _(this.categories.media).contains("video") ? "video" : "image", i = e.findWhere({
 value: r
 });
-r == "image" ? this.$.thumbnail.setSrc(i.meta.url) : r == "video" && this.$.thumbnail.setSrc(i.meta.thumbnailUrl);
+r == "image" ? this.$.thumbnail.setSrc(i.get("meta").url) : r == "video" && this.$.thumbnail.setSrc(i.get("meta").thumbnailUrl);
 },
 handleObservationTap: function(e, t) {
 window.location = "//" + wb.constants.elggHost + "/observation/" + this.observation.id;
@@ -1715,7 +1717,9 @@ var t = _.map(this.selectedPhenomenonCategories, function(e) {
 return e.toLowerCase();
 });
 if (wb.constants.isGallery) {
-this.gallerySubset || (this.gallerySubset = this.collection.first(25));
+this.gallerySubset || (this.gallerySubset = _(this.collection.sortBy(function(e) {
+return moment(e).utc().valueOf();
+})).first(30));
 var n = _(this.gallerySubset).filter(function(e) {
 var n = _(e.get("categories")).keys(), r = _(n).intersection(t), i = n.length > 0 && r.length > 0 && this.$[e.get("observer").get("elggGroup").toLowerCase()].getValue();
 return i;

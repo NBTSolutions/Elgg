@@ -40,7 +40,13 @@
 	$site_url = elgg_get_site_url();
 
 	$app_env = getenv("APP_ENV");
+	$elggHost = 'localhost:9999/elgg';
+
 	$app_env = $app_env ? $app_env : "unstable";
+	//	$app_env = 'prod';
+	if ($app_env == 'prod') {
+		$elggHost = 'www.weatherblur.com';
+	}
 
 	$content = '
 			<script>
@@ -52,11 +58,21 @@ $(function() {
 			for (i in ttInstances) {
 				if (ttInstances[i].fnResizeRequired()) ttInstances[i].fnResizeButtons();
 			}
-            $("[aria-controls=\'tab_mapping\']").click(function() {
-                if($("#tab_mapping").children().length < 1) {
-                    $("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/'.$app_env.'/index.html\" id=\"explore_page_map\"></iframe></div>");
-                }
-            });
+
+			$("[aria-controls=\'tab_mapping\']").click(function() {
+				if($("#tab_mapping").children().length < 1) {
+					$("#tab_mapping").append("<div><iframe src=\"http://nbt-static.s3-website-us-east-1.amazonaws.com/weatherblur/map/'.$app_env.'/index.html\" id=\"explore_page_map\"></iframe></div>");
+				}
+			});
+
+			$("[aria-controls=\'tab_graphing\']").click(function() {
+				if (!graph.showOnce) {
+					graph.$.graphView.drawEmptyGraph();
+				}
+				graph.showOnce = true;
+				// this would be a great place to use intro.js to explain how to use the graph.
+			});
+
 		}
 	});
 });
@@ -70,15 +86,16 @@ var require = {
 	paths: {
 		"wb/api/main": [
 			"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api-sans-jquery"
-			//"//s3.amazonaws.com/nbt-static/weatherblur/lib/wb.api"
 		]
 	}
 };
 
-uid = ' . elgg_get_logged_in_user_guid() . '
+window.elggHost = "' . $elggHost . '";
+window.uid = ' . elgg_get_logged_in_user_guid() . ';
 	</script>
 <script src="//d3pch6bcnsao4c.cloudfront.net/lib/require.js"></script>
 <script>
+$(document).ready(function() {
 define("jquery", [], function() { return jQuery; });
 require(["wb/api/main"], function(wb) {
 	require(["require"], function() {
@@ -92,10 +109,13 @@ require(["wb/api/main"], function(wb) {
 		gallery = new wb.Gallery().renderInto(document.getElementById("gallery_container"));
 	});
 });
+});
 		</script>
 		<script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-
+				
+				var d = new Date()
+				var nz = d.getTimezoneOffset();
 				var oTable = $("#wb-data").dataTable( {
 				    "sDom": \'T<"clear">lfrtip\',
 					"bProcessing": true,
@@ -105,7 +125,7 @@ $(document).ready(function() {
 						"aButtons": [ "copy", "print","csv","pdf"],
 						"sSwfPath": "'.$site_url.'mod/weatherblur_theme/media/swf/copy_csv_xls_pdf.swf",
 					},
-					"sAjaxSource": "'.$site_url.'mod/weatherblur_theme/pages/datatable.php"
+					"sAjaxSource": "'.$site_url.'mod/weatherblur_theme/pages/datatable.php?tzo="+nz
 				} );
 
 			} );
@@ -128,6 +148,7 @@ $(document).ready(function() {
 							<div id="graph_people">
 								<h3>Whose Observations Do You Want To See?</h3>
 								<div id="use-mine" class="elgg-button elgg-button-action">Use My Own Observations</div>
+								<div id="use-any" class="elgg-button elgg-button-action">Use anyone\'s Observations</div>
 								' . elgg_view('explore/graph/personpicker', array('title' => "Or Select Another User's:")) . '
 								<div id="use-user" class="elgg-button elgg-button-action">Okay</div>
 							</div>
@@ -139,11 +160,11 @@ $(document).ready(function() {
 					<thead>
 						<tr>
 							<th width="20%">User</th>
-							<th width="20%">Investigation</th>
-							<th width="20%">Measurement</th>
+							<th width="15%">Investigation</th>
+							<th width="15%">Measurement</th>
 							<th width="5%">Value</th>
 							<th width="5%">Unit</th>
-							<th width="25%">Date</th>
+							<th width="40%">Date</th>
 						</tr>
 					</thead>
 					<tbody>

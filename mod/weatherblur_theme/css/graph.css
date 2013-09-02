@@ -1654,7 +1654,6 @@ div.column:first-child {
 div.nbt-checkbox div,
 div.nbt-checkbox i {
   display: inline-block;
-  margin-bottom: 5px;
 }
 div.nbt-checkbox i {
   width: 20px;
@@ -1670,6 +1669,9 @@ div.data_popup .value div {
 }
 div.data_popup > div:last-child {
   font-size: 12px;
+}
+.month {
+  width: 90px;
 }
 /* elgg nesting */
 #graph_people {

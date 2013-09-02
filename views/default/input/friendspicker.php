@@ -217,7 +217,7 @@ if (!isset($vars['replacement'])) {
 				?>
 					</div>
 				</td>
-				<td style="width: 200px; padding: 5px;">
+				<td style="width: 200px; padding: 5px;" guid="<?php echo $options[$label]; ?>">
 					<?php echo $friend->name; ?>
 				</td>
 				<?php
