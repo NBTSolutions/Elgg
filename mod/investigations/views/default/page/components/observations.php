@@ -13,8 +13,8 @@
     $obs_measurement = curl_exec($ch);
 
     //convert to utf8
-    $utf8_data = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($obs_measurement));
-    $observation = json_decode($utf8_data);
+    //$utf8_data = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode(stripslashes($obs_measurement)));
+    $observation = json_decode(stripslashes($obs_measurement));
 
     curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
@@ -84,14 +84,18 @@
     //$video = false;
     //$picture = false;
 
-
+    $likes = get_likes_by_agg_id($vars['observation_agg_id']);
+    $my_obs_like = get_my_obs_like_by_agg_id($vars['observation_agg_id']);
 ?>
 <!-- start html -->
 <h1 id="obs_measurements_heading">Observation Details</h1>
 <p>
     <a href="<?php echo $site->url.'profile/'.$obs_user->username; ?>">
-        <img src='<?php echo $obs_user->getIcon("tiny") ?>'><?php echo $obs_user->name; ?></a>
-        <span style="font-weight: bold">on <?php echo date('F jS, Y g:i:s A', strtotime($obs_user_local->properties->timestamp) + (3600 * (1 - date('I', $comment->time_created)))); ?></span>
+        <img src='<?php echo $obs_user->getIcon("tiny") ?>'><?php echo $obs_user->name; ?>
+    </a>
+    <span style="font-weight: bold">on <?php echo date('F jS, Y g:i:s A', strtotime($obs_user_local->properties->timestamp) + (3600 * (1 - date('I', $comment->time_created)))); ?></span>
+    <br>
+    <span id="all_likes"><?php echo $likes["all_likes"]; ?></span> likes <a id="like_obs" href="#">Like this</a>
 </p>
 
 <div id="observation_left_col">
@@ -187,7 +191,7 @@ foreach($obs_categories as $category => $category_image) {
             <div class="elgg-body">
                 <div class="elgg-subtext">
                     <a href="<?php echo $site->url; ?>profile/<?php echo $user->username; ?>"><?php echo $user->name; ?></a>
-                    <acronym">on <?php echo date('F jS, Y g:i:s A', $comment->time_created + (3600 * (1 - date('I', $comment->time_created)))); ?></acronym>
+                    <acronym>on <?php echo date('F jS, Y g:i:s A', $comment->time_created + (3600 * (1 - date('I', $comment->time_created)))); ?></acronym>
                 </div>		
                 <div class="clearfix"></div>
                 <div class="elgg-content">
@@ -213,3 +217,24 @@ foreach($obs_categories as $category => $category_image) {
 </form>
 </div>
 <?php } ?>
+<script>
+    var all_likes = <?php echo $likes['all_likes']; ?>,
+        my_likes = <?php echo $my_obs_like; ?>;
+
+    // take into account whether or not I have liked this
+    all_likes = all_likes - my_likes;
+
+    $(function() {
+        $('#like_obs').click(function() {
+            $.get('<?php echo elgg_get_site_url(); ?>services/api/rest/json/', 
+                { 
+                    method : 'wb.toggle_like_obs_by_agg_id',
+                    agg_id : "<?php echo $vars['observation_agg_id'] ?>"
+                })
+                .done(function(data) {
+                    $('#all_likes').html(all_likes + data.result);
+                    $('#like_obs').html(data.result ? 'Unlike this' : 'like this');
+                })
+        });
+    });
+</script>
