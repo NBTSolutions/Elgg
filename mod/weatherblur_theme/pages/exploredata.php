@@ -126,7 +126,7 @@ $(document).ready(function() {
 							<th width="20%">User</th>
 							<th width="15%">Investigation</th>
 							<th width="15%">Measurement</th>
-							<th width="5%">Value</th>
+							<th width="5%">Data</th>
 							<th width="5%">Unit</th>
 							<th width="40%">Date</th>
 						</tr>
