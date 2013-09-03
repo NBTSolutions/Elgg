@@ -99,7 +99,9 @@
     <br>
     <span id="all_likes"><?php echo $likes["all_likes"]; ?> like<?php echo $likes[all_likes] != 1 ? 's' : ''; ?></span>
     <?php if(elgg_is_logged_in()) { ?>
-        <span id="like_obs" href="#">Like this</span>
+        <span id="like_obs">
+            <?php echo $my_obs_like == 1 ? "Unlike this" : "Like this"; ?>
+        </span>
     <?php } ?>
 </p>
 
