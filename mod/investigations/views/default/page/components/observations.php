@@ -95,7 +95,7 @@
     </a>
     <span style="font-weight: bold">on <?php echo date('F jS, Y g:i:s A', strtotime($obs_user_local->properties->timestamp) + (3600 * (1 - date('I', $comment->time_created)))); ?></span>
     <br>
-    <span id="all_likes"><?php echo $likes["all_likes"]; ?></span> likes <a id="like_obs" href="#">Like this</a>
+    <span id="all_likes"><?php echo $likes["all_likes"]; ?> likes</span> <a id="like_obs" href="#">Like this</a>
 </p>
 
 <div id="observation_left_col">
@@ -232,7 +232,10 @@ foreach($obs_categories as $category => $category_image) {
                     agg_id : "<?php echo $vars['observation_agg_id'] ?>"
                 })
                 .done(function(data) {
-                    $('#all_likes').html(all_likes + data.result);
+                    var total_likes = all_likes + data.result;
+                    var like_label = total_likes != 1 ? " likes" : " like";
+
+                    $('#all_likes').html(total_likes + like_label);
                     $('#like_obs').html(data.result ? 'Unlike this' : 'like this');
                 })
         });
