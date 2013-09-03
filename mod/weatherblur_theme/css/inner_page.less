@@ -161,10 +161,10 @@ div.people-page {
 /*-----------------------------------------------------------------------
 	RESOURCES PAGE
 -----------------------------------------------------------------------*/
-.resources-page { 
+.resources-page {
 	/***** SIDEBAR *****/
 	> .elgg-sidebar {
-		
+
 		> ul.elgg-menu {
 			> li.elgg-menu-item-bookmark {
 				> a {
@@ -173,7 +173,7 @@ div.people-page {
 				}/*a*/
 			}/*li.elgg-menu-item-bookmark*/
 		}/*elgg-menu*/
-		
+
 		> ul.elgg-menu-filter {
 			border: 0;
 			padding: 0;
@@ -185,9 +185,9 @@ div.people-page {
 				margin: 0 0 10px 0;
 				border: none !important;
 				background: none !important;
-				
+
 				> a {
-					.elgg-button; 
+					.elgg-button;
 					border-radius: 3px;
 					-moz-border-radius: 3px;
 					-webkit-border-radius: 3px;
@@ -200,7 +200,7 @@ div.people-page {
 					}/*&:active*/
 				} /*a*/
 			}/*li*/
-			
+
 			> li.elgg-state-selected  {
 				> a {
 					background: #0090b6;
@@ -208,17 +208,17 @@ div.people-page {
 					border: 0;
 				}/*a*/
 			}/*li.elgg-state-selected*/
-			
+
 		} /*ul.elgg-menu-filter*/
-		
+
 	}/*elgg-sidebar*/
-	
+
 	/***** RIGHT CONTENT*****/
 	> .elgg-main {
-		
+
 		> .resources-head {
 			margin-top: 20px;
-			
+
 			/***** Upload Button *****/
 			> ul.elgg-menu {
 				> li.elgg-menu-item-add {
@@ -230,32 +230,32 @@ div.people-page {
 					}/*a:active*/
 				}/*li.elgg-menu-item-add*/
 			}/*ul.elgg-menu*/
-						
+
 		}/*resources-head*/
-		
-		/***** LIST VIEW *****/		
+
+		/***** LIST VIEW *****/
 		> ul.elgg-list {
 			margin-top: 30px;
-			
+
 			> .elgg-item {
 				> .elgg-image-block {
 					> .elgg-body {
-					
+
 						> h3 {
 							margin-bottom: 10px;
 						}/*h3*/
-						
+
 						> .elgg-subtext {
 							margin-bottom: 10px;
 						}/*elgg-subtext*/
-						
+
 					}/*elgg-body*/
 				}/*elgg-image-block*/
 			}/*elgg-item*/
-			
+
 		}/*ul.elgg-list*/
-		
-		/***** GALLERY VIEW *****/	
+
+		/***** GALLERY VIEW *****/
 		> ul.elgg-gallery {
 			margin-top: 40px;
 			> li {
@@ -269,7 +269,7 @@ div.people-page {
 					&:hover {
 						border: 2px solid #0090b6;
 					}/*&:hover*/
-					
+
 					> h3 {
 						margin: 10px 0 10px 0;
 						font-weight: 600;
@@ -288,7 +288,7 @@ div.people-page {
 					}/*p.subtitle*/
 				}/*file-gallery-item*/
 			}/*li*/
-						
+
 		}/*ul.elgg-gallery*/
 
 	}/*elgg-main*/
@@ -303,7 +303,7 @@ h2.obs_heading {
 }
 
 ul.inv-listing {
-	
+
 	> li.obs {
 		display: inline-block;
 		width: 160px;
@@ -317,16 +317,16 @@ ul.inv-listing {
 		&:hover {
 			border: 2px solid #0090b6;
 		}/*&:hover*/
-		
+
 		> .obs_container {
 			> a {
 				&:hover {
 					text-decoration: none;
 				}
-				
+
 				> img.obs_image {
 				}/*img.obs_image*/
-				
+
 				> p.obs_owner {
 					color: #0090b6;
 					margin: 0;
@@ -334,17 +334,17 @@ ul.inv-listing {
 						text-decoration: underline;
 					}
 				}/*p.obs_owner*/
-				
+
 				> p.obs_date {
 					font-size: .8em;
 					color: #777;
 				}/*p.obs_date*/
-			
+
 			}/*a*/
 		}/*obs_container*/
-				
+
 	}/*li.obs*/
-	
+
 }/*ul.inv-listing*/
 
 /***** Pagination *****/
@@ -352,12 +352,14 @@ ul.inv-listing {
 
 	> ul.elgg-pagination {
 		float: right;
+		clear: both;
+
 		margin: 40px 40px 0 0;
 		> li {
 			display: inline-block;
 			margin: 10px 0 20px 10px;
 		} /*li*/
-	
+
 		> li a {
 			.elgg-button-action;
 			padding: 7px 10px;
@@ -368,21 +370,21 @@ ul.inv-listing {
 				.elgg-button-action-active;
 			}/*active*/
 		} /*li a*/
-	
+
 		> li.elgg-state-selected span {
 			background: #0090b6;
 			border: 0;
 			color: #fff;
 			padding: 7px 10px;
 		} /*li.elgg-selected span*/
-		
+
 		> li.elgg-state-disabled span {
 			background: #e6e4d6;
 			border: 0;
 			color: #666;
 			padding: 7px 10px;
 		} /*li.elgg-disabled span*/
-	
+
 	} /*ul.elgg-pagination*/
 
 }/*elgg-main*/

@@ -8,16 +8,22 @@ $content = elgg_view_title($title);
 
 //elgg site
 $site = elgg_get_site_entity();
-
 $selected_type = get_input('type', 'all');
+$offset = get_input('offset', 0);
 $people = array();
 // TODO: will need to add pagination someday.
 if ($selected_type == 'all') {
+	$count = elgg_get_entities(array(
+		'types' => 'user',
+		'count' => true
+	));
+
 	$people = elgg_get_entities(array(
 		'types' => 'user',
-		'limit' => false,
 		'joins' => array('left join elgg_users_entity u on e.guid = u.guid'), // good grief this is ugly!
-		'order_by' => 'u.username asc' // all to sort by username!
+		'order_by' => 'u.username asc', // all to sort by username!
+		'limit' => 12,
+		'offset' => $offset,
 	));
 } else {
 	$types = elgg_get_entities(array(
@@ -27,7 +33,14 @@ if ($selected_type == 'all') {
 	));
 	foreach ($types as $type) {
 		if ($type->getTitle() == $selected_type) {
+			$count = elgg_get_entities_from_metadata(array(
+				'count' => true,
+				'metadata_value' => $type->guid
+			));
+
 			$people = elgg_get_entities_from_metadata(array(
+				'limit' => 12,
+				'offset' => $offset,
 				'metadata_value' => $type->guid
 			));
 		}
@@ -45,8 +58,13 @@ foreach($people AS $person) {
 }
 
 $content .= '</ul>';
+$content .= elgg_view('navigation/pagination', array(
+	'offset' => $offset,
+	'limit' => 12,
+	'count' => $count
+));
 $content .= <<<JS
-<script>
+<script type="text/javascript">
 $(".people-page select").change(function(e) {
 	var sel = $(this);
 	if (sel.val()) {
