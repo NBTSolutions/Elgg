@@ -85,7 +85,9 @@
     //$picture = false;
 
     $likes = get_likes_by_agg_id($vars['observation_agg_id']);
-    $my_obs_like = get_my_obs_like_by_agg_id($vars['observation_agg_id']);
+    if(elgg_is_logged_in()) {
+        $my_obs_like = get_my_obs_like_by_agg_id($vars['observation_agg_id']);
+    }
 ?>
 <!-- start html -->
 <h1 id="obs_measurements_heading">Observation Details</h1>
@@ -95,7 +97,10 @@
     </a>
     <span style="font-weight: bold">on <?php echo date('F jS, Y g:i:s A', strtotime($obs_user_local->properties->timestamp) + (3600 * (1 - date('I', $comment->time_created)))); ?></span>
     <br>
-    <span id="all_likes"><?php echo $likes["all_likes"]; ?> likes</span> <a id="like_obs" href="#">Like this</a>
+    <span id="all_likes"><?php echo $likes["all_likes"]; ?> like<?php echo $likes[all_likes] != 1 ? 's' : ''; ?></span>
+    <?php if(elgg_is_logged_in()) { ?>
+        <span id="like_obs" href="#">Like this</span>
+    <?php } ?>
 </p>
 
 <div id="observation_left_col">
@@ -227,7 +232,7 @@ foreach($obs_categories as $category => $category_image) {
     $(function() {
         $('#like_obs').click(function() {
             $.get('<?php echo elgg_get_site_url(); ?>services/api/rest/json/', 
-                { 
+                {
                     method : 'wb.toggle_like_obs_by_agg_id',
                     agg_id : "<?php echo $vars['observation_agg_id'] ?>"
                 })
@@ -237,7 +242,7 @@ foreach($obs_categories as $category => $category_image) {
 
                     $('#all_likes').html(total_likes + like_label);
                     $('#like_obs').html(data.result ? 'Unlike this' : 'like this');
-                })
+                });
         });
     });
 </script>
