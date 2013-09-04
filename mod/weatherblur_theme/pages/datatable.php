@@ -8,7 +8,7 @@ if(isset($_GET['tzo'])) {
 //set hosts
 $srv = $_SERVER['SERVER_NAME'];
 
-$url_agg = "http://wb-aggregator.production.nbt.io";
+$url_agg = "http://wb-aggregator.prod.nbt.io";
 $url_elgg = "http://".$srv;
 
 
@@ -21,7 +21,7 @@ if ($srv == 'localhost')
 if ($srv == 'demo.nbtsolutions.com')
 {
 	$url_agg = "http://wb-aggregator.unstable.nbt.io";
-        $url_elgg = "http://demo.nbtsolutions.com/elgg"; 
+	$url_elgg = "http://demo.nbtsolutions.com/elgg"; 
 }
 
 //get scalar values

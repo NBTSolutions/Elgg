@@ -20,6 +20,6 @@ $dropdown = elgg_view('input/select', $params);
 
 ?>
 <div>
-	<?php echo elgg_echo('investigations:widget:num_display'); ?>:
+	<?php echo 'Investigations to Display'; ?>:
 	<?php echo $dropdown; ?>
 </div>
