@@ -1130,6 +1130,66 @@ this.$.image.setSrc(this.image.get("meta").url), this.$.caption.setContent(this.
 }
 });
 
+// Pagination.js
+
+enyo.kind({
+name: "nbt.Pagination",
+published: {
+listClass: "pagination",
+classDisabled: "disabled",
+classSelected: "selected"
+},
+events: {
+onOffsetChanged: ""
+},
+components: [],
+update: function(e, t) {
+this.destroyComponents();
+var n = {
+offset: 0,
+total: 0,
+limit: 10
+};
+enyo.mixin(n, t);
+if (n.total <= n.limit) return;
+var r = Math.ceil(n.total / n.limit), i = Math.ceil(n.offset / n.limit) + 1, s = this.createComponent({
+name: "pagination",
+tag: "ul",
+classes: this.listClass
+});
+this.render();
+var o = this._buildItem("prev", "\u00ab Previous", Math.max(0, n.offset - n.limit), n);
+i == 1 ? o.classes = this.classDisabled : o.ontap = "handleOffsetTap", s.createComponent(o, {
+owner: this
+});
+for (var u = 1; u <= r; u++) {
+var a = this._buildItem("page" + u, u, n.limit * (u - 1), n);
+u == i ? a.classes = this.classSelected : a.ontap = "handleOffsetTap", s.createComponent(a, {
+owner: this
+});
+}
+var f = this._buildItem("next", "Next \u00bb", n.offset + n.limit, n);
+i == r ? f.classes = this.classDisabled : f.ontap = "handleOffsetTap", s.createComponent(f, {
+owner: this
+}), this.render();
+},
+_buildItem: function(e, t, n, r) {
+var i = enyo.clone(r);
+return i.name = e, i.tag = "li", i.offset = n, i.components = [ {
+content: t
+} ], i;
+},
+handleOffsetTap: function(e, t) {
+this.doOffsetChanged({
+newOffset: e.offset
+}), this.update(null, {
+offset: e.offset,
+total: e.total,
+limit: e.limit
+});
+}
+});
+
 // MapGrowl.js
 
 enyo.kind({
@@ -1793,33 +1853,55 @@ visible: e.getValue()
 enyo.kind({
 name: "wb.GalleryView",
 classes: "gallery",
+published: {
+limit: 48,
+offset: 0
+},
 events: {
-onUserLayerReady: ""
+onUserLayerReady: "",
+onUpdatePagination: ""
 },
 handlers: {
 onObservationCollectionResponse: "handleObservationCollectionResponse",
-onUserLayerVisibilityChange: "handleUserLayerVisibilityChange"
+onUserLayerVisibilityChange: "handleUserLayerVisibilityChange",
+onOffsetChanged: "handleOffsetChanged"
 },
 cache: {},
 create: function() {
-this.inherited(arguments), this.doUserLayerReady({
+this.inherited(arguments);
+var e = nbt.generic.Util.getParameterMap(window.location.href);
+_.isNumber(e.offset) && (this.offset = e.offset), this.doUserLayerReady({
 hide: [ "datasources" ]
 });
 },
-handleObservationCollectionResponse: function(e, t) {
-this.collection = t.collection, _.each(_(this.cache).keys(), function(e) {
-if (!this.cache[e]) return;
-var t = _(this.collection).findWhere({
-id: e
+handleOffsetChanged: function(e, t) {
+t.newOffset != "undefined" && (this.offset = t.newOffset, this.updateGalleryPanels());
+},
+updateGalleryPanels: function() {
+if (this.collection.length == 0) return;
+var e = [];
+_.each(this.collection, function(t, n) {
+n >= this.offset && e.length < this.limit && e.push(t);
+}, this), _.each(_(this.cache).keys(), function(t) {
+if (!this.cache[t]) return;
+var n = _(e).findWhere({
+id: t
 });
-t || (this.removeGalleryPanel(this.cache[e]), this.cache[e] = undefined);
-}, this), _.each(this.collection, function(e) {
+n || (this.removeGalleryPanel(this.cache[t]), this.cache[t] = undefined);
+}, this), _.each(e, function(e) {
 if (this.cache[e.id]) return;
 this.cache[e.id] = this.createComponent({
 kind: "wb.GalleryPanel",
 observation: e
 }), this.cache[e.id].render();
 }, this);
+},
+handleObservationCollectionResponse: function(e, t) {
+this.collection = t.collection, this.offset = 0, this.updateGalleryPanels(), this.doUpdatePagination({
+offset: this.offset,
+total: this.collection.length,
+limit: this.limit
+});
 },
 handleUserLayerVisibilityChange: function(e, t) {
 t.visible ? _.each(this.collection, function(e) {
@@ -1875,12 +1957,16 @@ name: "wb.Gallery",
 handlers: {
 onUserLayerVisibilityChange: "handleUserLayerVisibilityChange",
 onObservationCollectionResponse: "handleObservationCollectionResponse",
-onUserLayerReady: "handleUserLayerReady"
+onUserLayerReady: "handleUserLayerReady",
+onUpdatePagination: "handleUpdatePagination",
+onOffsetChanged: "handleOffsetChanged"
 },
 components: [ {
 kind: "wb.ControlView"
 }, {
 kind: "wb.GalleryView"
+}, {
+kind: "nbt.Pagination"
 } ],
 handleObservationCollectionResponse: function(e, t) {
 this.waterfallDown("onObservationCollectionResponse", t);
@@ -1890,5 +1976,11 @@ this.waterfallDown("onUserLayerReady", t);
 },
 handleUserLayerVisibilityChange: function(e, t) {
 this.waterfallDown("onUserLayerVisibilityChange", t);
+},
+handleUpdatePagination: function(e, t) {
+this.$.pagination.update(e, t);
+},
+handleOffsetChanged: function(e, t) {
+this.waterfallDown("onOffsetChanged", t);
 }
 });
