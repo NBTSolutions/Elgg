@@ -55,7 +55,6 @@
   margin: 0 auto;
   position: relative;
   overflow-x: hidden;
-  border: 1px solid #666;
 }
 #gallery_container div.filter button {
   font-family: FontAwesome;
@@ -1714,7 +1713,6 @@
 }
 #gallery {
   min-height: 600px;
-  background: transparent url(http://www.weatherblur.com/mod/weatherblur_theme/css/../graphics/green_bkgd.png) 0 0 repeat;
 }
 .gallery {
   background: transparent url(http://www.weatherblur.com/mod/weatherblur_theme/css/../graphics/green_bkgd.png) 0 0 repeat;
