@@ -21,6 +21,6 @@ $peeps = elgg_get_entities(array(
 <div>
 	<label><?php echo $title; ?></label>
 	<?php echo elgg_view('input/friendspicker', array('entities' => $peeps,
-		'name' => 'user_guid', 'highlight' => 'all', 'radio_buttons' => true));
+		'name' => 'user_guid', 'highlight' => 'all'));
 	?>
 </div>

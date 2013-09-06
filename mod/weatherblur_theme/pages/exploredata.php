@@ -40,10 +40,11 @@
 	$site_url = elgg_get_site_url();
 
 	$app_env = getenv("APP_ENV");
-	$elggHost = 'localhost:9999/elgg';
+	$elggHost = 'demo.nbtsolutions.com/elgg';
+	//$elggHost = 'localhost:9999/elgg';
 
 	$app_env = $app_env ? $app_env : "unstable";
-	//	$app_env = 'prod';
+	//$app_env = 'prod';
 	if ($app_env == 'prod') {
 		$elggHost = 'www.weatherblur.com';
 	}
@@ -113,7 +114,7 @@ require(["wb/api/main"], function(wb) {
 		</script>
 		<script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-				
+
 				var d = new Date()
 				var nz = d.getTimezoneOffset();
 				var oTable = $("#wb-data").dataTable( {
@@ -145,12 +146,8 @@ $(document).ready(function() {
             </div>
             <div id="tab_graphing">
 							<div id="graph_container"></div>
-							<div id="graph_people">
-								<h3>Whose Observations Do You Want To See?</h3>
-								<div id="use-mine" class="elgg-button elgg-button-action">Use My Own Observations</div>
-								<div id="use-any" class="elgg-button elgg-button-action">Use anyone\'s Observations</div>
-								' . elgg_view('explore/graph/personpicker', array('title' => "Or Select Another User's:")) . '
-								<div id="use-user" class="elgg-button elgg-button-action">Okay</div>
+							<div id="peoplepicker">
+								' . elgg_view('explore/graph/personpicker', array('title' => "Or Pick Up To 2 Other Users:")) . '
 							</div>
             </div>
             <div id="tab_mapping"></div>
