@@ -112,19 +112,21 @@ div.investigation-list {
 	}
 
 	ul.inv-listing {
-
+		> li:nth-child(odd) {
+			margin-right: 50px;
+		}
+		
 		> li.inv {
 			float: left;
-			width: 475px;
-			height: 250px;
-			margin: 15px 5px;
+			width: 460px;
+			margin-top: 15px;
 
 			div.notebook {
 				float: left;
 				background-image: url('../graphics/notebook.png');
 				width: 223px;
 				height: 249px;
-				margin: 0 20px 10px 0;
+				margin: 0 5px 50px 0;
 
 				img {
 					display: inline-block;
@@ -158,16 +160,24 @@ div.investigation-list {
 				display: inline-block;
 
 				li {
-					margin: 0 4px;
+					margin: 0;
 				}
-				li.elgg-menu-item-feature a {
-					color: #c00;
+				li.elgg-menu-item-membership {
+					margin-right: 10px;
+				}
+				li.elgg-menu-item-members {
+					margin-right: 10px;
+				}
+				li.elgg-menu-item-feature {
+					a {
+						color: #c00;
+					}
 				}
 			}
 
 			div.desc {
-				margin-top: 10px;
-				height: 155px;
+				margin: 25px 0 30px 0;
+				padding-right: 30px;
 				overflow-y: auto;
 			}
 
