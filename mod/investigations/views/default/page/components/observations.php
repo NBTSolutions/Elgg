@@ -154,7 +154,7 @@ foreach($obs_categories as $category => $category_image) {
                     <span class="measurement_cat_label"><?php echo $measurement->phenomenon->description; ?></span>
                 </td>
                 <td>
-                    <?php echo $measurement->value; ?>
+                    <?php echo str_replace("assets", elgg_get_site_url()."dct/assets", $measurement->value); ?>
                     <?php 
                     if($measurement->phenomenon->unit) {
                         echo $measurement->phenomenon->unit->abbrev;
