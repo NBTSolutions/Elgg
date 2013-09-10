@@ -70,7 +70,7 @@ if ($full && !elgg_in_context('gallery')) {
 		'entity' => $file,
 		'title' => false,
 		'metadata' => $metadata,
-		'subtitle' => $subtitle,
+		//'subtitle' => $subtitle,
 	);
 	$params = $params + $vars;
 	$summary = elgg_view('object/elements/summary', $params);
@@ -97,7 +97,7 @@ if ($full && !elgg_in_context('gallery')) {
 	$params = array(
 		'entity' => $file,
 		'metadata' => $metadata,
-		'subtitle' => $subtitle,
+		//'subtitle' => $subtitle,
 		'content' => $excerpt,
 	);
 	$params = $params + $vars;
