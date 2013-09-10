@@ -26,10 +26,16 @@ $nvp = array(array( // show only global files.
 	'name' => 'file category',
 	'value' => 'global'
 ));
+$order = array();
 if ($type == 'plans') {
 	$nvp[] = array(
 		'name' => 'lesson plan',
 		'value' => 'yes'
+	);
+	$order = array(
+		'name' => 'weight',
+		'direction' => 'ASC',
+		'as' => 'integer'
 	);
 }
 
@@ -39,7 +45,8 @@ $content = elgg_list_entities_from_metadata(array(
 	'limit' => $limit,
 	'full_view' => FALSE,
 	'metadata_name_value_pairs' => $nvp,
-	'list_type' => $list_type
+	'list_type' => $list_type,
+	'order_by_metadata' => $order
 ));
 if (!$content) {
 	$content = elgg_echo('file:none');
