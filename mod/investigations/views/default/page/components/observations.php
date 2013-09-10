@@ -99,9 +99,14 @@
     <br>
     <span id="all_likes"><?php echo $likes["all_likes"]; ?> like<?php echo $likes[all_likes] != 1 ? 's' : ''; ?></span>
     <?php if(elgg_is_logged_in()) { ?>
-        <span id="like_obs">
-            <?php echo $my_obs_like == 1 ? "Unlike this" : "Like this"; ?>
+        <span id="like_obs" class="obs_link">
+            <?php echo $my_obs_like == 1 ? "Unlike" : "Like"; ?>
         </span>
+        <?php if(elgg_is_admin_logged_in() || $obs_user->guid == elgg_get_logged_in_user_guid()) { ?>
+        <span id="delete_obs" class="obs_link">
+            Delete
+        </span>
+        <?php } ?>
     <?php } ?>
 </p>
 
@@ -149,7 +154,7 @@ foreach($obs_categories as $category => $category_image) {
                     <span class="measurement_cat_label"><?php echo $measurement->phenomenon->description; ?></span>
                 </td>
                 <td>
-                    <?php echo $measurement->value; ?>
+                    <?php echo str_replace("assets", elgg_get_site_url()."dct/assets", $measurement->value); ?>
                     <?php 
                     if($measurement->phenomenon->unit) {
                         echo $measurement->phenomenon->unit->abbrev;
@@ -243,7 +248,17 @@ foreach($obs_categories as $category => $category_image) {
                     var like_label = total_likes != 1 ? " likes" : " like";
 
                     $('#all_likes').html(total_likes + like_label);
-                    $('#like_obs').html(data.result ? 'Unlike this' : 'like this');
+                    $('#like_obs').html(data.result ? 'Unlike' : 'like');
+                });
+        });
+        $('#delete_obs').click(function() {
+            $.get('<?php echo elgg_get_site_url(); ?>services/api/rest/json/',
+                {
+                    method : 'wb.delete_obs_by_agg_id',
+                    agg_id : '<?php echo $vars['observation_agg_id'] ?>'
+                })
+                .done(function(data) {
+                    history.back(); 
                 });
         });
     });

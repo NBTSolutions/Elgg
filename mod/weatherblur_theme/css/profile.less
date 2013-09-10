@@ -144,10 +144,11 @@
 	OBSERVATION WIDGET
 -----------------------------------------------------------------------*/
 .elgg-widget-content {
-	> ul.obs-listing {
+	> ul.inv-listing {
 		> li.obs {
 			display: inline-block;
 			width: 265px;
+			height: auto;
 			margin: 5px;
 			padding: 7px;
 			border: 1px solid #efefef;
@@ -165,6 +166,7 @@
 					}
 				
 				> img.obs_image {
+					float: left;
 				}/*img.obs_image*/
 				
 				> p.obs_inv {
@@ -184,7 +186,7 @@
 				> p.obs_date {
 					font-size: .8em;
 					color: #777;
-					margin: 0 0 0 35px;
+					margin: 0 0 10px 35px;
 				}/*p.obs_date*/
 			
 			}/*a*/

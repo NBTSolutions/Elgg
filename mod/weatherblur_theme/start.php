@@ -27,7 +27,7 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 		//HEADER.CSS
 		elgg_register_css('header', $css_dir.'header.less');
 		elgg_load_css('header');
-
+		
 		//INDEX_BODY.CSS
 		elgg_register_css('index_body', $css_dir.'index_body.less');
 		elgg_load_css('index_body');
