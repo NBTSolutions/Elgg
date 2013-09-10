@@ -29,6 +29,17 @@ elgg_set_page_owner_guid($file->getContainerGUID());
 $form_vars = array('enctype' => 'multipart/form-data');
 $body_vars = file_prepare_form_vars($file);
 
+if ($file->getMetadata('lesson plan') == 'yes') {
+	$body_vars['lesson_plan'] = 1;
+}
+
+$weight = $file->getMetadata('weight');
+if (!$weight) {
+	$weight = 0;
+}
+$body_vars['weight'] = $weight;
+
+
 $content = elgg_view_form('file/upload', $form_vars, $body_vars);
 
 $body = elgg_view_layout('content', array(

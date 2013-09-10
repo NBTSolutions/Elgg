@@ -15,6 +15,8 @@ if (!$container_guid) {
 	$container_guid = elgg_get_logged_in_user_guid();
 }
 $guid = elgg_extract('guid', $vars, null);
+$lesson_plan = elgg_extract('lesson_plan', $vars, 0);
+$weight = elgg_extract('weight', $vars, 0);
 
 if ($guid) {
 	$file_label = elgg_echo("file:replace");
@@ -51,7 +53,11 @@ if ($categories) {
 ?>
 <div>
 	<label>Is This File Upload a Lesson Plan?</label>
-	<?php echo elgg_view('input/radio', array('name' => 'lesson_plan', 'options' => array('Yes'=>1, 'No'=>0), 'value' => 0)); ?>
+	<?php echo elgg_view('input/radio', array('name' => 'lesson_plan', 'options' => array('Yes'=>1, 'No'=>0), 'value' => $lesson_plan)); ?>
+</div>
+<div>
+	<label>File Weight - Higher number indicated 'heavier' files and will be shown after 'lighter' ones</label>
+	<?php echo elgg_view('input/dropdown', array('name' => 'weight', 'options' => range(-5,30), 'value' => $weight)); ?>
 </div>
 <div>
 	<label><?php echo elgg_echo('access'); ?></label><br />
