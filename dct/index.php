@@ -1,6 +1,6 @@
 <?php
 
-include_once dirname(dirname(dirname(dirname(__FILE__)))) . "/engine/start.php";
+include_once dirname(dirname(__FILE__)) . "/engine/start.php";
 
 elgg_load_library('elgg:investigations');
 
