@@ -70,7 +70,7 @@ if ($full && !elgg_in_context('gallery')) {
 		'entity' => $file,
 		'title' => false,
 		'metadata' => $metadata,
-		'subtitle' => $subtitle,
+		//'subtitle' => $subtitle,
 	);
 	$params = $params + $vars;
 	$summary = elgg_view('object/elements/summary', $params);
@@ -89,7 +89,7 @@ if ($full && !elgg_in_context('gallery')) {
 	echo '<div class="file-gallery-item">';
 	echo "<h3>" . $file->title . "</h3>";
 	echo elgg_view_entity_icon($file, 'medium');
-	echo "<p class='subtitle'>$owner_link $date</p>";
+	//echo "<p class='subtitle'>$owner_link $date</p>";
 	echo '</div>';
 } else {
 	// brief view
@@ -97,7 +97,7 @@ if ($full && !elgg_in_context('gallery')) {
 	$params = array(
 		'entity' => $file,
 		'metadata' => $metadata,
-		'subtitle' => $subtitle,
+		//'subtitle' => $subtitle,
 		'content' => $excerpt,
 	);
 	$params = $params + $vars;

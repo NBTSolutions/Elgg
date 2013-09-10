@@ -184,6 +184,8 @@ if (get_input('lesson_plan', false)) {
 	create_metadata($file->getGUID(), 'lesson plan', 'yes', 'text');
 }
 
+create_metadata($file->getGUID(), 'weight', get_input('weight', 0), 'integer');
+
 // file saved so clear sticky form
 elgg_clear_sticky_form('file');
 
