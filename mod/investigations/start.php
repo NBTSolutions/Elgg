@@ -308,6 +308,30 @@ function investigations_init() {
         false
     );
 
+    expose_function(
+        "wb.delete_obs_by_agg_id",        
+        "delete_obs_by_agg_id",
+        array(
+            'agg_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.delete_obs_by_guid",        
+        "delete_obs_by_guid",
+        array(
+            'agg_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
 
@@ -1632,7 +1656,7 @@ function toggle_like_obs($observation_guid) {
     }
 }
 
-function toggle_like_obs_by_agg_id($agg_guid) {
+function toggle_like_obs_by_agg_id($agg_id) {
 
     $results = elgg_get_entities_from_metadata(array(
         "type_subtype_pair"	=>	array('object' => 'observation'),
@@ -1854,3 +1878,38 @@ function get_user_info($user_guid, $icon_size) {
     );
 }
 
+function delete_obs_by_agg_id($agg_id) {
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    if($results) {
+        return delete_obs_by_guid($results[0]->guid);
+    }
+    else {
+        throw new Exception('No valid observations with that aggregator id');
+    }
+}
+
+function delete_obs_by_guid($guid) {
+
+    $user_guid = elgg_get_logged_in_user_guid();
+    if($user_guid > 0) {
+        $user = get_user($user_guid);
+    }
+
+    $obs = get_entity($guid);
+    if($obs) {
+        //if owner or admin
+        if(elgg_is_admin_logged_in() || $user->guid == $obs->owner_guid) {
+            return delete_entity($obs->guid, true);
+        }
+        else {
+            throw new Exception('You do not have permissions to delete this observation');
+        }
+    }
+    else {
+        throw new Exception('This is not a valid observation id');
+    }
+}
