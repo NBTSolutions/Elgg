@@ -95,16 +95,16 @@ position: e || "bottomright",
 prefix: "<span style='font-size: " + (n || "11px") + "'>Powered by <a target='_blank' href='http://www.nbtsolutions.com' style='color: " + (t || "#0078A8") + "'>NBT Solutions</a></span>"
 });
 },
-getMapquestTileLayer: function(e) {
-return L.tileLayer("http" + (e ? "s" : "") + "://otile{s}" + (e ? "-s" : "") + ".mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", {
+getMapquestTileLayer: function(e, t) {
+return L.tileLayer("http" + (e ? "s" : "") + "://otile{s}" + (e ? "-s" : "") + ".mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", _.extend(t, {
 subdomains: "1234",
 attribution: "Tiles: <a href='http://www.mapquest.com/' target='_blank'>MapQuest</a>"
-});
+}));
 },
-getArcGISTileLayer: function(e) {
-return L.tileLayer("http://services.arcgisonline.com/ArcGIS/rest/services/" + e + "/MapServer/tile/{z}/{y}/{x}", {
+getArcGISTileLayer: function(e, t) {
+return L.tileLayer("http://services.arcgisonline.com/ArcGIS/rest/services/" + e + "/MapServer/tile/{z}/{y}/{x}", _.extend(t, {
 attribution: "Tiles: &copy; Esri"
-});
+}));
 }
 };
 
@@ -388,13 +388,12 @@ constants: {}
 // Constants.js
 
 wb.map.assets = {}, wb.map.env = {
-aggregatorService: location.hostname.indexOf("heroku") !== -1 ? "" : "//localhost:7777/wb-aggregator",
 momentDateFormat: "MM/DD/YYYY"
 }, wb.constants = wb.constants || {
-elggHost: window.elggHost || "www.weatherblur.com",
 isGallery: !0
 }, wb.gallery = {
-userImages: {}
+userImages: {},
+userNames: {}
 };
 
 // CalendarInputs.js
@@ -584,25 +583,28 @@ name: "likesCount"
 rendered: function() {
 this.inherited(arguments), this.categories = this.observation.get("categories");
 var e = this.observation.get("observer"), t = null;
-wb.gallery.userImages[e.get("elggId")] && (t = wb.gallery.userImages[e.get("elggId")], this.$.userIcon.setSrc(t)), this.$.username.setContent(e.get("label")), this.$.date.setContent(moment(this.observation.get("timestamp")).format("MMM DD, YYYY"));
-if (!t) var n = {
+wb.gallery.userImages[e.get("elggId")] && (t = wb.gallery.userImages[e.get("elggId")], this.$.userIcon.setSrc(t));
+var n = e.get("label");
+if (n && n.length > 0 || wb.gallery.userNames[e.get("elggId")]) n = wb.gallery.userNames[e.get("elggId")], this.$.username.setContent(n);
+this.$.date.setContent(moment(this.observation.get("timestamp")).format("MMM DD, YYYY"));
+if (!t || !n) var r = {
 method: "wb.get_user_info",
 user_guid: e.get("elggId"),
 icon_size: "medium"
-}, r = (new enyo.Ajax({
-url: "//" + wb.constants.elggHost + "/services/api/rest/json"
+}, i = (new enyo.Ajax({
+url: wb.env.elggPath
 })).response(enyo.bind(this, function(t, n, r) {
-n.status === 0 && (wb.gallery.userImages[e.get("elggId")] = n.result.image, this.$.userIcon.setSrc(n.result.image));
-})).go(n);
+n.status === 0 && (wb.gallery.userImages[e.get("elggId")] = n.result.image, wb.gallery.userNames[e.get("elggId")] = n.result.users_display_name, this.$.userIcon.setSrc(n.result.image), this.$.username.setContent(n.result.users_display_name));
+})).go(r);
 if (this.categories.media) this.observation.get("measurements").length > 0 ? this.handleMeasurementsResponse(this.observation.get("measurements")) : (this.observation.set({
 measurements: this.observation.id
 }), this.observation.fetchRelated("measurements", {
 success: enyo.bind(this, "handleMeasurementsResponse")
 })); else {
-var i = _(_(this.categories).keys()).max(function(e) {
+var s = _(_(this.categories).keys()).max(function(e) {
 return this.categories[e].length;
 }, this);
-this.$.thumbnail.setSrc("../mod/weatherblur_theme/graphics/gallery/" + i + "-150x150.png"), this.$.thumbnail.addClass("category-icon");
+this.$.thumbnail.setSrc("../mod/weatherblur_theme/graphics/gallery/" + s + "-150x150.png"), this.$.thumbnail.addClass("category-icon");
 }
 this.likesLoaded || (this.doILikeThisObservation(), this.doLikesCount(), this.doCommentsCount(), this.likesLoaded = !0);
 },
@@ -644,10 +646,17 @@ handleMeasurementsResponse: function(e, t, n) {
 var r = _(this.categories.media).contains("video") ? "video" : "image", i = e.findWhere({
 value: r
 });
-r == "image" ? this.$.thumbnail.setSrc(i.get("meta").url) : r == "video" && this.$.thumbnail.setSrc(i.get("meta").thumbnailUrl);
+if (r == "image") {
+var s = new Image, o = i.get("meta").url, u = o.lastIndexOf("."), a = o.substr(u), f = o.substr(0, u) + "-thumb" + a;
+s.onload = enyo.bind(this, function() {
+this.$.thumbnail.setSrc(f);
+}), s.onerror = enyo.bind(this, function() {
+this.$.thumbnail.setSrc(o);
+}), s.src = f;
+} else r == "video" && this.$.thumbnail.setSrc(i.get("meta").thumbnailUrl);
 },
 handleObservationTap: function(e, t) {
-window.location = "//" + wb.constants.elggHost + "/observation/" + this.observation.id;
+window.location = "//" + wb.env.elggHost + "/observation/" + this.observation.id;
 },
 handleLikesTap: function(e, t) {
 var n = {
@@ -659,7 +668,7 @@ this.doLikesCount(), this.doILikeThisObservation();
 },
 doElggAjax: function(e, t) {
 var n = (new enyo.Ajax({
-url: "//" + wb.constants.elggHost + "/services/api/rest/json"
+url: wb.env.elggPath
 })).response(this, t).go(e);
 return n;
 }
@@ -1869,7 +1878,7 @@ onOffsetChanged: "handleOffsetChanged"
 cache: {},
 create: function() {
 this.inherited(arguments);
-var e = nbt.generic.Util.getParameterMap(window.location.href);
+var e = nbt.generic.Util.getParameterMap();
 _.isNumber(e.offset) && (this.offset = e.offset), this.doUserLayerReady({
 hide: [ "datasources" ]
 });

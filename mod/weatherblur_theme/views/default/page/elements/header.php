@@ -87,7 +87,7 @@ $(function(){
 				<li><a href="<?php echo $CONFIG->url; ?>investigate"><span id="magnifying_glass" class="nav_icons"></span>Investigate</a></li>
 				<li><a href="<?php echo $CONFIG->url; ?>wbsystem/exploredata"><span id="map_icon" class="nav_icons"></span>Explore data</a></li>
 				<li><a href="<?php echo $CONFIG->url; ?>wbsystem/people"><span id="people" class="nav_icons"></span>People</a></li>
-				<li><span id="book" class="nav_icons"></span><?php echo elgg_view('output/url', array('text'=>'Resources',href=>'file?list_type=gallery',isTrusted=>true)); ?></li>
+				<li><?php echo elgg_view('output/url', array('text'=>'<span id="book" class="nav_icons"></span>Resources',href=>'file?list_type=gallery',isTrusted=>true)); ?></li>
 			</ul>
 
 		</div><!--End header-content-->
