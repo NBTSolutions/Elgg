@@ -66,9 +66,9 @@ function list_all_observations() {
     ), 'elgg_get_entities', 'elgg_view_observation_list');
     $canvas_area = elgg_view_layout('one_column', array('content' => $content));
 
-    return $canvas_area;
+    //return $canvas_area;
 
-    // echo elgg_view_page(elgg_echo('observations:all'), $canvas_area);
+    echo elgg_view_page(elgg_echo('observations:all'), $canvas_area);
 }
 
 function elgg_view_investigation_list($entities, $vars = array(), $offset = 0, $limit = 10, $full_view = true, $list_type_toggle = true, $pagination = true) {

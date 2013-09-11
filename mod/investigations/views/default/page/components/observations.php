@@ -116,6 +116,8 @@
     <h2>Image</h2>
     <div id="obs_image">
         <img src="<?php echo $picture->url; ?>" id="obs_thumbnail_image">
+        <br>
+        <?php echo $picture->caption; ?>
     </div>
     <?php } elseif($video) { ?>
     <div id="obs_video">
