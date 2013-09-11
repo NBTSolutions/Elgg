@@ -186,6 +186,8 @@ foreach($obs_categories as $category => $category_image) {
          <source src="<?php echo str_replace('.$ext', '', $video->url); ?>.mp4" type='video/mp4' />  
          <source src="<?php echo str_replace('.$ext', '', $video->url); ?>.webm" type='video/webm' />  
     </video>
+    <br>
+    <?php echo $video->caption; ?>
 </div>
 <?php } ?>
 <h2>Comments</h2>
