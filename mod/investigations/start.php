@@ -1478,13 +1478,13 @@ function get_invs_by_token($token) {
     $investigations = array(
         'user_guid' => intval($user_guid),
         'username' => $user->name,
+        'user_display_name' => $user->name,
         'token' => $token,
         'investigations' => array()
     );
     foreach($results as $result) {
         $investigations['investigations'][] = array(
-            "user_display_name" => $user->name,
-            "username" => $user->username,
+            'name' => $result->name,
             'guid' => $result->guid
         );
     }
