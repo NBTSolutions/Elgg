@@ -1,0 +1,9 @@
+= Version history =
+
+
+1.8.16 (2013-08-16):
+
+- deleted: views/default/forms/register.php  so that profile_manager can work with gutwacaptcha 
+
+
+
