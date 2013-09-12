@@ -38,7 +38,13 @@ $obj_sc = json_decode($sc_str,true);
 
 //get obs
 $aaData = array();
-$url_obs = $url_agg."/api/observations/";
+
+$now = date(DATE_W3C, time() + (7 * 24 * 60 * 60));
+
+$now = str_replace('+', '-', $now);
+
+// we must supply a date range or we get some cached set
+$url_obs = $url_agg.'/api/observation/search?q={"inDateRange":{"begin":"1970-01-01T00:00:00-00:00","end":"'.$now.'"}}';
 $ch = curl_init($url_obs);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -63,7 +69,9 @@ for($y =0; $y < count($features); $y++)
 	
 	$dates = date("M j, Y, g:i a", $ts);  
 	
-	$uname = $features[$y]["properties"]["observer"]["properties"]["label"];
+	//$uname = $features[$y]["properties"]["observer"]["properties"]["label"];
+	$uguid = $features[$y]["properties"]["observer"]["properties"]["elggId"];
+	
 	
 	$url_meas = $url_agg."/api/observation/".$m_id."/measurement";
 	
@@ -87,6 +95,25 @@ for($y =0; $y < count($features); $y++)
 			
 			if ($obj_meas[$x]["phenomenon"]["name"] == $obj_sc[$u]["name"])
 			{
+				
+				//get user name
+				$uguid = $features[$y]["properties"]["observer"]["properties"]["elggId"];
+	
+				$user_url = $url_elgg. "/services/api/rest/json/?method=wb.get_user_info&user_guid=".$uguid."&icon_size=small";
+				$ch = curl_init($user_url);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+				$user_str = curl_exec($ch);
+
+				curl_close($ch); 
+
+				$user = json_decode($user_str,true);
+				$uname = $user["result"]["users_display_name"];
+				if(!$uname)
+				{
+					$uname = "--";
+				}
+				
 				//get investigation
 				$url_inv = $url_elgg."/services/api/rest/json/?method=wb.get_inv_by_agg_id&agg_id=".$m_id;
 		
