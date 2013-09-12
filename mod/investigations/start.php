@@ -1483,7 +1483,8 @@ function get_invs_by_token($token) {
     );
     foreach($results as $result) {
         $investigations['investigations'][] = array(
-            'name' => $result->name,
+            "user_display_name" => $user->name,
+            "username" => $user->username,
             'guid' => $result->guid
         );
     }
