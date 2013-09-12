@@ -1515,7 +1515,7 @@ function users_pagesetup() {
 			'name' => 'profile',
 			'href' => $viewer->getURL(),
 			'text' => elgg_view('output/img', array(
-				'src' => $viewer->getIconURL('topbar'),
+				'src' => $viewer->getIconURL('small'),
 				'alt' => $viewer->name,
 				'title' => elgg_echo('profile'),
 				'class' => 'elgg-border-plain elgg-transition',
