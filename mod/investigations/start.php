@@ -1449,6 +1449,8 @@ function get_invs($username, $password) {
 
     $obs_measurement = curl_exec($ch);
 
+    create_agg_user($user);
+
     login($user, false);
 
     $dbprefix = elgg_get_config('dbprefix');
@@ -1483,6 +1485,8 @@ function get_invs_by_token($token) {
     
     $user_guid = validate_user_token($token, null);
     $user = get_user($user_guid);
+
+    create_agg_user($user);
 
     login($user, false);
 
@@ -1937,4 +1941,33 @@ function delete_obs_by_guid($guid) {
     else {
         throw new Exception('This is not a valid observation id');
     }
+}
+
+function create_agg_user($user) {
+    // New users need to be added to wb-aggregator so we make this curl request for this reason.
+    $app_env = getenv("APP_ENV");
+    $app_env = $app_env == "prod" ? $app_env : "unstable";
+
+    $profile_type_guid = $user->custom_profile_type;
+    $profile_type = get_entity($profile_type_guid);
+
+    $post_fields = array(
+        'class' => 'wb.api.User',
+        'elggGroup' => $profile_type ? $profile_type->getTitle() : '',
+        'elggHost' => elgg_get_site_url(),
+        'elggId' => $user->guid,
+        // not sure why this image is here but travis has it setup this way and don't want to change it
+        'image' => 'http://demo.nbtsolutions.com/elgg/_graphics/icons/user/defaultsmall.gif'
+    );
+
+    $ch = curl_init();
+
+    curl_setopt_array($ch, array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => "http://wb-aggregator.".$app_env.".nbt.io/api/observer/user",
+        CURLOPT_POST => 1,
+        CURLOPT_POSTFIELDS => $post_fields
+    ));
+
+    curl_exec($ch);
 }
