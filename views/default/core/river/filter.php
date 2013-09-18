@@ -25,6 +25,16 @@ if (!empty($registered_entities)) {
 	}
 }
 
+// overide river filter dropdown. I know ugly...
+$options = array(
+    'type=all'  => 'Show All',
+    'type=user' => 'Show Users',
+    'type=object&subtype=file'          => 'Show Files',
+    'type=object&subtype=news'          => 'Show News',
+    'type=group&subtype=investigation'  => 'Show Investigations',
+    'type=object&subtype=observation'  => 'Show Observations'
+);
+
 $params = array(
 	'id' => 'elgg-river-selector',
 	'options_values' => $options,
