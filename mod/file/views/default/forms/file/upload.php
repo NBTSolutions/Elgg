@@ -56,8 +56,8 @@ if ($categories) {
 	<?php echo elgg_view('input/radio', array('name' => 'lesson_plan', 'options' => array('Yes'=>1, 'No'=>0), 'value' => $lesson_plan)); ?>
 </div>
 <div>
-	<label>File Weight - Higher number indicated 'heavier' files and will be shown after 'lighter' ones</label>
-	<?php echo elgg_view('input/dropdown', array('name' => 'weight', 'options' => range(-5,30), 'value' => $weight)); ?>
+	<label>File Weight - Higher number indicates 'heavier' files and will be shown after 'lighter' ones</label>
+	<?php echo elgg_view('input/dropdown', array('name' => 'weight', 'options' => range(-5,99), 'value' => $weight)); ?>
 </div>
 <div>
 	<label><?php echo elgg_echo('access'); ?></label><br />
