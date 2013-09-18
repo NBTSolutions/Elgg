@@ -95,7 +95,7 @@
     <a href="<?php echo $site->url.'profile/'.$obs_user->username; ?>">
         <img src='<?php echo $obs_user->getIcon("tiny") ?>'><?php echo $obs_user->name; ?>
     </a>
-    <span style="font-weight: bold">on <?php echo date('F jS, Y g:i:s A', strtotime($obs_user_local->properties->timestamp) + (3600 * (1 - date('I', $comment->time_created)))); ?></span>
+    <span style="font-weight: bold">on <?php echo date('F jS, Y g:i:s A', strtotime($obs_user_local->properties->timestamp) + (3600 * (1 - date('I', strtotime($obs_user_local->properties->timestamp))))); ?></span>
     <br>
     <span id="all_likes"><?php echo $likes["all_likes"]; ?> like<?php echo $likes[all_likes] != 1 ? 's' : ''; ?></span>
     <?php if(elgg_is_logged_in()) { ?>

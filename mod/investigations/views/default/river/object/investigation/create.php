@@ -5,7 +5,7 @@
 
 $object = $vars['item']->getObjectEntity();
 $excerpt = strip_tags($object->description);
-$excerpt = thewire_filter($excerpt);
+$excerpt = investigation_filter($excerpt);
 
 $observation = get_entity($vars['item']->object_guid);
 $agg_id = $observation->getMetaData("agg_id");
