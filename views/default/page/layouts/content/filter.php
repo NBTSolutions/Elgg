@@ -33,13 +33,15 @@ if (elgg_is_logged_in() && $context) {
 			'href' => (isset($vars['mine_link'])) ? $vars['mine_link'] : "$context/owner/$username",
 			'selected' => ($filter_context == 'mine'),
 			'priority' => 300,
-		),
+		)
+        /*
 		'friend' => array(
 			'text' => elgg_echo('friends'),
 			'href' => (isset($vars['friend_link'])) ? $vars['friend_link'] : "$context/friends/$username",
 			'selected' => ($filter_context == 'friends'),
 			'priority' => 400,
 		),
+        */
 	);
 	
 	foreach ($tabs as $name => $tab) {
