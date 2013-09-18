@@ -1405,6 +1405,33 @@ function investigations_run_upgrades() {
 	}
 }
 
+// copied from thewire/start.php
+function investigation_filter($text) {
+	global $CONFIG;
+
+	$text = ' ' . $text;
+
+	// email addresses
+	$text = preg_replace(
+				'/(^|[^\w])([\w\-\.]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})/i',
+				'$1<a href="mailto:$2@$3">$2@$3</a>',
+				$text);
+
+	// links
+	$text = parse_urls($text);
+
+	// usernames
+	$text = preg_replace(
+				'/(^|[^\w])@([\p{L}\p{Nd}._]+)/u',
+				'$1<a href="' . $CONFIG->wwwroot . 'thewire/owner/$2">@$2</a>',
+				$text);
+
+	$text = trim($text);
+
+	return $text;
+}
+
+// start rest calls
 function login_user($username, $password) {
 	if (true === elgg_authenticate($username, $password)) {
 		return create_user_token($username, PHP_INT_MAX);
