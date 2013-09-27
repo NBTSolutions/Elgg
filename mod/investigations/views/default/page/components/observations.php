@@ -5,7 +5,6 @@
     $app_env = getenv("APP_ENV");
     $app_env = $app_env ? $app_env : "unstable";
 
-    xdebug_break();
     curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_URL => "http://wb-aggregator.".$app_env.".nbt.io/api/observation/" . $vars['observation_agg_id'] . "/measurements"
