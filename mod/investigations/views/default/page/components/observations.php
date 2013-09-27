@@ -117,6 +117,7 @@
     <div id="obs_image">
         <img src="<?php echo $picture->url; ?>" id="obs_thumbnail_image">
         <br>
+        <?php if(elgg_is_admin_logged_in()) { ?>
         <div id="rotate-container">
             <div class="btn" href="#" id="rotate-clockwise">
                 <i class="icon-repeat"></i><br>Rotate CW
@@ -126,6 +127,7 @@
             </div>
         </div>
         <br>
+        <?php } ?>
         <?php echo $picture->caption; ?>
     </div>
     <?php } elseif($video) { ?>
