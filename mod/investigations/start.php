@@ -332,6 +332,19 @@ function investigations_init() {
         false
     );
 
+    expose_function(
+        "wb.rotate_image_by_agg_id",
+        "rotate_image_by_agg_id",
+        array(
+            'degrees' => array('type' => 'string'),
+            'agg_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
 
@@ -1998,3 +2011,173 @@ function create_agg_user($user) {
 
     curl_exec($ch);
 }
+
+function rotate_image_by_agg_id($rotate_degrees, $agg_id) {
+
+    $user_guid = elgg_get_logged_in_user_guid();
+    if($user_guid > 0) {
+        $user = get_user($user_guid);
+    }
+    else {
+        throw new Exception("You need to login");    
+    }
+
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    $obs = get_entity($results[0]->guid);
+    
+    if($obs) {
+        //if owner or admin
+        if(elgg_is_admin_logged_in() || $user->guid == $obs->owner_guid) {
+
+            // get all of our data from the aggregator
+            $ch = curl_init();
+
+            $app_env = getenv("APP_ENV");
+            $app_env = $app_env ? $app_env : "unstable";
+
+            curl_setopt_array($ch, array(
+                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_URL => "http://wb-aggregator.".$app_env.".nbt.io/api/observation/" . $agg_id . "/measurements"
+            ));
+
+            $obs_measurement = curl_exec($ch);
+
+            //convert to utf8
+            $observation = json_decode(stripslashes($obs_measurement));
+
+            foreach($observation as $measurement) {
+                if($measurement->value == "image") {
+                    $picture = explode('/', $measurement->meta->url);
+                    $s3_image_name = $picture[count($picture) - 1];
+                }
+            }
+
+            // if no image. give up.
+            if(!$s3_image_name) {
+                throw new Exception('No image for this observation.');
+            }
+
+            if($rotate_degrees != -90 && $rotate_degrees != 90) {
+                throw new Exception('Please provide valid degrees to rotate by either (90 or -90)');
+            }
+
+            // used to temporarily store the rotated image before sending it to s3
+            $temp_folder = 'tmp/';
+            $thumbnail_width = 270;
+            $thumbnail_height = 170;
+
+            $s3_key = 'AKIAJ7SN4WICVZFZO6KQ';
+            $s3_secret = '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';
+            $s3_bucket = 'weatherblur-media';
+            $s3_content_type = 'image/';
+            $s3_url = 'https://s3.amazonaws.com/weatherblur-media/';
+
+            // get filename and extension. Assuming only one . in full image name
+            list($image_name, $image_ext) = explode(".", $s3_image_name);
+
+            // Download the image
+            $gd_image = imagecreatefromstring(file_get_contents($s3_url.$s3_image_name));
+            if(!$gd_image){
+                throw new Exception('Downloading image from s3 failed');
+            }
+            
+            // if we use imagecreatetruecolor on pngs it will message up things
+            $gd_image_thumbnail = $image_ext == 'jpg' ? imagecreatetruecolor($thumbnail_width, $thumbnail_height) : imagecreate($thumbnail_width, $thumbnail_height);
+
+            $gd_image = imagerotate($gd_image, $rotate_degrees, 0);
+
+            $image_width = imagesx($gd_image);
+            $image_height = imagesy($gd_image);
+            $ratio = $thumbnail_width / $thumbnail_height;
+
+            $src_width = intval(($image_width / $ratio) > $image_height ? $image_height * $ratio : $image_width);
+            $src_height = intval(($image_width / $ratio) > $image_height ? $image_height : $image_width / $ratio);
+            $src_x = intval($image_width * .5 - ($src_width * .5));
+            $src_y = intval($image_height * .5 - ($src_height * .5));
+
+            // thumbnail copy
+            imagecopyresampled($gd_image_thumbnail, $gd_image, 0, 0, $src_x, $src_y, 270, 170, $src_width, $src_height);
+
+            // save image locally then upload it to s3
+            $s3_content_type = write_temp_image($gd_image, $image_ext, $temp_folder, $s3_image_name);
+            imagedestroy($gd_image);
+
+            // thumbnail
+            $s3_content_type = write_temp_image($gd_image_thumbnail, $image_ext, $temp_folder, $image_name.'-thumb.'.$image_ext);
+            imagedestroy($gd_image_thumbnail);
+
+            // loading this here to save memory
+            include 'aws.phar';
+            //use Aws\S3\S3Client;
+
+            // you can get it from http://aws.amazon.com/sdkforphp/
+            $client = Aws\S3\S3Client::factory(array(
+                'key'	=> $s3_key,
+                'secret' => $s3_secret
+            ));
+
+            $rotated_image_data = get_temp_image($temp_folder, $s3_image_name);
+            write_to_s3($s3_bucket, $s3_content_type, $s3_image_name, $rotated_image_data, $client);
+            unset($rotated_image_data);
+
+            $rotated_image_thumb_data = get_temp_image($temp_folder, $image_name.'-thumb.'.$image_ext);
+            write_to_s3($s3_bucket, $s3_content_type, $image_name.'-thumb.'.$image_ext, $rotated_image_thumb_data, $client);
+            unset($rotates_image_data);
+
+            unlink(dirname(__FILE__).'/'.$temp_folder.$s3_image_name);
+            unlink(dirname(__FILE__).'/'.$temp_folder.$image_name.'-thumb.'.$image_ext);
+
+            return $rotate_degrees;
+        }
+        else {
+            throw new Exception('You do not have permission to rotate this observation');
+        }
+    }
+    else {
+        throw new Exception('This is not a valid aggregator id');
+    }
+}
+
+function get_temp_image($folder, $image_name) {
+    $image_data = file_get_contents(dirname(__FILE__).'/'.$folder.$image_name);
+    if(!$image_data) {
+        throw new Exception('Unable to load new rotated image');
+    }
+    return $image_data;
+}
+
+function write_temp_image($image, $image_ext, $folder, $image_name) {
+    // create image based on file extension
+    if($image_ext == 'jpg' || $image_ext == 'jpeg') {
+        $result = imagejpeg($image, dirname(__FILE__).'/'.$folder.$image_name, 100);
+        return 'jpg';
+    }
+    else if($image_ext == 'png') {
+        // important for transparency
+        imageAlphaBlending($image, true);
+        imageSaveAlpha($image, true);
+
+        $result = imagepng($image, dirname(__FILE__).'/'.$folder.$image_name);
+        return 'png';
+    }
+    // file format not supported
+    else {
+        throw new Exception('file format not supported');
+    }
+}
+
+function write_to_s3($bucket, $content_type, $image_name, $image_data, $client, $file_acl = 'public-read') {
+
+    $result = $client->putObject(array(
+        'Bucket' => $bucket,
+        'contentType' => $content_type,
+        'Key'	=> $image_name,
+        'Body'	=> $image_data,
+        'ACL'	=> $file_acl
+    ));
+}
+

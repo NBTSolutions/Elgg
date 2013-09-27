@@ -5,11 +5,12 @@
     $app_env = getenv("APP_ENV");
     $app_env = $app_env ? $app_env : "unstable";
 
+    xdebug_break();
     curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_URL => "http://wb-aggregator.".$app_env.".nbt.io/api/observation/" . $vars['observation_agg_id'] . "/measurements"
     ));
-
+    
     $obs_measurement = curl_exec($ch);
 
     //convert to utf8
@@ -116,6 +117,15 @@
     <h2>Image</h2>
     <div id="obs_image">
         <img src="<?php echo $picture->url; ?>" id="obs_thumbnail_image">
+        <br>
+        <div id="rotate-container">
+            <div class="btn" href="#" id="rotate-clockwise">
+                <i class="icon-repeat"></i><br>Rotate CW
+            </div>
+            <div class="btn" href="#" id="rotate-counter-clockwise">
+                <i class="icon-undo" ></i><br>Rotate CCW
+            </div>
+        </div>
         <br>
         <?php echo $picture->caption; ?>
     </div>
@@ -263,6 +273,33 @@ foreach($obs_categories as $category => $category_image) {
                 })
                 .done(function(data) {
                     history.back(); 
+                });
+        });
+        // rotate ccw
+        $('#rotate-counter-clockwise').click(function() {
+            
+            $('#rotate-container').html('<img src="<?php echo elgg_get_site_url(); ?>mod/investigations/graphics/loader.gif">');
+            $.get('<?php echo elgg_get_site_url(); ?>services/api/rest/json/',
+                {
+                    method : 'wb.rotate_image_by_agg_id',
+                    degrees : '90',
+                    agg_id : '<?php echo $vars['observation_agg_id'] ?>',
+                })
+                .done(function(data) {
+                    location.reload();
+                });
+        });
+        // rotate cw
+        $('#rotate-clockwise').click(function() {
+            $('#rotate-container').html('<img src="<?php echo elgg_get_site_url(); ?>mod/investigations/graphics/loader.gif">');
+            $.get('<?php echo elgg_get_site_url(); ?>services/api/rest/json/',
+                {
+                    method : 'wb.rotate_image_by_agg_id',
+                    degrees : '-90',
+                    agg_id : '<?php echo $vars['observation_agg_id'] ?>',
+                })
+                .done(function(data) {
+                    location.reload();
                 });
         });
     });
