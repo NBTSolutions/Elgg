@@ -585,7 +585,7 @@ this.inherited(arguments), this.categories = this.observation.get("categories");
 var e = this.observation.get("observer"), t = null;
 wb.gallery.userImages[e.get("elggId")] && (t = wb.gallery.userImages[e.get("elggId")], this.$.userIcon.setSrc(t));
 var n = e.get("label");
-if (n && n.length > 0 || wb.gallery.userNames[e.get("elggId")]) n = wb.gallery.userNames[e.get("elggId")], this.$.username.setContent(n);
+if (n && n.length > 0 || wb.gallery.userNames[e.get("elggId")]) n = wb.gallery.userNames[e.get("elggId")], typeof n == "undefined" && (n = ""), n.length > 15 && (n = n.substr(0, 15) + "..."), this.$.username.setContent(n);
 this.$.date.setContent(moment(this.observation.get("timestamp")).format("MMM DD, YYYY"));
 if (!t || !n) var r = {
 method: "wb.get_user_info",
