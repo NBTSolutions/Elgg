@@ -119,11 +119,11 @@
         <br>
         <?php if(elgg_is_admin_logged_in()) { ?>
         <div id="rotate-container">
-            <div class="btn" href="#" id="rotate-clockwise">
-                <i class="icon-repeat"></i><br>Rotate CW
-            </div>
             <div class="btn" href="#" id="rotate-counter-clockwise">
                 <i class="icon-undo" ></i><br>Rotate CCW
+            </div>
+            <div class="btn" href="#" id="rotate-clockwise">
+                <i class="icon-repeat"></i><br>Rotate CW
             </div>
         </div>
         <br>
