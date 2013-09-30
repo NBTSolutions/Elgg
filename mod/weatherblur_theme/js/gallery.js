@@ -585,7 +585,7 @@ this.inherited(arguments), this.categories = this.observation.get("categories");
 var e = this.observation.get("observer"), t = null;
 wb.gallery.userImages[e.get("elggId")] && (t = wb.gallery.userImages[e.get("elggId")], this.$.userIcon.setSrc(t));
 var n = e.get("label");
-if (n && n.length > 0 || wb.gallery.userNames[e.get("elggId")]) n = wb.gallery.userNames[e.get("elggId")], typeof n == "undefined" && (n = ""), n.length > 15 && (n = n.substr(0, 15) + "..."), this.$.username.setContent(n);
+if (n && n.length > 0 || wb.gallery.userNames[e.get("elggId")]) n = wb.gallery.userNames[e.get("elggId")], this.$.username.setContent(n);
 this.$.date.setContent(moment(this.observation.get("timestamp")).format("MMM DD, YYYY"));
 if (!t || !n) var r = {
 method: "wb.get_user_info",
@@ -594,7 +594,11 @@ icon_size: "medium"
 }, i = (new enyo.Ajax({
 url: wb.env.elggPath
 })).response(enyo.bind(this, function(t, n, r) {
-n.status === 0 && (wb.gallery.userImages[e.get("elggId")] = n.result.image, wb.gallery.userNames[e.get("elggId")] = n.result.users_display_name, this.$.userIcon.setSrc(n.result.image), this.$.username.setContent(n.result.users_display_name));
+if (n.status === 0) {
+wb.gallery.userImages[e.get("elggId")] = n.result.image, wb.gallery.userNames[e.get("elggId")] = n.result.users_display_name, this.$.userIcon.setSrc(n.result.image);
+var i = n.result.users_display_name;
+typeof i == "undefined" && (i = ""), i.length > 15 && (i = i.substr(0, 15) + "..."), this.$.username.setContent(i);
+}
 })).go(r);
 if (this.categories.media) this.observation.get("measurements").length > 0 ? this.handleMeasurementsResponse(this.observation.get("measurements")) : (this.observation.set({
 measurements: this.observation.id
@@ -1863,7 +1867,7 @@ enyo.kind({
 name: "wb.GalleryView",
 classes: "gallery",
 published: {
-limit: 48,
+limit: 15,
 offset: 0
 },
 events: {
