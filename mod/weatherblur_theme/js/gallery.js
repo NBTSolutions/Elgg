@@ -419,7 +419,7 @@ placeholder: "MM/DD/YY"
 } ]
 }, {
 kind: "onyx.Icon",
-src: "../mod/weatherblur_theme/graphics/gallery/calendar.png",
+src: "assets/calendar.png",
 ontap: "pickFromDate"
 } ]
 }, {
@@ -437,7 +437,7 @@ placeholder: "MM/DD/YY"
 } ]
 }, {
 kind: "onyx.Icon",
-src: "../mod/weatherblur_theme/graphics/gallery/calendar.png",
+src: "assets/calendar.png",
 ontap: "doShowCalendar"
 } ]
 } ],
@@ -585,7 +585,7 @@ this.inherited(arguments), this.categories = this.observation.get("categories");
 var e = this.observation.get("observer"), t = null;
 wb.gallery.userImages[e.get("elggId")] && (t = wb.gallery.userImages[e.get("elggId")], this.$.userIcon.setSrc(t));
 var n = e.get("label");
-if (n && n.length > 0 || wb.gallery.userNames[e.get("elggId")]) n = wb.gallery.userNames[e.get("elggId")], this.$.username.setContent(n);
+if (n && n.length > 0 || wb.gallery.userNames[e.get("elggId")]) n = wb.gallery.userNames[e.get("elggId")], this.$.username.setContent(n.substr(0, 15) + "...");
 this.$.date.setContent(moment(this.observation.get("timestamp")).format("MMM DD, YYYY"));
 if (!t || !n) var r = {
 method: "wb.get_user_info",
@@ -604,7 +604,7 @@ success: enyo.bind(this, "handleMeasurementsResponse")
 var s = _(_(this.categories).keys()).max(function(e) {
 return this.categories[e].length;
 }, this);
-this.$.thumbnail.setSrc("../mod/weatherblur_theme/graphics/gallery/" + s + "-150x150.png"), this.$.thumbnail.addClass("category-icon");
+this.$.thumbnail.setSrc("assets/" + s + "-150x150.png"), this.$.thumbnail.addClass("category-icon");
 }
 this.likesLoaded || (this.doILikeThisObservation(), this.doLikesCount(), this.doCommentsCount(), this.likesLoaded = !0);
 },
@@ -818,7 +818,7 @@ group: n.result.profile_type
 }), t.set({
 label: n.result.username
 }), this.$.username.setContent(t.get("label")), this.$.group.setContent("( " + t.get("group") + " )")) : (t.set({
-image: "../mod/weatherblur_theme/graphics/gallery/icon.png"
+image: "assets/icon.png"
 }), t.set({
 group: "Weatherblur"
 }), t.set({
@@ -1235,12 +1235,12 @@ map: null
 },
 components: [ {
 kind: "Image",
-src: "../mod/weatherblur_theme/graphics/gallery/alaska_off.png",
+src: "assets/alaska_off.png",
 style: "cursor: pointer",
 ontap: "handleAlaskaIn"
 }, {
 kind: "Image",
-src: "../mod/weatherblur_theme/graphics/gallery/maine_off.png",
+src: "assets/maine_off.png",
 style: "cursor: pointer",
 ontap: "handleMaineIn"
 } ],
@@ -1263,12 +1263,12 @@ map: null
 },
 components: [ {
 kind: "Image",
-src: "../mod/weatherblur_theme/graphics/gallery/zoom_in_icon.png",
+src: "assets/zoom_in_icon.png",
 style: "cursor: pointer",
 ontap: "handleZoomIn"
 }, {
 kind: "Image",
-src: "../mod/weatherblur_theme/graphics/gallery/zoom_out_icon.png",
+src: "assets/zoom_out_icon.png",
 style: "cursor: pointer",
 ontap: "handleZoomOut"
 } ],
@@ -1322,7 +1322,7 @@ statics: {
 userObservationMarker: function(e) {
 return L.divIcon({
 className: "div_icon",
-html: "<img src='../mod/weatherblur_theme/graphics/gallery/user_icon.png'><div class='num_of_samples'>" + e + "</div>",
+html: "<img src='assets/user_icon.png'><div class='num_of_samples'>" + e + "</div>",
 iconSize: [ 32, 32 ],
 popupAnchor: [ 0, -16 ]
 });
@@ -1330,7 +1330,7 @@ popupAnchor: [ 0, -16 ]
 buoyMarker: function() {
 return L.divIcon({
 className: "div_icon",
-html: "<img src='../mod/weatherblur_theme/graphics/gallery/buoy_icon.png'>",
+html: "<img src='assets/buoy_icon.png'>",
 iconSize: [ 32, 32 ],
 popupAnchor: [ 0, -16 ]
 });
@@ -1338,7 +1338,7 @@ popupAnchor: [ 0, -16 ]
 schoolMarker: function() {
 return L.divIcon({
 className: "div_icon",
-html: "<img src='../mod/weatherblur_theme/graphics/gallery/station_icon.png'>",
+html: "<img src='assets/station_icon.png'>",
 iconSize: [ 32, 32 ],
 popupAnchor: [ 0, -16 ]
 });
@@ -1546,7 +1546,7 @@ onchange: "handleGroupFilterChange"
 }, {
 kind: "Image",
 classes: "mapLegend",
-src: "../mod/weatherblur_theme/graphics/gallery/user_student.png"
+src: "assets/user_student.png"
 }, {
 tag: "label",
 content: "Students"
@@ -1562,7 +1562,7 @@ onchange: "handleGroupFilterChange"
 }, {
 kind: "Image",
 classes: "mapLegend",
-src: "../mod/weatherblur_theme/graphics/gallery/user_teacher.png"
+src: "assets/user_teacher.png"
 }, {
 tag: "label",
 content: "Teachers"
@@ -1578,7 +1578,7 @@ onchange: "handleGroupFilterChange"
 }, {
 kind: "Image",
 classes: "mapLegend",
-src: "../mod/weatherblur_theme/graphics/gallery/user_fisherman.png"
+src: "assets/user_fisherman.png"
 }, {
 tag: "label",
 content: "Fishermen"
@@ -1594,7 +1594,7 @@ onchange: "handleGroupFilterChange"
 }, {
 kind: "Image",
 classes: "mapLegend",
-src: "../mod/weatherblur_theme/graphics/gallery/user_scientist.png"
+src: "assets/user_scientist.png"
 }, {
 tag: "label",
 content: "Scientists"
@@ -1610,7 +1610,7 @@ onchange: "handleGroupFilterChange"
 }, {
 kind: "Image",
 classes: "mapLegend",
-src: "../mod/weatherblur_theme/graphics/gallery/user_community.png"
+src: "assets/user_community.png"
 }, {
 tag: "label",
 content: "Community Members"
@@ -1631,7 +1631,7 @@ onchange: "handleCategoryFilterChange"
 }, {
 kind: "Image",
 classes: "mapLegend",
-src: "../mod/weatherblur_theme/graphics/gallery/sky_icon.png"
+src: "assets/sky_icon.png"
 }, {
 tag: "label",
 content: "Sky"
@@ -1649,7 +1649,7 @@ onchange: "handleCategoryFilterChange"
 }, {
 kind: "Image",
 classes: "mapLegend",
-src: "../mod/weatherblur_theme/graphics/gallery/precipitation_icon.png"
+src: "assets/precipitation_icon.png"
 }, {
 tag: "label",
 content: "Precipitation"
@@ -1667,7 +1667,7 @@ onchange: "handleCategoryFilterChange"
 }, {
 kind: "Image",
 classes: "mapLegend",
-src: "../mod/weatherblur_theme/graphics/gallery/ocean_icon.png"
+src: "assets/ocean_icon.png"
 }, {
 tag: "label",
 content: "Ocean"
@@ -1685,7 +1685,7 @@ onchange: "handleCategoryFilterChange"
 }, {
 kind: "Image",
 classes: "mapLegend",
-src: "../mod/weatherblur_theme/graphics/gallery/media_icon.png"
+src: "assets/media_icon.png"
 }, {
 tag: "label",
 content: "Media"
