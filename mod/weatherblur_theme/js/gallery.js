@@ -1161,9 +1161,9 @@ this.destroyComponents();
 var n = {
 offset: 0,
 total: 0,
-limit: 10
+limit: 15
 };
-enyo.mixin(n, t);
+enyo.mixin(n, t), window.blah = n;
 if (n.total <= n.limit) return;
 var r = Math.ceil(n.total / n.limit), i = Math.ceil(n.offset / n.limit) + 1, s = this.createComponent({
 name: "pagination",
@@ -1792,7 +1792,7 @@ return e.toLowerCase();
 if (wb.constants.isGallery) {
 this.gallerySubset || (this.gallerySubset = _(this.collection.sortBy(function(e) {
 return moment(e).utc().valueOf();
-})).first(30));
+})));
 var n = _(this.gallerySubset).filter(function(e) {
 var n = _(e.get("categories")).keys(), r = _(n).intersection(t), i = n.length > 0 && r.length > 0 && this.$[e.get("observer").get("elggGroup").toLowerCase()].getValue();
 return i;
