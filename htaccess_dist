@@ -18,11 +18,15 @@ DirectoryIndex index.php
 ############################
 # BROWSER CACHING
 
+AddType text/cache-manifest .appcache
+
 # The expires module controls the Expires and Cache-Control headers. Elgg sets
 # these for dynamically generated files so this is just for static files.
 <IfModule mod_expires.c>
 	ExpiresActive On
 	ExpiresDefault "access plus 1 year"
+    ExpiresByType text/html "modification 1 second"
+    ExpiresByType text/cache-manifest "modification 1 minute"
 </IfModule>
 
 # Conditional requests are controlled through Last-Modified and ETag headers.
