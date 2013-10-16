@@ -39,6 +39,7 @@ if ($selected_type == 'all') {
 			));
 
 			$people = elgg_get_entities_from_metadata(array(
+                'type' => 'user',
 				'limit' => 12,
 				'offset' => $offset,
 				'metadata_value' => $type->guid
