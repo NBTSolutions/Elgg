@@ -74,6 +74,16 @@ function investigations_init() {
 		false
 	);
 
+    expose_function(
+        "wb.logout_user",
+        "logout_user",
+        array(),
+        '',
+        'GET',
+        false,
+        false
+    );
+
 	expose_function(
 		"wb.get_invs",
 		"get_invs",
@@ -1452,6 +1462,10 @@ function login_user($username, $password) {
     else {
 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
     }
+}
+
+function logout_user() {
+    return logout();
 }
 
 function get_invs($username, $password) {
