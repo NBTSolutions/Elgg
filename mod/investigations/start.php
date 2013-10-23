@@ -1880,12 +1880,12 @@ function is_logged_in() {
 
     if(elgg_is_logged_in()) {
         $user_guid = elgg_get_logged_in_user_guid();
-        $token = get_user_tokens(elgg_get_logged_in_user_guid());
+        $token = get_user_tokens($user_guid);
         $user = get_user($user_guid);
 
         if($token) {
             return array(   
-                "name" => $user-name,
+                "name" => $user->name,
                 "token" => $token ? $token[0]->token : 0
             );
         }
