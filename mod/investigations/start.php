@@ -1703,7 +1703,8 @@ function get_obs_by_user_type($user_type, $min_date, $max_date) {
 function toggle_like_obs($observation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
-    $token = is_logged_in();
+    $resuls = is_logged_in();
+    $token = $results->token;
     $user_guid = validate_user_token($token, null);
     if($user_guid) {
 
@@ -1878,20 +1879,30 @@ function comment_on_obs($observation_guid, $comment, $token) {
 function is_logged_in() {
 
     if(elgg_is_logged_in()) {
+        $user_guid = elgg_get_logged_in_user_guid();
         $token = get_user_tokens(elgg_get_logged_in_user_guid());
+        $user = get_user($user_guid);
+
         if($token) {
-            return $token ? $token[0]->token : 0;
+            return array(   
+                "name" => $user-name,
+                "token" => $token ? $token[0]->token : 0
+            );
         }
         else {
-           $user_guid = elgg_get_logged_in_user_guid();
-           $user = get_user($user_guid);
-           $token = create_user_token($user->username, PHP_INT_MAX);
+            $token = create_user_token($user->username, PHP_INT_MAX);
 
-           return $token;
+            return array(
+                "name" => $user->name,
+                "token" => $token
+            );    
         }
     }
     else {
-        return 0;
+        return array(
+            "name" => "",
+            "token" => 0
+        );
     }
 }
 
