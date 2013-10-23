@@ -186,7 +186,7 @@ function investigation_discussion_handle_view_page($guid) {
 
 	elgg_set_page_owner_guid($group->getGUID());
 
-	group_gatekeeper();
+	//group_gatekeeper();
 
 	elgg_push_breadcrumb($group->name, "investigation_discussion/owner/$group->guid");
 	elgg_push_breadcrumb($topic->title);
