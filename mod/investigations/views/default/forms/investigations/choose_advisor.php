@@ -14,6 +14,9 @@ $types = elgg_get_entities(array(
 	'limit' => false
 ));
 $type_guids = array();
+
+xdebug_break();
+
 foreach ($types as $type)  {
 	// make sure the title matches the user type we're interested in:
 	if (in_array($type->getTitle(), $GLOBALS['WB_ADVISOR_TYPES'])) {
@@ -22,7 +25,8 @@ foreach ($types as $type)  {
 }
 
 $possibles = elgg_get_entities_from_metadata(array(
-	'metadata_values' => $type_guids
+	'metadata_values' => $type_guids,
+    'limit' => false
 ));
 
 
