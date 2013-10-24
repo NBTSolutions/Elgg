@@ -15,8 +15,6 @@ $types = elgg_get_entities(array(
 ));
 $type_guids = array();
 
-xdebug_break();
-
 foreach ($types as $type)  {
 	// make sure the title matches the user type we're interested in:
 	if (in_array($type->getTitle(), $GLOBALS['WB_ADVISOR_TYPES'])) {
