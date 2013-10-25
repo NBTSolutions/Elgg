@@ -1703,7 +1703,7 @@ function get_obs_by_user_type($user_type, $min_date, $max_date) {
 function toggle_like_obs($observation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
-    $resuls = is_logged_in();
+    $results = is_logged_in();
     $token = $results->token;
     $user_guid = validate_user_token($token, null);
     if($user_guid) {
@@ -1968,7 +1968,8 @@ function get_user_info($user_guid, $icon_size) {
         "username" => $user->username,
         "image" => $user->getIconUrl($icon_size),
         "email" => $user->email,
-        "profile_type" => $profile_type ? $profile_type->getTitle() : ''
+        "profile_type" => $profile_type ? $profile_type->getTitle() : '',
+        "self" => $user->school
     );
 }
 
