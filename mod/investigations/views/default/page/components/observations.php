@@ -88,6 +88,9 @@
     if(elgg_is_logged_in()) {
         $my_obs_like = get_my_obs_like_by_agg_id($vars['observation_agg_id']);
     }
+
+    $logged_in_user_guid = elgg_get_logged_in_user_guid();
+
 ?>
 <!-- start html -->
 <h1 id="obs_measurements_heading">Observation Details</h1>
@@ -102,7 +105,7 @@
         <span id="like_obs" class="obs_link">
             <?php echo $my_obs_like == 1 ? "Unlike" : "Like"; ?>
         </span>
-        <?php if(elgg_is_admin_logged_in() || $obs_user->guid == elgg_get_logged_in_user_guid()) { ?>
+        <?php if(elgg_is_admin_logged_in() || $obs_user->guid == $logged_in_user_guid) { ?>
         <span id="delete_obs" class="obs_link">
             Delete
         </span>
@@ -117,7 +120,7 @@
     <div id="obs_image">
         <img src="<?php echo $picture->url; ?>" id="obs_thumbnail_image">
         <br>
-        <?php if(elgg_is_admin_logged_in()) { ?>
+        <?php if(elgg_is_admin_logged_in() || $logged_in_user_guid == $obs_user->guid) { ?>
         <div id="rotate-container">
             <div class="btn" href="#" id="rotate-counter-clockwise">
                 <i class="icon-undo" ></i><br>Rotate CCW
