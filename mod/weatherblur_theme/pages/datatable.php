@@ -57,6 +57,8 @@ $obj_obs = json_decode($obs_str,true);
 
 $features = $obj_obs["features"];
 
+$users = array();
+$invs = array();
 
 for($y =0; $y < count($features); $y++)
 {
@@ -75,12 +77,17 @@ for($y =0; $y < count($features); $y++)
 	
 	$url_meas = $url_agg."/api/observation/".$m_id."/measurement";
 	
+	if ($ch_f)
+	{
+		curl_setopt($ch, CURLOPT_URL, $url_meas);
+	}
+	else
+	{
+		$ch_f = curl_init($url_meas);
+	}
+	curl_setopt($ch_f, CURLOPT_RETURNTRANSFER, true);
 
-	$ch = curl_init($url_meas);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-	$meas_str = curl_exec($ch);
-	curl_close($ch); 
+	$meas_str = curl_exec($ch_f);
    
     $meas_str = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($meas_str));
 	$obj_meas = json_decode($meas_str,true);
@@ -88,7 +95,6 @@ for($y =0; $y < count($features); $y++)
 	//loop over all obs_meas
 	for ($x = 0; $x < count($obj_meas); $x++)
 	{
-		
 		//check to see if measure is a scalar
 		for ($u = 0; $u < count($obj_sc); $u++)
 		{
@@ -98,35 +104,67 @@ for($y =0; $y < count($features); $y++)
 				
 				//get user name
 				$uguid = $features[$y]["properties"]["observer"]["properties"]["elggId"];
-	
-				$user_url = $url_elgg. "/services/api/rest/json/?method=wb.get_user_info&user_guid=".$uguid."&icon_size=small";
-				$ch = curl_init($user_url);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-				$user_str = curl_exec($ch);
-
-				curl_close($ch); 
-
-				$user = json_decode($user_str,true);
-				$uname = $user["result"]["users_display_name"];
-				if(!$uname)
+				
+				if ($users[$uguid])
 				{
-					$uname = "--";
+					$uname = $users[$uguid];
+				}
+				else
+				{
+					$user_url = $url_elgg. "/services/api/rest/json/?method=wb.get_user_info&user_guid=".$uguid."&icon_size=small";
+					
+					
+					if ($ch_u)
+					{
+						curl_setopt($ch_u, CURLOPT_URL, $user_url);
+					}
+					else
+					{
+						$ch_u = curl_init($user_url);
+					}
+					curl_setopt($ch_u, CURLOPT_RETURNTRANSFER, true);
+
+					$user_str = curl_exec($ch_u);
+					$user = json_decode($user_str,true);
+					$uname = $user["result"]["users_display_name"];
+					if(!$uname)
+					{
+						$uname = "--";
+					}
+					$users[$uguid] = $uname;
 				}
 				
 				//get investigation
-				$url_inv = $url_elgg."/services/api/rest/json/?method=wb.get_inv_by_agg_id&agg_id=".$m_id;
-		
-				$ch = curl_init($url_inv);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-				$inv_str = curl_exec($ch);
-				curl_close($ch);
-				$obj_inv = json_decode($inv_str,true);
-				$inv_name = $obj_inv["result"]["name"];
-				if(!$inv_name)
+				
+				if ($invs[$m_id])
 				{
-					$inv_name = "--";
+					$inv_name = $invs[$m_id];
+				}
+				else
+				{
+					$url_inv = $url_elgg."/services/api/rest/json/?method=wb.get_inv_by_agg_id&agg_id=".$m_id;
+					
+					
+					if ($ch_i)
+					{
+						curl_setopt($ch_i, CURLOPT_URL, $url_inv);
+					}
+					else
+					{
+						$ch_i = curl_init($url_inv);
+					}
+					curl_setopt($ch_i, CURLOPT_RETURNTRANSFER, true);
+
+					$inv_str = curl_exec($ch_i);
+			
+					$obj_inv = json_decode($inv_str,true);
+					$inv_name = $obj_inv["result"]["name"];
+					if(!$inv_name)
+					{
+						$inv_name = "--";
+					}
+					
+					$invs[$m_id] = $inv_name;
 				}
 				
 				
@@ -147,7 +185,10 @@ for($y =0; $y < count($features); $y++)
 	}
 }
 
-//print_r ($aaData);
+//close all connections
+curl_close($ch_f); 
+curl_close($ch_u);
+curl_close($ch_i); 
 $aaObj = array( 'aaData' =>$aaData);
 echo json_encode($aaObj);
 
