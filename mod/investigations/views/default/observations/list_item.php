@@ -23,9 +23,9 @@ $inv = get_entity($inv_guid);
             <img class="obs_image" src='<?php echo elgg_get_site_url(); ?>_graphics/wb-small-data-icons.png'>
             <p class="obs_owner">I recorded an Observation</p>
             <?php if($inv) { ?>
-            <p class="obs_owner">For <?php print $inv->get('name'); ?></p>
+            <p class="obs_owner">For <?php print $inv->get('name') ?></p>
             <?php } ?>
-            <p class="obs_date">On <?php echo date('F nS, Y g:i:s A', $obs->get('time_created') + (3600 * (1 - date('I', $comment->time_created)))); ?></p>
+            <p class="obs_date">On <?php echo date("F j, Y", $obs->get('time_created') ); ?></p>
         </a>
     </div>
 </li>
