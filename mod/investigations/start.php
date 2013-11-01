@@ -1969,7 +1969,7 @@ function get_user_info($user_guid, $icon_size) {
         "image" => $user->getIconUrl($icon_size),
         "email" => $user->email,
         "profile_type" => $profile_type ? $profile_type->getTitle() : '',
-        "self" => $user->school
+        "school" => $user->school
     );
 }
 

@@ -49,6 +49,25 @@
 		$elggHost = 'www.weatherblur.com';
 	}
 
+    $schools = get_schools();
+    $school_list = "<label>Schools</label>";
+    $asdf = 0;
+    foreach($schools as $school) {
+        $people_guid = array();
+        $people = elgg_get_entities_from_metadata(array(
+            "type"	=>	'user',
+            "metadata_name_value_pairs" => array('school' => $school)
+        ));
+        foreach($people as $person) {
+            $people_guid[] = $person->guid;
+        }
+        $school_list .= '
+            <li>
+                <input type="checkbox" value="'.implode(",", $people_guid).'">'.$school.'
+            </li>';
+        
+    }
+
 	$content = '
 			<script>
 $(function() {
@@ -131,7 +150,6 @@ $(document).ready(function() {
 
 			} );
 		</script>
-
         <div class="wb-body">
         <h2 style="text-align:center;padding: 20px">Explore Data</h2>
         <div id="tabs">
@@ -149,6 +167,9 @@ $(document).ready(function() {
 							<div id="peoplepicker">
 								' . elgg_view('explore/graph/personpicker', array('title' => "Or Pick Up To 2 Other Users:")) . '
 							</div>
+                            <div id="school_list">
+                                <ul>'.$school_list.'</ul><br/>
+                            </div>
             </div>
             <div id="tab_mapping"></div>
 			<div id="tab_data">

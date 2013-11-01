@@ -647,3 +647,19 @@ function investigations_prepare_form_vars($group = null) {
 
 	return $values;
 }
+
+function get_schools() {
+    $schools = elgg_get_entities(array(
+        'type' => 'object',
+        'subtype' => CUSTOM_PROFILE_FIELDS_PROFILE_SUBTYPE,
+        'limit' => false
+    ));
+    foreach($schools AS $school) {
+        // that is right I am just taking the first custom profile field that has the title of school
+        if($school->getTitle() == "school") {
+            // just incase someone puts spaces after the commas in the profile manager plugin for the school fields
+            $result = str_replace(', ', '', $school->metadata_options);
+            return explode(',', $result);
+        }
+    }
+}

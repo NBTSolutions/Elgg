@@ -1,5 +1,5 @@
 
-/* ../webapp/App.less */
+/* App.less */
 
 /* Paths */
 /* application importing Onyx Less files will have to override this  */
@@ -43,6 +43,9 @@
 }
 #map {
   background: #1C4266;
+}
+#school_list {
+  display: none;
 }
 /* onyx-classes.less - combined CSS (less) files for all released Onyx controls
    into single onyx.less file to avoid IE bug that allows
@@ -116,7 +119,7 @@
   /* border-bottom: 1px solid rgba(15, 15, 15, 0.5); */
 
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.2);
-  background: #e1e1e1 url(../../src/main/resources/onyx/images/gradient.png) repeat-x bottom;
+  background: #e1e1e1 url(../../resources/onyx/images/gradient.png) repeat-x bottom;
   background-size: contain;
   /**/
 
@@ -137,13 +140,13 @@
 */
 .onyx-button.active,
 .onyx-button.pressed {
-  background-image: url(../../src/main/resources/onyx/images/gradient-invert.png);
+  background-image: url(../../resources/onyx/images/gradient-invert.png);
   background-position: top;
   border-top: 1px solid rgba(15, 15, 15, 0.6);
   box-shadow: inset 0px 1px 0px rgba(0, 0, 0, 0.1);
 }
 .onyx-button:active:hover:not([disabled]) {
-  background-image: url(../../src/main/resources/onyx/images/gradient-invert.png);
+  background-image: url(../../resources/onyx/images/gradient-invert.png);
   background-position: top;
   border-top: 1px solid rgba(15, 15, 15, 0.6);
   box-shadow: inset 0px 1px 0px rgba(0, 0, 0, 0.1);
@@ -164,7 +167,7 @@
   cursor: pointer;
   height: 32px;
   width: 32px;
-  background: url(../../src/main/resources/onyx/images/checkbox.png) no-repeat;
+  background: url(../../resources/onyx/images/checkbox.png) no-repeat;
   /* reset for ? */
 
   margin: 0px;
@@ -181,7 +184,7 @@
 }
 /* Grabber.css */
 .onyx-grabber {
-  background: url(../../src/main/webapp/..resources/onyx/images/grabbutton.png) no-repeat center;
+  background: url(../..resources/onyx/images/grabbutton.png) no-repeat center;
   width: 23px;
   height: 27px;
 }
@@ -193,7 +196,7 @@
   border-radius: 8px;
   padding: 6px;
   color: #ffffff;
-  background: #4c4c4c url(../../src/main/resources/onyx/images/gradient.png) repeat-x 0 bottom;
+  background: #4c4c4c url(../../resources/onyx/images/gradient.png) repeat-x 0 bottom;
 }
 .onyx-popup-decorator {
   position: relative;
@@ -235,7 +238,7 @@
 
   background-color: #4c4c4c;
   border: none;
-  background: #4c4c4c url(../../src/main/resources/onyx/images/gradient.png) repeat-x 0 10px;
+  background: #4c4c4c url(../../resources/onyx/images/gradient.png) repeat-x 0 10px;
 }
 .onyx-groupbox .onyx-input-decorator {
   display: block;
@@ -357,7 +360,7 @@
 }
 /* Submenu.css */
 .onyx-submenu {
-  background: rgba(0, 0, 0, 0.25) url(../../src/main/resources/onyx/images/gradient-invert.png) repeat-x 0 top;
+  background: rgba(0, 0, 0, 0.25) url(../../resources/onyx/images/gradient-invert.png) repeat-x 0 top;
 }
 /* Picker.css */
 .onyx-picker-decorator .onyx-button {
@@ -473,7 +476,7 @@
   text-align: center;
   /**/
 
-  background: #e7e7e7 url(../../src/main/resources/onyx/images/gradient.png) repeat-x bottom;
+  background: #e7e7e7 url(../../resources/onyx/images/gradient.png) repeat-x bottom;
   /* IE8 */
 
   border: 1px solid #333333;
@@ -495,7 +498,7 @@
 }
 .onyx-radiobutton.active {
   color: #ffffff;
-  background: #0091f2 url(../../src/main/resources/onyx/images/gradient-invert.png) repeat-x top;
+  background: #0091f2 url(../../resources/onyx/images/gradient-invert.png) repeat-x top;
   border-top: 1px solid rgba(15, 15, 15, 0.6);
   box-shadow: inset 1px 2px 2px rgba(0, 0, 0, 0.2);
 }
@@ -663,10 +666,10 @@
   height: 16px;
   vertical-align: middle;
   background-repeat: no-repeat;
-  background-image: url(../../src/main/images/close-inactive.png);
+  background-image: url(../../images/close-inactive.png);
 }
 .onyx-tab-item-close:hover {
-  background-image: url(../../src/main/images/close-active.png);
+  background-image: url(../../images/close-active.png);
 }
 /* ToggleButton.css */
 .onyx-toggle-button {
@@ -680,7 +683,7 @@
 
   border-radius: 3px;
   box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.4);
-  background: #8bba3d url(../../src/main/resources/onyx/images/gradient-invert.png) repeat-x bottom;
+  background: #8bba3d url(../../resources/onyx/images/gradient-invert.png) repeat-x bottom;
   background-size: auto 100%;
   /* label */
 
@@ -698,7 +701,7 @@
   height: 30px;
   margin: 1px;
   border-radius: 3px;
-  background: #f6f6f6 url(../../src/main/resources/onyx/images/gradient.png) repeat-x;
+  background: #f6f6f6 url(../../resources/onyx/images/gradient.png) repeat-x;
   background-size: auto 100%;
 }
 .onyx-toggle-button .onyx-toggle-button-knob {
@@ -738,7 +741,7 @@
 
   padding: 9px 8px 10px 8px;
   border: 1px solid #3A3A3A;
-  background: #4c4c4c url(../../src/main/resources/onyx/images/gradient.png) repeat-x 0 bottom;
+  background: #4c4c4c url(../../resources/onyx/images/gradient.png) repeat-x 0 bottom;
   background-size: contain;
   color: #ffffff;
   /**/
@@ -795,7 +798,7 @@
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.2);
   color: #ffffff;
-  background: #216593 url(../../src/main/resources/onyx/images/gradient.png) repeat-x 0 bottom;
+  background: #216593 url(../../resources/onyx/images/gradient.png) repeat-x 0 bottom;
   border-radius: 3px;
   white-space: nowrap;
 }
@@ -852,13 +855,13 @@
   height: 8px;
   border: 1px solid rgba(15, 15, 15, 0.2);
   border-radius: 3px;
-  background: #b8b8b8 url(../../src/main/resources/onyx/images/gradient-invert.png) repeat-x;
+  background: #b8b8b8 url(../../resources/onyx/images/gradient-invert.png) repeat-x;
   background-size: auto 100%;
 }
 .onyx-progress-bar-bar {
   height: 100%;
   border-radius: 3px;
-  background: #58abef url(../../src/main/resources/onyx/images/gradient.png) repeat-x;
+  background: #58abef url(../../resources/onyx/images/gradient.png) repeat-x;
   background-size: auto 100%;
 }
 .onyx-progress-bar-bar.striped {
@@ -952,7 +955,7 @@
   position: relative;
   height: 40px;
   width: 40px;
-  background: url(../../src/main/images/slider-handle.png) left top no-repeat;
+  background: url(../../images/slider-handle.png) left top no-repeat;
   margin: -23px -20px;
 }
 .onyx-slider-knob.active,
@@ -997,10 +1000,10 @@
   width: 59px;
   height: 58px;
   display: inline-block;
-  background: url(../../src/main/images/spinner-dark.gif) no-repeat 0 0;
+  background: url(../../images/spinner-dark.gif) no-repeat 0 0;
 }
 .onyx-spinner.onyx-light {
-  background: url(../../src/main/images/spinner-light.gif) no-repeat 0 0;
+  background: url(../../images/spinner-light.gif) no-repeat 0 0;
 }
 /* MoreToolbar.css */
 .onyx-more-toolbar {
@@ -1024,7 +1027,7 @@
   margin-bottom: 5px;
 }
 .onyx-more-button {
-  background-image: url(../../src/main/images/more.png);
+  background-image: url(../../images/more.png);
   width: 32px;
   height: 32px;
 }
@@ -1387,7 +1390,7 @@
 }
 
 
-/* css/Graph.less */
+/* ../resources/css/Graph.less */
 
 /********* TYPOGRAPHY - LESS VARIABLES *******/
 /* colors */
@@ -1737,5 +1740,313 @@ div.data_popup > div:last-child {
 }
 #graph_popup #graph_popup_message {
   margin-bottom: 15px;
+}
+
+
+/* ../resources/Elgg/mod/weatherblur_theme/css/typography.less */
+
+/********* TYPOGRAPHY - LESS VARIABLES *******/
+/* colors */
+/* simple font functions */
+/*--------------------------------------------------------------
+	NAVIGATION LINKS
+--------------------------------------------------------------*/
+.top-nav {
+  color: #248ebb;
+  font-size: .7em;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.top-nav-hover {
+  color: #2eb8f3;
+  text-decoration: underline;
+}
+.nav-link {
+  color: #555;
+  font-size: .7em;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.nav-link-hover-active {
+  color: #369;
+}
+/*--------------------------------------------------------------
+	H1
+--------------------------------------------------------------*/
+.h1-style {
+  font-size: 1.2em;
+  color: #a28d71;
+  font-weight: 700;
+  font-style: normal;
+  text-decoration: none;
+  font-family: 'Open Sans', Arial, sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 0 1px #ffffff;
+}
+/*--------------------------------------------------------------
+	H2
+--------------------------------------------------------------*/
+.h2-gray {
+  color: #555555;
+}
+.h2-style-blue {
+  color: #0090b6;
+  font-size: 1.2em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.5);
+}
+.h2-style-red {
+  color: #993333;
+  font-size: 1.2em;
+  font-weight: 700;
+}
+/*--------------------------------------------------------------
+	H3
+--------------------------------------------------------------*/
+.h3-blue {
+  color: #0090b6;
+}
+.h3-style-gray {
+  color: #333;
+  font-size: .9em;
+  font-weight: 700;
+}
+/*--------------------------------------------------------------
+	H4
+--------------------------------------------------------------*/
+.h4-style-gray {
+  color: #888;
+  font-size: .7em;
+  font-weight: 400;
+}
+.h4-style-gray-2 {
+  color: #666;
+  font-size: 1em;
+  font-weight: 400;
+}
+/*--------------------------------------------------------------
+	PARAGRAPH
+--------------------------------------------------------------*/
+.p-style {
+  color: #333333;
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.5em;
+}
+/*--------------------------------------------------------------
+	SPAN
+--------------------------------------------------------------*/
+.span-style {
+  color: #b84530;
+}
+/*----------------------------------------------------------------
+	 STYLE TAGS HERE
+-----------------------------------------------------------------*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+th {
+  color: #0090b6;
+}
+p,
+dt,
+dd {
+  color: #333;
+}
+td {
+  color: #666;
+}
+
+
+/* ../resources/Elgg/mod/weatherblur_theme/css/functions.less */
+
+
+
+/* ../resources/Elgg/mod/weatherblur_theme/css/inner_page.less */
+
+/*-----------------------------------------------------------------------
+	IFRAME
+-----------------------------------------------------------------------*/
+iframe {
+  display: block;
+  width: 800px;
+  height: 730px;
+  border: 1px solid #e5e2ce;
+  margin: 0 auto;
+  padding: 0;
+  background: #fff;
+}
+/*-----------------------------------------------------------------------
+	BREADCRUMBS
+-----------------------------------------------------------------------*/
+.elgg-breadcrumbs {
+  padding: 10px 0 10px 0;
+}
+/*-----------------------------------------------------------------------
+	SUBHEADERS
+-----------------------------------------------------------------------*/
+.elgg-layout-one-sidebar > .elgg-main > .elgg-head {
+  border: none;
+}
+/*Gets rid of h2 bottom border*/
+.elgg-list,
+.elgg-list li,
+.elgg-list > .elgg-list-item {
+  /*hides top and bottom borders*/
+
+  border: none;
+}
+/*-----------------------------------------------------------------------
+	BLOG ENTRIES
+-----------------------------------------------------------------------*/
+.elgg-image-block {
+  margin-bottom: 15px;
+  padding: 15px;
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+.elgg-image-block:hover {
+  background: #fff;
+}
+/*-----------------------------------------------------------------------
+	LEFT CONTENT
+-----------------------------------------------------------------------*/
+.elgg-layout {
+  background: #fffde8;
+}
+/*-----------------------------------------------------------------------
+	SIDEBAR
+-----------------------------------------------------------------------*/
+.elgg-sidebar {
+  /*
+	background: #f0eed9;*/
+
+  float: left;
+}
+/***** Sidebar Buttons *****/
+.elgg-menu-item-edit-avatar a,
+.elgg-menu-item-edit-profile a,
+.elgg-menu-item-friends a,
+.elgg-menu-item-friends-of a,
+.elgg-menu-item-friends-view-collections a,
+.elgg-menu-item-invite a,
+.elgg-menu-item-messages-inbox a,
+.elgg-menu-item-messages-sentmessages a {
+  color: #666 !important;
+  border-radius: 5px !important;
+  border: 1px solid #bbb;
+  background: #e6e6e6;
+  background-image: -moz-linear-gradient(#f8f8f8, #eeeeee);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(1, #f8f8f8));
+}
+.elgg-menu-item-edit-avatar a:hover,
+.elgg-menu-item-edit-profile a:hover,
+.elgg-menu-item-friends a:hover,
+.elgg-menu-item-friends-of a:hover,
+.elgg-menu-item-friends-view-collections a:hover,
+.elgg-menu-item-invite a:hover,
+.elgg-menu-item-messages-inbox a:hover,
+.elgg-menu-item-messages-sentmessages a:hover {
+  color: #2e597b !important;
+  border: 1px solid #99c2cc;
+  background: #b4dbe3;
+  background-image: -moz-linear-gradient(#d0ebf3, #b4dbe3);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #b4dbe3), color-stop(1, #d0ebf3));
+}
+.elgg-menu-item-edit-avatar a:active,
+.elgg-menu-item-edit-profile a:active,
+.elgg-menu-item-friends a:active,
+.elgg-menu-item-friends-of a:active,
+.elgg-menu-item-friends-view-collections a:active,
+.elgg-menu-item-invite a:active,
+.elgg-menu-item-messages-inbox a:active,
+.elgg-menu-item-messages-sentmessages a:active {
+  border: 1px solid #fff;
+  -moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) inset;
+  -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) inset;
+  position: relative;
+  top: 1px;
+}
+
+
+/* ../resources/Elgg/mod/weatherblur_theme/css/buttons.less */
+
+/*BLUE BUTTONS*/
+.elgg-button-submit,
+.elgg-foot > .elgg-button-submit {
+  background: #1aa4cc;
+  border: 1px solid #1987a6;
+  color: #fff;
+  text-shadow: 0 1px 1px #000;
+  padding: 5px 10px;
+  -moz-box-shadow: inset 0 1px 0 #5bd1f3;
+  -webkit-box-shadow: inset 0 1px 0 #5bd1f3;
+  box-shadow: inset 0 1px 0 #5bd1f3;
+}
+.elgg-button-submit:hover,
+.elgg-foot > .elgg-button-submit:hover {
+  background: #0090b6;
+}
+.elgg-button-submit:active,
+.elgg-foot > .elgg-button-submit:active {
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset;
+  position: relative;
+  top: 1px;
+}
+/*TAN BUTTONS*/
+.elgg-button-action {
+  background: #e6e4d6;
+  border: 1px solid #bfbdae;
+  color: #666;
+  text-shadow: none;
+  padding: 7px !important;
+  -moz-box-shadow: inset 0 1px 0 #f6f4ea;
+  -webkit-box-shadow: inset 0 1px 0 #f6f4ea;
+  box-shadow: inset 0 1px 0 #f6f4ea;
+}
+.elgg-button-action:hover {
+  background: #d9d6c0;
+  color: #666;
+}
+.elgg-button-action:active {
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset;
+  position: relative;
+  top: 1px;
+}
+/*RED BUTTONS*/
+.elgg-button-cancel {
+  background: #ca495b;
+  border: 1px solid #ac3444;
+  color: #fff;
+  text-shadow: none;
+  padding: 7px !important;
+  -moz-box-shadow: inset 0 1px 0 #fb6378;
+  -webkit-box-shadow: inset 0 1px 0 #fb6378;
+  box-shadow: inset 0 1px 0 #fb6378;
+}
+.elgg-button-cancel:hover {
+  background: #b64050;
+  color: #fff;
+}
+.elgg-button-cancel:active {
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset;
+  position: relative;
+  top: 1px;
 }
 

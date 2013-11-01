@@ -17,6 +17,7 @@
 	define("CUSTOM_PROFILE_FIELDS_PROFILE_TYPE_SUBTYPE", "custom_profile_type");
 	define("CUSTOM_PROFILE_FIELDS_PROFILE_SUBTYPE", "custom_profile_field");
 	define("CUSTOM_PROFILE_FIELDS_GROUP_SUBTYPE", "custom_group_field");
+    define("CUSTOM_PROFILE_FIELDS_SCHOOL", "school");
 	
 	define("CUSTOM_PROFILE_FIELDS_PROFILE_TYPE_CATEGORY_RELATIONSHIP", "custom_profile_type_category_relationship");
 
