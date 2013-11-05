@@ -63,7 +63,7 @@
         }
         $school_list .= '
             <li>
-                <input type="checkbox" value="'.implode(",", $people_guid).'">'.$school.'
+                <input type="checkbox" value="'.implode(",", $people_guid).'"><span class="school_label">'.$school.'</span>
             </li>';
         
     }
