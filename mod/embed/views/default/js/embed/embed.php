@@ -35,7 +35,7 @@ elgg.embed.insert = function(event) {
 	var textArea = $('#' + textAreaId);
 
 	// generalize this based on a css class attached to what should be inserted
-	var content = ' ' + $(this).find(".embed-insert").parent().html() + ' ';
+	var content = ' ' + $(this).find(".embed-insert img").parent().html() + ' ';
 
 	// this is a temporary work-around for #3971
 	if (content.indexOf('thumbnail.php') != -1) {
@@ -49,7 +49,6 @@ elgg.embed.insert = function(event) {
 // See the TinyMCE plugin for an example of this view
 echo elgg_view('embed/custom_insert_js');
 ?>
-
 	$.fancybox.close();
 
 	event.preventDefault();
