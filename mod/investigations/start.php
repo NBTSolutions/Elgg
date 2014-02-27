@@ -98,6 +98,40 @@ function investigations_init() {
 	);
 
     expose_function(
+        "wb.get_all_invs",
+        "get_all_invs",
+        array(),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_disc_by_id",
+        "get_disc_by_id",
+        array(
+            'id' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_inv_by_id",
+        "get_inv_by_id",
+        array(
+            'id' => array('type' => 'int', 'required' => true)
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_invs_by_token",
         "get_invs_by_token",
         array(
@@ -348,6 +382,19 @@ function investigations_init() {
         array(
             'degrees' => array('type' => 'string'),
             'agg_id' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_members",
+        "get_members",
+        array(
+            'page' => array('type' => 'int', 'required' => false),
+            'search' => array('type' => 'string', 'required' => false)
         ),
         '',
         'GET',
@@ -1535,6 +1582,126 @@ function get_invs($username, $password) {
     return $investigations;
 }
 
+function get_all_invs() {
+    $inv = array();
+
+    $results = elgg_get_entities(array(
+        'type_subtype_pair'	=>	array('group' => 'investigation')
+    ));
+
+    foreach($results as $result) {
+        $e = $result->getEntitiesFromRelationship('advisor', true);
+
+        $inv[] = array(
+            "id" => $result->guid,
+            "name" => $result->name,
+            "coordinator" => $result->getOwnerEntity()->get('name'),
+            "advisor" => $e ? $e[0]->get("name") : "",
+            "image" => $result->getIcon("large"),
+            "description" => $result->description
+        );
+    }
+
+    return $inv;
+
+}
+
+function get_disc_by_id($id) {
+    
+    $discussion = array();
+    $comments = array();
+
+    // get discussion object
+    $results = elgg_get_entities(array(
+        'guid' => array($id)
+    ));
+
+    $result = $results[0];
+
+    $elgg_comments = $results[0]->getAnnotations('comment');
+    
+    foreach($elgg_comments as $elgg_comment) {
+
+        $user = get_user($elgg_comment->owner_guid);
+
+        $comments[] = array(
+            'description' => $elgg_comment->value,
+            'like_count' => 0,
+            'user' => array(
+                'id' => $user->guid,
+                'displayname' => $user->name,
+                'username' => $user->username,
+                'image' => $user->getIcon('small')
+            )
+        );
+    }
+
+    $discussion = array(
+        'id' => $result->guid,
+        'name' => $result->title,
+        'description' => $result->description,
+        'comments' => $comments,
+        'like_count' => 0
+    );
+
+    return $discussion;
+
+}
+
+function get_inv_by_id($id) {
+    $discussion_subtype = array('investigationforumtopic_map', 'investigationforumtopic_graph', 'investigationforumtopic_image', 'investigationforumtopic_video', 'investigationforumtopic_text', 'investigationforumtopic');
+    $discussion_return_result = array();
+
+	$discussions = elgg_get_entities(array(
+        'container_guid' => array($id),
+		'type' => 'object',
+		'subtypes' => $discussion_subtype,
+		'order_by' => 'e.last_action desc',
+		'limit' => 20,
+		'full_view' => false,
+	));
+
+
+    foreach($discussions as $discussion) {
+        $discussion_return_result[] = array(
+            'id' => $discussion->guid,
+            'name' => $discussion->title,
+            'description' => $discussion->description,
+            'like_count' => 0,
+            'comment_count' => 10
+        );
+    }
+
+    $result = elgg_get_entities(array(
+        'type_subtype_pair'	=>	array('group' => 'investigation'),
+        'guid' => array($id)
+    ));
+    $result = $result[0];
+
+    $e = $result->getEntitiesFromRelationship('advisor', true);
+
+    $inv = array(
+        "id" => $result->guid,
+        "name" => $result->name,
+        "coordinator" => array(
+            "username" => $e ? $e[0]->get("username") : "",
+            "displayname" => $e ? $e[0]->get("name") : "",
+            "image" => $e ? $e[0]->getIcon("medium") : ""
+        ),
+        "advisor" => array(
+            "username" => $e ? $e[0]->get("username") : "",
+            "displayname" => $e ? $e[0]->get("name") : "",
+            "image" => $e ? $e[0]->getIcon("medium") : ""
+        ),
+        "image" => $result->getIcon("large"),
+        "description" => $result->description,
+        "discussions" => $discussion_return_result
+    );
+
+    return $inv;
+
+}
+
 function get_invs_by_token($token) {
     
     $user_guid = validate_user_token($token, null);
@@ -1971,6 +2138,40 @@ function get_user_info($user_guid, $icon_size) {
         "profile_type" => $profile_type ? $profile_type->getTitle() : '',
         "school" => $user->school
     );
+}
+
+function get_members($page, $search) {
+
+    //$results = get_data("SELECT guid FROM elgg_users_entity WHERE name LIKE '%jo%';");
+    $limit = 12;
+    $offset = $page * $limit;
+
+    $results = elgg_get_entities(array(
+        'types' => 'user',
+        //'callback' => 'my_get_entity_callback',
+        'limit' => $limit,
+        'offset' => $offset,
+        'joins' => array("JOIN {$CONFIG->dbprefix}elgg_users_entity users ON (e.guid = users.guid)"),
+        'wheres' => array("users.name LIKE '%".$search."%' OR users.username LIKE '%".$search."%'")
+    ));
+
+    $members = array();
+
+    foreach($results as $result) {
+        $profile_type_guid = $result->custom_profile_type;
+        $profile_type = get_entity($profile_type_guid);
+
+        $members[] = array(
+            "displayname" => $result->name,
+            "username" => $result->username,
+            "icon" => $result->getIconUrl("large"),
+            "profile_type" => $profile_type ? $profile_type->getTitle() : '',
+            "school" => $result->school
+        );
+
+    }
+
+    return $members;
 }
 
 function delete_obs_by_agg_id($agg_id) {
