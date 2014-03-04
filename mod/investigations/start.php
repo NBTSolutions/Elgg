@@ -1633,7 +1633,9 @@ function get_disc_by_id($id) {
 
     $result = $results[0];
 
+    $ignore = elgg_set_ignore_access(true);
     $elgg_comments = $results[0]->getAnnotations('group_topic_post');
+    elgg_set_ignore_access($ignore);
     
     foreach($elgg_comments as $elgg_comment) {
 
@@ -1677,6 +1679,7 @@ function get_inv_by_id($id) {
     $discussion_subtype = array('investigationforumtopic_map', 'investigationforumtopic_graph', 'investigationforumtopic_image', 'investigationforumtopic_video', 'investigationforumtopic_text', 'investigationforumtopic');
     $discussion_return_result = array();
 
+    $ignore = elgg_set_ignore_access(true);
 	$discussions = elgg_get_entities(array(
         'container_guid' => array($id),
 		'type' => 'object',
@@ -1685,6 +1688,7 @@ function get_inv_by_id($id) {
 		'limit' => 20,
 		'full_view' => false,
 	));
+    elgg_set_ignore_access($ignore);
 
 
     foreach($discussions as $discussion) {
