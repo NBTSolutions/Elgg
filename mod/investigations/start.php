@@ -1703,15 +1703,16 @@ function get_inv_by_id($id) {
     ));
     $result = $result[0];
 
+    $coordinator = get_user($result->owner_guid);
     $e = $result->getEntitiesFromRelationship('advisor', true);
 
     $inv = array(
         "id" => $result->guid,
         "name" => $result->name,
         "coordinator" => array(
-            "username" => $e ? $e[0]->get("username") : "",
-            "displayname" => $e ? $e[0]->get("name") : "",
-            "image" => $e ? $e[0]->getIcon("medium") : ""
+            "username" => $coordinator->get("username"),
+            "displayname" => $coordinator->get("name"),
+            "image" => $coordinator->getIcon("medium")
         ),
         "advisor" => array(
             "username" => $e ? $e[0]->get("username") : "",
