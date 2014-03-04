@@ -120,6 +120,20 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.comment_on_discussion",
+        "comment_on_discussion",
+        array(
+            'id' => array('type' => 'int'),
+            'type' => array('type' => 'string'),
+            'comment' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_inv_by_id",
         "get_inv_by_id",
         array(
@@ -1570,6 +1584,7 @@ function get_invs($username, $password) {
     $investigations = array(
         'user_guid' => intval($user_guid),
         'username' => $username,
+        'icon' => $user->getIcon('small'),
         'token' => $token,
         'investigations' => array()
     );
@@ -1618,7 +1633,7 @@ function get_disc_by_id($id) {
 
     $result = $results[0];
 
-    $elgg_comments = $results[0]->getAnnotations('comment');
+    $elgg_comments = $results[0]->getAnnotations('group_topic_post');
     
     foreach($elgg_comments as $elgg_comment) {
 
@@ -1627,6 +1642,7 @@ function get_disc_by_id($id) {
         $comments[] = array(
             'description' => $elgg_comment->value,
             'like_count' => 0,
+            'date' => elgg_get_friendly_time($elgg_comment->time_created),
             'user' => array(
                 'id' => $user->guid,
                 'displayname' => $user->name,
@@ -1645,6 +1661,15 @@ function get_disc_by_id($id) {
     );
 
     return $discussion;
+
+}
+
+function comment_on_discussion($id, $type, $message) {
+    $results = elgg_get_entities(array(
+        'guid' => array($id)
+    ));
+
+    return $results[0]->annotate($type, $message, -1);
 
 }
 
