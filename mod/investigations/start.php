@@ -98,6 +98,54 @@ function investigations_init() {
 	);
 
     expose_function(
+        "wb.get_all_invs",
+        "get_all_invs",
+        array(),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_disc_by_id",
+        "get_disc_by_id",
+        array(
+            'id' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.comment_on_discussion",
+        "comment_on_discussion",
+        array(
+            'id' => array('type' => 'int'),
+            'type' => array('type' => 'string'),
+            'comment' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_inv_by_id",
+        "get_inv_by_id",
+        array(
+            'id' => array('type' => 'int', 'required' => true)
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_invs_by_token",
         "get_invs_by_token",
         array(
@@ -349,6 +397,76 @@ function investigations_init() {
             'degrees' => array('type' => 'string'),
             'agg_id' => array('type' => 'string')
         ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.create_discussion",
+        "create_discussion",
+        array(
+            'name' => array('type' => 'string'),
+            'description' => array('type' => 'string'),
+            'brief_description' => array('type' => 'string'),
+            'subtype' => array('type' => 'string'),
+            'tags' => array('type' => 'string'),
+            'container_guid' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.create_investigation",
+        "create_investigation",
+        array(
+            'name' => array('type' => 'string'),
+            'description' => array('type' => 'string'),
+            'brief_description' => array('type' => 'string'),
+            'tags' => array('type' => 'string'),
+            'proposal' => array('type' => 'string'),
+            'icon' => array('type' => 'string'),
+            'advisor_guid' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.get_members",
+        "get_members",
+        array(
+            'page' => array('type' => 'int', 'required' => false),
+            'search' => array('type' => 'string', 'required' => false)
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.create_i_wonder',
+        'create_i_wonder',
+        array(
+            'question' => array('type' => 'string'),
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.get_latest_i_wonder_question',
+        'get_latest_i_wonder_question',
+        array(),
         '',
         'GET',
         false,
@@ -1523,6 +1641,7 @@ function get_invs($username, $password) {
     $investigations = array(
         'user_guid' => intval($user_guid),
         'username' => $username,
+        'icon' => $user->getIcon('small'),
         'token' => $token,
         'investigations' => array()
     );
@@ -1533,6 +1652,433 @@ function get_invs($username, $password) {
         );
     }
     return $investigations;
+}
+
+function get_all_invs() {
+    $inv = array();
+
+    $results = elgg_get_entities(array(
+        'type_subtype_pair'	=>	array('group' => 'investigation')
+    ));
+
+    foreach($results as $result) {
+        $e = $result->getEntitiesFromRelationship('advisor', true);
+
+        $inv[] = array(
+            "id" => $result->guid,
+            "name" => $result->name,
+            "coordinator" => $result->getOwnerEntity()->get('name'),
+            "advisor" => $e ? $e[0]->get("name") : "",
+            "image" => $result->getIcon("large"),
+            "description" => $result->description
+        );
+    }
+
+    return $inv;
+
+}
+
+function get_discs_by_inv_id($id, $limit) {
+
+    $ignore = elgg_set_ignore_access();
+	$discussions = elgg_get_entities(array(
+        'container_guid' => array($id),
+		'type' => 'object',
+		'subtypes' => $discussion_subtype,
+		'order_by' => 'e.last_action desc',
+        'limit' => $limit,
+		'full_view' => false
+	));
+    elgg_set_ignore_access($ignore);
+
+    foreach($discussions as $discussion) {
+        $discussion_return_result[] = array(
+            'id' => $discussion->guid,
+            'name' => $discussion->title,
+            'username' => 'john',
+            'displayname' => 'John',
+            'date' => elgg_get_friendly_time($discussion->time_created),
+            'description' => $discussion->description,
+            'like_count' => 0,
+            'comment_count' => 10
+        );
+    }
+
+    return $discussion_return_result;
+}
+
+function get_disc_by_id($id) {
+    
+    $discussion = array();
+    $comments = array();
+
+    // get discussion object
+    $results = elgg_get_entities(array(
+        'guid' => array($id)
+    ));
+
+    $result = $results[0];
+
+    $ignore = elgg_set_ignore_access(true);
+    $elgg_comments = $results[0]->getAnnotations('group_topic_post');
+    elgg_set_ignore_access($ignore);
+    
+    foreach($elgg_comments as $elgg_comment) {
+
+        $user = get_user($elgg_comment->owner_guid);
+
+        $comments[] = array(
+            'description' => $elgg_comment->value,
+            'like_count' => 0,
+            'date' => elgg_get_friendly_time($elgg_comment->time_created),
+            'user' => array(
+                'id' => $user->guid,
+                'displayname' => $user->name,
+                'username' => $user->username,
+                'image' => $user->getIcon('small')
+            )
+        );
+    }
+
+    $discussion = array(
+        'id' => $result->guid,
+        'name' => $result->title,
+        'date' => elgg_get_friendly_time($result->time_created),
+        'description' => $result->description,
+        'comments' => $comments,
+        'like_count' => 0
+    );
+
+    return $discussion;
+
+}
+
+function create_discussion($name, $description, $briefDescription, $subtype, $tags, $container_guid) {
+
+    switch ($subtype) {
+        case 'video':
+            $subtype = "investigationforumtopic_video";
+            break;
+        case 'map':
+            $subtype = "investigationforumtopic_map";
+            break;
+        case 'image':
+            $subtype = "investigationforumtopic_image";
+            break;
+        case 'graph':
+            $subtype = "investigationforumtopic_graph";
+            break;
+        default:
+            $subtype = "investigationforumtopic_text";
+    }
+
+    $title = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+    //$status = get_input("status");
+    $access_id = ACCESS_PUBLIC;
+    //$container_guid = (int) get_input('container_guid');
+    //$guid = (int) get_input('topic_guid');
+    //$tags = get_input("tags");
+
+    // validation of inputs
+    if (!$name || !$description) {
+        throw new Exception('Please enter a name and title');
+    }
+
+    $container = get_entity($container_guid);
+    if (!$container || !$container->canWriteToContainer(0, 'object', $subtype)) {
+        throw new Exception('You do not have permissions to create a discussion on this investigation.');
+    }
+
+    $topic = new ElggObject();
+    $topic->subtype = $subtype;
+    $topic->title = $title;
+    $topic->description = $description;
+    //$topic->status = $status;
+    $topic->access_id = $access_id;
+    $topic->container_guid = $container_guid;
+
+    $tags = explode(",", $tags);
+    $topic->tags = $tags;
+
+    $result = $topic->save();
+
+    if (!$result) {
+        throw new Exception(elgg_echo('discussion:error:notsaved'));
+    }
+
+        add_to_river(array(
+            'view' => 'river/object/groupforumtopic/create',
+            'action_type' => 'create',
+            'subject_guid' => elgg_get_logged_in_user_guid(),
+            'object_guid' => $topic->guid,
+        ));
+
+    return 0;
+}
+
+function get_entity_by_name($name) {
+    
+    $results = elgg_get_entities_from_metadata(array(
+        type => 'group'
+    ));
+
+    foreach($results as $result) {
+        if($result->name == $name) {
+            return $result;
+        }
+    }
+    return false;
+}
+
+function create_i_wonder($question) {
+
+    // if logged in you can ask a question
+    $results = is_logged_in();
+    $token = $results['token'];
+    $user_guid = validate_user_token($token, null);
+
+	if ($user_guid) {
+        // find i wonder investigation
+        // if does not exist create it
+        $i_wonder_name = "I Wonder";
+        $i_wonder_inv = get_entity_by_name($i_wonder_name);
+
+        if($i_wonder_inv == false) {
+            //create investigation
+            $name = "I Wonder";
+            $description = "";
+            $brief_description = "";
+            $tags = "";
+            $proposal = "";
+            $icon = "";
+            $advisor_guid = 0;
+
+            $ignore = elgg_set_ignore_access(true);
+            $i_wonder_inv_guid = create_investigation($name, $description, $brief_description, $tags, $proposal, $icon, $advisor_guid);
+            $i_wonder_inv_guid = $i_wonder_inv_guid['guid'];
+            elgg_set_ignore_access($ignore);
+        }
+        else {
+            $i_wonder_inv_guid = $i_wonder_inv->guid;
+        }
+
+        $name = substr($question, 0, 50) . '...';
+        $description = $question;
+        $brief_description = substr($question, 0, 50) . '...';
+        $subtype = "";
+        $tags = "";
+        $container_guid = $i_wonder_inv_guid;
+
+        // create discussion
+        $ignore = elgg_set_ignore_access(true);
+        create_discussion($name, $description, $brief_description, $subtype, $tags, $container_guid);
+        elgg_set_ignore_access($ignore);
+	}
+    else {
+	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+    }
+
+    return 0;
+}
+
+function get_latest_i_wonder_question() {
+
+    $i_wonder_name = "I Wonder";
+    $limit = 3;
+    $i_wonder_inv = get_entity_by_name($i_wonder_name);
+
+    if($i_wonder_inv != false) {
+        $i_wonder_inv_guid = $i_wonder_inv->guid;
+
+        return get_discs_by_inv_id($i_wonder_inv_guid, $limit);
+    }
+    else {
+	    throw new Exception("No I Wonder Investigation");
+    }
+
+}
+
+// todo get tags to work maybe we don't need them
+function create_investigation($name, $description, $brief_description, $tags, $proposal, $icon, $advisor_guid) {
+
+    // Validate create
+    if (!$name) {
+        throw new Exception(elgg_echo("investigations:notitle"));
+    }
+
+    $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+
+    // get current user
+    $user = elgg_get_logged_in_user_entity();
+
+    if ($user == null) {
+        throw new Exception(elgg_echo("investigations:cantcreate"));
+    }
+
+    $group = new ElggGroup();
+
+    $group->name = $name;
+    $group->description = $description;
+    $group->briefdescription = substr($brief_description, 0, 255) . '...';
+    $group->interests = "";
+    $group->membership = ACCESS_PUBLIC;
+    $group->access_id = ACCESS_PUBLIC;
+    $group->subtype = 'investigation';
+
+    $group->save();
+
+    // after it's been saved up above (in the mess), update the briefdescription
+    // in order to restrict its length:
+    /*
+    $brief = $group->getMetaData('briefdescription');
+    if ($brief && strlen($brief) > 255) {
+        $group->setMetaData('briefdescription', substr($brief, 0, 255) . '...');
+        // Note: this is messy in that it's leaving extra lines in the metastrings
+        // table, but that table is kind of a disaster anyway so it's not worth it
+        // to try and fix.
+    }
+     */
+
+    // store the advisor guid as a relationship:
+    if ($advisor_guid) {
+        $advisor_user = get_user($advisor_guid);
+        remove_entity_relationships($group->guid, 'advisor', true);
+        add_entity_relationship($advisor_guid, 'advisor', $group->guid);
+
+        //if not a member add to investigation
+        if(!$group->isMember($advisor_user)) {
+           investigations_join_investigation($group, $advisor_user);
+        }
+    }
+
+    // @todo this should not be necessary...
+    elgg_set_page_owner_guid($group->guid);
+
+    $group->join($user);
+    add_to_river('river/investigation/create', 'create', $user->guid, $group->guid);
+
+    // proposal test
+    if (!empty($_FILES['proposal']['type'])) {
+        if (strpos($_FILES['proposal']['type'], 'pdf') === false) {
+            throw new Exception('Proposals must be PDF format');
+        } else {
+            // remove any existing proposals before linking
+            // this new one to our investigation:
+            $existing = elgg_get_entities_from_relationship(array(
+                'relationship' => 'proposal',
+                'relationship_guid' => $group->guid,
+                'inverse_relationship' => true
+            ));
+            foreach($existing as $old) {
+                $old->delete();
+            }
+
+            $fh = new ElggFile();
+            $fh->owner_guid = $group->owner_guid;
+            $fh->name = 'proposal_' . $group->guid . '.pdf';
+            $fh->setFilename('groups/proposal_' . $group->guid . '.pdf');
+            $fh->set('file category', 'proposal');
+            $fh->open('write');
+            $fh->write(get_uploaded_file('proposal'));
+            $fh->close();
+            $fh->save();
+
+            remove_entity_relationships($group->guid, 'proposal', true);
+            add_entity_relationship($fh->getGUID(), 'proposal', $group->guid);
+        }
+    }
+
+    $has_uploaded_icon = (!empty($_FILES['icon']['type']) && substr_count($_FILES['icon']['type'], 'image/'));
+
+    if ($has_uploaded_icon) {
+
+        $icon_sizes = elgg_get_config('icon_sizes');
+
+        $prefix = "groups/" . $group->guid;
+
+        $filehandler = new ElggFile();
+        $filehandler->owner_guid = $group->owner_guid;
+        $filehandler->setFilename($prefix . ".jpg");
+        $filehandler->open("write");
+        $filehandler->write(get_uploaded_file('icon'));
+        $filehandler->close();
+        $filename = $filehandler->getFilenameOnFilestore();
+
+        $sizes = array('tiny', 'small', 'medium', 'large');
+
+        $thumbs = array();
+        foreach ($sizes as $size) {
+            $thumbs[$size] = get_resized_image_from_existing_file(
+                $filename,
+                $icon_sizes[$size]['w'],
+                $icon_sizes[$size]['h'],
+                $icon_sizes[$size]['square']
+            );
+        }
+
+        if ($thumbs['tiny']) { // just checking if resize successful
+            $thumb = new ElggFile();
+            $thumb->owner_guid = $group->owner_guid;
+            $thumb->setMimeType('image/jpeg');
+
+            foreach ($sizes as $size) {
+                $thumb->setFilename("{$prefix}{$size}.jpg");
+                $thumb->open("write");
+                $thumb->write($thumbs[$size]);
+                $thumb->close();
+            }
+
+            $group->icontime = time();
+        }
+    }
+    return array(
+        'guid' => $group->guid
+    );
+
+}
+
+function comment_on_discussion($id, $type, $message) {
+    $results = elgg_get_entities(array(
+        'guid' => array($id)
+    ));
+
+    return $results[0]->annotate($type, $message, -1);
+
+}
+
+function get_inv_by_id($id) {
+    $discussion_subtype = array('investigationforumtopic_map', 'investigationforumtopic_graph', 'investigationforumtopic_image', 'investigationforumtopic_video', 'investigationforumtopic_text', 'investigationforumtopic');
+    $discussion_return_result = array();
+
+    $result = elgg_get_entities(array(
+        'type_subtype_pair'	=>	array('group' => 'investigation'),
+        'guid' => array($id)
+    ));
+    $result = $result[0];
+
+    $coordinator = get_user($result->owner_guid);
+    $e = $result->getEntitiesFromRelationship('advisor', true);
+
+    $inv = array(
+        "id" => $result->guid,
+        "name" => $result->name,
+        "coordinator" => array(
+            "username" => $coordinator->get("username"),
+            "displayname" => $coordinator->get("name"),
+            "image" => $coordinator->getIcon("medium")
+        ),
+        "advisor" => array(
+            "username" => $e ? $e[0]->get("username") : "",
+            "displayname" => $e ? $e[0]->get("name") : "",
+            "image" => $e ? $e[0]->getIcon("medium") : ""
+        ),
+        "image" => $result->getIcon("large"),
+        "description" => $result->description,
+        "discussions" => get_discs_by_inv_id($result->guid)
+    );
+
+    return $inv;
+
 }
 
 function get_invs_by_token($token) {
@@ -1971,6 +2517,40 @@ function get_user_info($user_guid, $icon_size) {
         "profile_type" => $profile_type ? $profile_type->getTitle() : '',
         "school" => $user->school
     );
+}
+
+function get_members($page, $search) {
+
+    //$results = get_data("SELECT guid FROM elgg_users_entity WHERE name LIKE '%jo%';");
+    $limit = 12;
+    $offset = $page * $limit;
+
+    $results = elgg_get_entities(array(
+        'types' => 'user',
+        //'callback' => 'my_get_entity_callback',
+        'limit' => $limit,
+        'offset' => $offset,
+        'joins' => array("JOIN {$CONFIG->dbprefix}elgg_users_entity users ON (e.guid = users.guid)"),
+        'wheres' => array("users.name LIKE '%".$search."%' OR users.username LIKE '%".$search."%'")
+    ));
+
+    $members = array();
+
+    foreach($results as $result) {
+        $profile_type_guid = $result->custom_profile_type;
+        $profile_type = get_entity($profile_type_guid);
+
+        $members[] = array(
+            "displayname" => $result->name,
+            "username" => $result->username,
+            "icon" => $result->getIconUrl("large"),
+            "profile_type" => $profile_type ? $profile_type->getTitle() : '',
+            "school" => $result->school
+        );
+
+    }
+
+    return $members;
 }
 
 function delete_obs_by_agg_id($agg_id) {
