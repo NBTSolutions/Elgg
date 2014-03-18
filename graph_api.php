@@ -35,7 +35,7 @@ function connect($creds){
 
 function getObservations(){
 
-    $dataType = $_GET["dataType"];
+    $dataType = $_GET["datatype"];
 
     $people = $_GET["people"];
 
@@ -56,7 +56,7 @@ function getObservations(){
       
       $observerSearch = " AND regexp_replace(unstable_observer.uri, '^.*/', '') IN ('{$peopleString}')";
     }
-    $query =   "SELECT unstable_measurement.value AS temps,
+    $query =   "SELECT unstable_measurement.value AS obsData,
                         unstable_observation.\"timestamp\" AS month 
                  FROM public.unstable_measurement
                  LEFT JOIN public.unstable_observation
@@ -64,7 +64,8 @@ function getObservations(){
                  LEFT JOIN public.unstable_observer
                    ON unstable_observation.observer_id = unstable_observer.id
                  WHERE unstable_observation.timestamp >= '{$startDate}' 
-                   AND unstable_observation.timestamp <= '{$endDate}'".$observerSearch;
+                   AND unstable_observation.timestamp <= '{$endDate}'
+                   AND unstable_measurement.phenomenon_id LIKE '{$dataType}'".$observerSearch;
 
     $prepared = $dbObject->prepare($query);
     
