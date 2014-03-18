@@ -270,6 +270,7 @@ $english = array(
     'river:reply:object:investigationforumtopic_video' => '%s replied on the Video Discussion %s',
 
 	'river:create:object:observation' => "%s created an %s",
+	'river:create:object:observation_with' => "%s created an %s with %s",
 	'investigations:observation' => 'observation',
 	'investigations:nowidgets' => 'No widgets have been defined for this group.',
 

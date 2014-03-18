@@ -120,12 +120,25 @@ function investigations_init() {
     );
 
     expose_function(
-        "wb.comment_on_discussion",
-        "comment_on_discussion",
+        "wb.comment_on",
+        "comment_on",
         array(
             'id' => array('type' => 'int'),
             'type' => array('type' => 'string'),
             'comment' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.get_comments',
+        'get_comments',
+        array(
+            'id' => array('type' => 'int'),
+            'type' => array('type' => 'string')
         ),
         '',
         'GET',
@@ -164,6 +177,21 @@ function investigations_init() {
             'inv_guid' => array('type' => 'int'),
             'token'     => array('type' => 'string'),
             'agg_id'    => array('type' => 'string')
+        ),
+        'Create Observation for an investigation',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.create_obs_2",
+        "create_obs_2",
+        array(
+            'inv_guid'  => array('type' => 'int'),
+            'token'     => array('type' => 'string'),
+            'agg_id'    => array('type' => 'string'),
+            'collaborators' => array('type' => 'string')
         ),
         'Create Observation for an investigation',
         'GET',
@@ -342,6 +370,19 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.get_user_info_by_username",
+        "get_user_info_by_username",
+        array(
+            'username' => array('type' => 'string'),
+            'icon_size' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_user_info_by_agg_id",
         "get_user_info_by_agg_id",
         array(
@@ -421,6 +462,32 @@ function investigations_init() {
     );
 
     expose_function(
+        'wb.create_messageboard',
+        'create_messageboard',
+        array(
+            'description' => array('type' => 'string'),
+            'subtype' => array('type' => 'string'),
+            'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.get_messageboard',
+        'get_messageboard',
+        array(
+            'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.create_investigation",
         "create_investigation",
         array(
@@ -472,6 +539,106 @@ function investigations_init() {
         false,
         false
     );
+
+    expose_function(
+        'wb.get_activities',
+        'get_activities',
+        array(
+            'limit' => array('type' => 'string'),
+            'offset' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.get_obs_by_username',
+        'get_obs_by_username',
+        array(
+            'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.get_user_stats',
+        'get_user_stats',
+        array(
+            'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.get_inv_by_username',
+        'get_inv_by_username',
+        array(
+            'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.comment_on_user_messageboard',
+        'comment_on_user_messageboard',
+        array(
+            'username' => array('type' => 'string'),
+            'comment' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.get_user_messageboard',
+        'get_user_messageboard',
+        array(
+            'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.delete_user',
+        'delete_user',
+        array(
+            'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    /*
+    expose_function(
+        'wb.delete_user',
+        'delete_user',
+        array(
+            'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+    */
 
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
@@ -1692,11 +1859,15 @@ function get_discs_by_inv_id($id, $limit) {
     elgg_set_ignore_access($ignore);
 
     foreach($discussions as $discussion) {
+
+        $user = get_user($discussion->owner_guid);
+
         $discussion_return_result[] = array(
             'id' => $discussion->guid,
             'name' => $discussion->title,
-            'username' => 'john',
-            'displayname' => 'John',
+            'username' => $user->username,
+            'displayname' => $user->name,
+            'userIcon' => $user->getIcon('small'),
             'date' => elgg_get_friendly_time($discussion->time_created),
             'description' => $discussion->description,
             'like_count' => 0,
@@ -1753,7 +1924,99 @@ function get_disc_by_id($id) {
 
 }
 
+// create a thread on a user_guid
+function create_messageboard($description, $subtype, $username) {
+
+    // is user logged in
+    $user = get_user_by_username($username);
+
+    if(!$user) {
+        throw Exception("Please use a valid username to perform this action.");
+    }
+
+    if(!elgg_is_logged_in()) {
+        throw Exception("Please login to perform this action.");
+    }
+
+    switch($subtype) {
+        case 'messageboard':
+            $subtype = "messageboard";
+            break;
+        default:
+            $subtype = "messageboard";
+    }
+
+    $access_id = ACCESS_PUBLIC;
+    $title = $description;
+
+    if(strlen($title) > 64) {
+        $title = substr($title, 0, 45) . '...';
+    }
+
+    $topic = new ElggObject();
+    $topic->subtype = $subtype;
+    $topic->title = $title;
+    $topic->description = $description;
+    $topic->access_id = $access_id;
+    $topic->owner_guid = elgg_get_logged_in_user_guid();
+
+    $result = $topic->save();
+    if (!$result) {
+        throw new Exception(elgg_echo('discussion:error:notsaved'));
+    }
+
+    add_entity_relationship($user->guid, 'messageboard', $topic->guid);
+
+    add_to_river(array(
+        'view' => 'river/object/groupforumtopic/create',
+        'action_type' => 'create',
+        'subject_guid' => elgg_get_logged_in_user_guid(),
+        'object_guid' => $topic->guid,
+    ));
+
+    return $result;
+
+}
+
+function get_messageboard($username) {
+
+    $user = get_user_by_username($username);
+    $messages = array();
+
+    if(!$user) {
+        throw new Exception("Please use a valid username to perform this action.");
+    }
+
+    $results = elgg_get_entities_from_relationship(array(
+        'relationship' => 'messageboard',
+        'relationship_guid' => $user->guid
+    ));
+
+    foreach($results as $result) {
+
+        $owner = get_user($result->owner_guid);
+
+        $messages[] = array(
+            'id' => $result->guid,
+            'title' => $result->title,
+            'date' => elgg_get_friendly_time($result->time_created),
+            'username' => $owner->username,
+            'displayname' => $owner->name,
+            'icon' => $owner->getIcon('tiny')
+
+        );
+    }
+
+    return $messages;
+        
+}
+
+// create a thread on any elgg object using a container_guid
 function create_discussion($name, $description, $briefDescription, $subtype, $tags, $container_guid) {
+
+    if(!elgg_is_logged_in()) {
+        throw new Exception("Please login to perform this action");
+    }
 
     switch ($subtype) {
         case 'video':
@@ -1796,6 +2059,7 @@ function create_discussion($name, $description, $briefDescription, $subtype, $ta
     //$topic->status = $status;
     $topic->access_id = $access_id;
     $topic->container_guid = $container_guid;
+    $topic->owner_guid = elgg_get_logged_in_user_guid();
 
     $tags = explode(",", $tags);
     $topic->tags = $tags;
@@ -1806,12 +2070,12 @@ function create_discussion($name, $description, $briefDescription, $subtype, $ta
         throw new Exception(elgg_echo('discussion:error:notsaved'));
     }
 
-        add_to_river(array(
-            'view' => 'river/object/groupforumtopic/create',
-            'action_type' => 'create',
-            'subject_guid' => elgg_get_logged_in_user_guid(),
-            'object_guid' => $topic->guid,
-        ));
+    add_to_river(array(
+        'view' => 'river/object/groupforumtopic/create',
+        'action_type' => 'create',
+        'subject_guid' => elgg_get_logged_in_user_guid(),
+        'object_guid' => $topic->guid,
+    ));
 
     return 0;
 }
@@ -2037,13 +2301,70 @@ function create_investigation($name, $description, $brief_description, $tags, $p
 
 }
 
-function comment_on_discussion($id, $type, $message) {
+function comment_on($id, $type, $comment) {
+
+    // is user logged in?
+    if(elgg_is_logged_in()) {
+
+        //use annotate
+        $results = elgg_get_entities(array(
+            'guid' => array($id)
+        ));
+
+        $ignore = elgg_set_ignore_access(true);
+        $result = $results[0]->annotate($type, $comment, -1);
+        elgg_set_ignore_access($ignore);
+
+        return $result;
+    }
+    else {
+        throw new Exception("Please login to write to the messageboard");
+    }
+}
+
+function get_comments($id, $type) {
+    
+    $object = array();
+    $comments = array();
+
+    // get object
     $results = elgg_get_entities(array(
         'guid' => array($id)
     ));
 
-    return $results[0]->annotate($type, $message, -1);
+    $result = $results[0];
 
+    $ignore = elgg_set_ignore_access(true);
+    $elgg_comments = $results[0]->getAnnotations($type);
+    elgg_set_ignore_access($ignore);
+    
+    foreach($elgg_comments as $elgg_comment) {
+
+        $user = get_user($elgg_comment->owner_guid);
+
+        $comments[] = array(
+            'description' => $elgg_comment->value,
+            'like_count' => 0,
+            'date' => elgg_get_friendly_time($elgg_comment->time_created),
+            'user' => array(
+                'id' => $user->guid,
+                'displayname' => $user->name,
+                'username' => $user->username,
+                'image' => $user->getIcon('small')
+            )
+        );
+    }
+
+    $object = array(
+        'id' => $result->guid,
+        'name' => $result->title,
+        'date' => elgg_get_friendly_time($result->time_created),
+        'description' => $result->description,
+        'comments' => $comments,
+        'like_count' => 0
+    );
+
+    return $object;
 }
 
 function get_inv_by_id($id) {
@@ -2170,6 +2491,63 @@ function create_obs($inv_guid, $token, $agg_id) {
     }
 }
 
+function create_obs_2($inv_guid, $token, $agg_id, $collaborators) {
+    // are you logged in?
+
+    $collaborators = explode(',', $collaborators);
+
+    $user_guid = validate_user_token($token, null);
+    if($user_guid) {
+        $user = get_user($user_guid);
+        $investigation = get_entity($inv_guid);
+
+        // check if user is part of this investigation
+        if($investigation->isMember($user)) {
+
+            $profile_type_guid = $user->custom_profile_type;
+            $profile_type = get_entity($profile_type_guid);
+
+            $observation = new ElggObject();
+
+            $observation->subtype = "observation";
+            $observation->access_id = 2;
+
+            //this is needed to set the owner_guid
+            $ignore = elgg_set_ignore_access(true);
+            $observation->owner_guid = $user_guid;
+
+            $observation->user_type = $profile_type->getTitle();
+            $observation->agg_id = $agg_id;
+            $observation->save();
+
+            elgg_set_ignore_access($ignore);
+
+            // I can only add metadata after the initial save of a new object
+            $observation->parent_guid = $inv_guid;
+            $observation->save();
+
+            // attached collaborators to it
+            foreach($collaborators as $collaborator) {
+                add_entity_relationship($observation->guid, 'collaborator', $collaborator);
+            }
+
+            // post notification to the river
+            add_to_river('river/object/investigation/create', 'create', $user_guid, $observation->guid);
+
+            return $observation->guid;
+        }
+        //not part of this investigation
+        else {
+            // not a member of this investigation
+            throw new Exception('User not a member of this investigation.');
+        }
+    }
+    else {
+        // not a valid token
+	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+    }
+}
+
 function get_obs() {
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'observation')
@@ -2218,6 +2596,31 @@ function get_obs_by_inv($investigation_guid) {
     }
 
     return $observations;
+}
+
+
+function get_obs_by_username($username) {
+    $user = get_user_by_username($username);
+    $observations = array();
+
+    $results = elgg_get_entities(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "owner_guids" => array($user->guid)
+        //"metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    foreach($results as $observation) {
+		$inv_guid = $observation->parent_guid;
+		$inv = get_entity($inv_guid);
+
+        $observations[] = array(
+            agg_id => $observation->agg_id,
+            investigation => $inv->name
+        );
+    }
+
+    return $observations;
+
 }
 
 function get_obs_by_user_type($user_type, $min_date, $max_date) {
@@ -2431,7 +2834,10 @@ function is_logged_in() {
 
         if($token) {
             return array(   
+                "user_guid" => $user->guid,
                 "name" => $user->name,
+                "username" => $user->username,
+                "icon" => $user->getIcon('tiny'),
                 "token" => $token ? $token[0]->token : 0
             );
         }
@@ -2439,14 +2845,20 @@ function is_logged_in() {
             $token = create_user_token($user->username, PHP_INT_MAX);
 
             return array(
+                "user_guid" => $user->guid,
                 "name" => $user->name,
+                "username" => $user->username,
+                "icon" => $user->getIcon('tiny'),
                 "token" => $token
             );    
         }
     }
     else {
         return array(
+            "user_guid" => 0,
             "name" => "",
+            "username" => "",
+            "icon" => "",
             "token" => 0
         );
     }
@@ -2501,6 +2913,16 @@ function get_inv_by_agg_id($agg_id) {
     }
 }
 
+function get_user_info_by_username($username, $icon_size) {
+    $user = get_user_by_username($username);
+    if($user) {
+        return get_user_info($user->guid, $icon_size);
+    }
+    else {
+        throw Exception('could not find user');
+    }
+}
+
 function get_user_info($user_guid, $icon_size) {
     //get user by user name
     $user = get_user($user_guid);
@@ -2515,7 +2937,8 @@ function get_user_info($user_guid, $icon_size) {
         "image" => $user->getIconUrl($icon_size),
         "email" => $user->email,
         "profile_type" => $profile_type ? $profile_type->getTitle() : '',
-        "school" => $user->school
+        "school" => $user->school,
+        "joined" => elgg_get_friendly_time($user->time_created)
     );
 }
 
@@ -2785,5 +3208,165 @@ function write_to_s3($bucket, $content_type, $image_name, $image_data, $client, 
         'Body'	=> $image_data,
         'ACL'	=> $file_acl
     ));
+}
+
+function get_activities($limit, $offset) {
+
+    $results = elgg_get_river(array(
+        'limit' => $limit,
+        'offset' => $offset
+    ));
+
+    $return_val = array();
+
+    //$results = elgg_list_river(array('limit' => 3), "page/components/homepage-activity-list");
+
+    var_dump($results);
+
+    foreach($results as $result) {
+        var_dump($result->view);
+        $return_val[] = elgg_view($result->view, $result);
+    }
+
+    echo elgg_view('core/river/sidebar')."\n\n";
+
+    return $return_val;
+}
+
+function get_user_stats($username) {
+
+    $user = get_user_by_username($username);
+    $user_guid = $user->guid;
+
+    $relations = get_users_membership($user_guid); //get all the groups the user is belonging
+
+    //count obs
+    $obs = elgg_get_entities( array(
+      'owner_guid' => $user_guid,
+      'type_subtype_pair'	=>	array('object' => 'observation'),
+      'limit' => false
+    ));
+
+    //count maps
+    $maps = elgg_get_entities( array(
+      'owner_guid' => $user_guid,
+      'type' => 'object',
+      'subtype' => 'investigationforumtopic_map',
+      'limit' => false
+    )); 
+
+    //count graphs
+    $graphs = elgg_get_entities( array(
+      'owner_guid' => $user_guid,
+      'type' => 'object',
+      'subtype' => 'investigationforumtopic_graph',
+      'limit' => false
+    ));
+
+    //count imgs
+    $imgs = elgg_get_entities( array(
+      'owner_guid' => $user_guid,
+      'type' => 'object',
+      'subtype' => 'investigationforumtopic_image',
+      'limit' => false
+    ));
+
+    //count video
+    $video = elgg_get_entities( array(
+      'owner_guid' => $user_guid,
+      'type' => 'object',
+      'subtype' => 'investigationforumtopic_video',
+      'limit' => false
+    ));
+
+    //count discussions
+    $disc = elgg_get_entities( array(
+      'owner_guid' => $user_guid,
+      'type' => 'object',
+      'subtype' => 'investigationforumtopic_text',
+      'limit' => false
+    ));
+
+    return array(
+        investigations => count($relations),
+        observations => count($obs),
+        maps => count($maps),
+        graphs => count($graphs),
+        images => count($img),
+        video => count($video),
+        discussions => count($disc)
+    );
+}
+
+function get_inv_by_username($username) {
+    $user = get_user_by_username($username);
+    $user_guid = $user->guid;
+    $investigations = array();
+
+    create_agg_user($user);
+
+    login($user, false);
+
+    $dbprefix = elgg_get_config('dbprefix');
+
+	$results = elgg_get_entities_from_relationship(array(
+        'type_subtype_pair'	=>	array('group' => 'investigation'),
+		'relationship' => 'member',
+		'relationship_guid' => $user_guid,
+		'inverse_relationship' => false,
+		'full_view' => false,
+		'joins' => array("JOIN {$dbprefix}groups_entity ge ON e.guid = ge.guid"),
+		'order_by' => 'ge.name asc'
+	));
+
+    // build out our list of investigation names/ids
+    foreach($results as $result) {
+        $investigations[] = array(
+            'name' => $result->name,
+            'id' => $result->guid
+        );
+    }
+    return $investigations;
+}
+
+function comment_on_user_messageboard($username, $message) {
+    // get user
+    $user = get_user_by_username($username);
+    // user generic comment_on() 
+    return comment_on($user->guid, 'messageboard', $comment);
+}
+
+// todo add some limit?
+function get_user_messageboard($username) {
+    //get user
+    $user = get_user_by_username($username);
+    
+    // call generic get_comments()
+    // return get_comments($user->guid, )
+}
+
+function delete_user($username) {
+
+    $user = get_user_by_username($username);
+    if(!$user) {
+        throw new Exception('Not a valid username');
+    }
+
+    $logged_in_user = elgg_get_logged_in_user_entity();
+    
+    // allow deletion if you are and admin or this user
+    if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->guid != $user->guid && !elgg_is_admin_logged_in())) {
+        throw new Exception('You need to be logged in either as an admin or as '.$username.' to delete this user.');
+    }
+    
+    //$result = $user->delete(true);
+    $result = array(
+        'am-i-logged-in?' => elgg_is_logged_in(),
+        'am-i-an-admin' => elgg_is_admin_logged_in(),
+        'logged-in-user' => $logged_in_user->guid,
+        'username' => $user->guid
+    );
+
+    return $result;
 }
 
