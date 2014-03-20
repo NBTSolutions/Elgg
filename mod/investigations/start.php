@@ -2968,7 +2968,8 @@ function get_members($page, $search) {
             "username" => $result->username,
             "icon" => $result->getIconUrl("large"),
             "profile_type" => $profile_type ? $profile_type->getTitle() : '',
-            "school" => $result->school
+            "school" => $result->school,
+            "id" => $result->guid
         );
 
     }
