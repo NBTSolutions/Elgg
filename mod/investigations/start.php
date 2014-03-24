@@ -2932,13 +2932,25 @@ function get_user_info($user_guid, $icon_size) {
     $profile_type = get_entity($profile_type_guid);
 
     return array(
+        "id" => $user->guid,
         "users_display_name" => $user->name,
         "username" => $user->username,
         "image" => $user->getIconUrl($icon_size),
         "email" => $user->email,
         "profile_type" => $profile_type ? $profile_type->getTitle() : '',
+        "joined" => elgg_get_friendly_time($user->time_created),
+        "description" => $user->description,
+        "brief_description" => $user->briefdescription,
+        "location" => $user->location,
+        "interests" => $user->interests,
+        "skills" => $user->skills,
+        "contactemail" => $user->contactemail,
+        "phone" => $user->phone,
+        "mobile" => $user->mobile,
+        "website" => $user->website,
+        "twitter" => $user->twitter,
         "school" => $user->school,
-        "joined" => elgg_get_friendly_time($user->time_created)
+        "video" => $user->video
     );
 }
 
@@ -2975,6 +2987,15 @@ function get_members($page, $search) {
     }
 
     return $members;
+}
+
+function get_people_picker_people($search) {
+    // get people
+    
+    // get school
+
+    // get people from school
+
 }
 
 function delete_obs_by_agg_id($agg_id) {
