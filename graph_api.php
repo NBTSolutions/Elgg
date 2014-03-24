@@ -221,9 +221,19 @@ function getHistoricalData(){
 
       $dataToWrite = json_encode($resultsArray);
 
-      file_put_contents($fileString, $dataToWrite);
+      // Make sure to preserve cache from being overwritten with empty results
+      if($dataToWrite === '[]'){
 
-      return file_get_contents($fileString);
+        return file_get_contents($fileString);
+      
+      }
+      else{
+
+        file_put_contents($fileString, $dataToWrite);
+
+        return file_get_contents($fileString);
+
+      }
 
     }
       
