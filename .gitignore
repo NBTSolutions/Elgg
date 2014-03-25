@@ -61,3 +61,6 @@ Desktop.ini
 
 # don't ignore travis config
 !/.travis.yml
+
+# ignore noaa cache changes
+noaa_cache/*
