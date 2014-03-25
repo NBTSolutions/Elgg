@@ -128,6 +128,16 @@ elgg_register_event_handler('init', 'system', 'weatherblur_theme_init');
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/enterdata.php';
 			return true;
 		}
+        if($segments[0] == 'activities')
+        {
+
+            $user = get_user_by_username($_GET['username']);
+
+		    echo elgg_list_river(array('subject_guids' => $user->guid), "page/components/json_activity_feed");
+		    //echo elgg_list_river(array(), "components/json_activity_feed");
+
+            return true;
+        }
 		if ($segments[0] == 'investigate')
 		{
 			include elgg_get_plugins_path() . 'weatherblur_theme/pages/investigate.php';

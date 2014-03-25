@@ -229,8 +229,11 @@ function investigations_init() {
     expose_function(
         "wb.get_obs",
         "get_obs",
-        array(),
-        'Get observations from an investigation',
+        array(
+            'limit' => array('type' => 'int', 'required' => false),
+            'offset' => array('type' => 'int', 'required' => false)
+        ),
+        'Get observations',
         'GET',
         false,
         false
@@ -554,6 +557,19 @@ function investigations_init() {
     );
 
     expose_function(
+        'wb.get_news',
+        'get_news',
+        array(
+            'limit' => array('type' => 'string'),
+            'offset' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         'wb.get_obs_by_username',
         'get_obs_by_username',
         array(
@@ -590,31 +606,6 @@ function investigations_init() {
     );
 
     expose_function(
-        'wb.comment_on_user_messageboard',
-        'comment_on_user_messageboard',
-        array(
-            'username' => array('type' => 'string'),
-            'comment' => array('type' => 'string')
-        ),
-        '',
-        'GET',
-        false,
-        false
-    );
-
-    expose_function(
-        'wb.get_user_messageboard',
-        'get_user_messageboard',
-        array(
-            'username' => array('type' => 'string')
-        ),
-        '',
-        'GET',
-        false,
-        false
-    );
-
-    expose_function(
         'wb.delete_user',
         'delete_user',
         array(
@@ -625,20 +616,6 @@ function investigations_init() {
         false,
         false
     );
-
-    /*
-    expose_function(
-        'wb.delete_user',
-        'delete_user',
-        array(
-            'username' => array('type' => 'string')
-        ),
-        '',
-        'GET',
-        false,
-        false
-    );
-    */
 
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
@@ -1845,7 +1822,9 @@ function get_all_invs() {
 
 }
 
-function get_discs_by_inv_id($id, $limit) {
+function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) {
+
+    $user_guid = elgg_get_logged_in_user_guid();
 
     $ignore = elgg_set_ignore_access();
 	$discussions = elgg_get_entities(array(
@@ -1856,11 +1835,18 @@ function get_discs_by_inv_id($id, $limit) {
         'limit' => $limit,
 		'full_view' => false
 	));
-    elgg_set_ignore_access($ignore);
 
     foreach($discussions as $discussion) {
 
         $user = get_user($discussion->owner_guid);
+        $likes = $discussion->getAnnotations('likes');
+        $i_liked = false;
+
+        foreach($likes as $like) {
+            if($like->owner_guid == $user_guid) {
+                $i_liked = true;
+            }
+        }
 
         $discussion_return_result[] = array(
             'id' => $discussion->guid,
@@ -1870,10 +1856,12 @@ function get_discs_by_inv_id($id, $limit) {
             'userIcon' => $user->getIcon('small'),
             'date' => elgg_get_friendly_time($discussion->time_created),
             'description' => $discussion->description,
-            'like_count' => 0,
-            'comment_count' => 10
+            'like_count' => count($likes),
+            'i_liked' => $i_liked,
+            'comment_count' => count($discussion->getAnnotations('group_topic_post'))
         );
     }
+    elgg_set_ignore_access($ignore);
 
     return $discussion_return_result;
 }
@@ -1946,6 +1934,7 @@ function create_messageboard($description, $subtype, $username) {
             $subtype = "messageboard";
     }
 
+    $logged_in_user_guid = elgg_get_logged_in_user_guid();
     $access_id = ACCESS_PUBLIC;
     $title = $description;
 
@@ -1967,12 +1956,14 @@ function create_messageboard($description, $subtype, $username) {
 
     add_entity_relationship($user->guid, 'messageboard', $topic->guid);
 
-    add_to_river(array(
-        'view' => 'river/object/groupforumtopic/create',
-        'action_type' => 'create',
-        'subject_guid' => elgg_get_logged_in_user_guid(),
-        'object_guid' => $topic->guid,
-    ));
+    $result = add_to_river(
+        'river/object/groupforumtopic/create',
+        'post',
+        $logged_in_user_guid,
+        $topic->guid
+    );
+
+    var_dump($logged_in_user_guid);
 
     return $result;
 
@@ -2129,7 +2120,7 @@ function create_i_wonder($question) {
         $name = substr($question, 0, 50) . '...';
         $description = $question;
         $brief_description = substr($question, 0, 50) . '...';
-        $subtype = "";
+        $subtype = "investigationforumtopic_text";
         $tags = "";
         $container_guid = $i_wonder_inv_guid;
 
@@ -2306,13 +2297,19 @@ function comment_on($id, $type, $comment) {
     // is user logged in?
     if(elgg_is_logged_in()) {
 
+        $user_guid = elgg_get_logged_in_user_guid();
+
         //use annotate
         $results = elgg_get_entities(array(
             'guid' => array($id)
         ));
 
         $ignore = elgg_set_ignore_access(true);
-        $result = $results[0]->annotate($type, $comment, -1);
+        $reply_id = $results[0]->annotate($type, $comment, -1);
+
+        $result = add_to_river('river/annotation/group_topic_post/reply', 'reply', $user_guid, $id, "", 0, $reply_id);
+        //$result = add_to_river('river/object/groupforumtopic/create', 'reply', $user_guid, $id, '', 0, $reply_id);
+	    //add_to_river('river/annotation/group_topic_post/reply', 'reply', $user->guid, $topic->guid, "", 0, $reply_id);
         elgg_set_ignore_access($ignore);
 
         return $result;
@@ -2326,6 +2323,7 @@ function get_comments($id, $type) {
     
     $object = array();
     $comments = array();
+    $user_guid = elgg_get_logged_in_user_guid();
 
     // get object
     $results = elgg_get_entities(array(
@@ -2333,6 +2331,14 @@ function get_comments($id, $type) {
     ));
 
     $result = $results[0];
+    $discussion_likes = $result->getAnnotations('likes');
+    $i_liked = false;
+
+    foreach($discussion_likes as $discussion_like) {
+        if($discussion_like->owner_guid == $user_guid) {
+            $i_liked = true;
+        }
+    }
 
     $ignore = elgg_set_ignore_access(true);
     $elgg_comments = $results[0]->getAnnotations($type);
@@ -2361,7 +2367,8 @@ function get_comments($id, $type) {
         'date' => elgg_get_friendly_time($result->time_created),
         'description' => $result->description,
         'comments' => $comments,
-        'like_count' => 0
+        'like_count' => count(discussion_likes),
+        'i_liked' => $i_liked
     );
 
     return $object;
@@ -2377,12 +2384,15 @@ function get_inv_by_id($id) {
     ));
     $result = $result[0];
 
+    $inv_likes = $result->getAnnotations('likes');
+
     $coordinator = get_user($result->owner_guid);
     $e = $result->getEntitiesFromRelationship('advisor', true);
 
     $inv = array(
         "id" => $result->guid,
         "name" => $result->name,
+        "like_count" => count($inv_likes),
         "coordinator" => array(
             "username" => $coordinator->get("username"),
             "displayname" => $coordinator->get("name"),
@@ -2395,7 +2405,7 @@ function get_inv_by_id($id) {
         ),
         "image" => $result->getIcon("large"),
         "description" => $result->description,
-        "discussions" => get_discs_by_inv_id($result->guid)
+        "discussions" => get_discs_by_inv_id($result->guid, null, $discussion_subtype)
     );
 
     return $inv;
@@ -2548,9 +2558,11 @@ function create_obs_2($inv_guid, $token, $agg_id, $collaborators) {
     }
 }
 
-function get_obs() {
+function get_obs($offset, $limit) {
     $results = elgg_get_entities(array(
-        'type_subtype_pair'	=>	array('object' => 'observation')
+        'type_subtype_pair'	=>	array('object' => 'observation'),
+        'limit' => $limit,
+        'offset' => $offset
     ));
 
     $obs = array();
@@ -2614,8 +2626,11 @@ function get_obs_by_username($username) {
 		$inv = get_entity($inv_guid);
 
         $observations[] = array(
+            id => $observation->guid,
             agg_id => $observation->agg_id,
-            investigation => $inv->name
+            investigation => $inv->name,
+            date => elgg_get_friendly_time($observation->time_created),
+            inv_id => $inv->guid
         );
     }
 
@@ -3232,6 +3247,33 @@ function write_to_s3($bucket, $content_type, $image_name, $image_data, $client, 
     ));
 }
 
+function get_news($limit, $offset) {
+    
+    $news = array();
+
+    $results = elgg_get_entities(array(
+        'type_subtype_pair'	=>	array('object' => 'news'),
+        'limit' => $limit,
+        'offset' => $offset
+    ));
+
+    foreach($results as $result) {
+        $user = get_user($result->owner_guid);
+
+        $news[] = array(
+            'displayname' => $user->name,
+            'username' => $user->username,
+            'userIcon' => $user->getIcon('small'),
+            'title' => $result->title,
+            'description' => $result->description,
+            'excerpt' => $result->excerpt,
+            'date' => elgg_get_friendly_time($result->time_created)
+        );
+    }
+
+    return $news;
+}
+
 function get_activities($limit, $offset) {
 
     $results = elgg_get_river(array(
@@ -3242,8 +3284,6 @@ function get_activities($limit, $offset) {
     $return_val = array();
 
     //$results = elgg_list_river(array('limit' => 3), "page/components/homepage-activity-list");
-
-    var_dump($results);
 
     foreach($results as $result) {
         var_dump($result->view);
@@ -3351,22 +3391,6 @@ function get_inv_by_username($username) {
     return $investigations;
 }
 
-function comment_on_user_messageboard($username, $message) {
-    // get user
-    $user = get_user_by_username($username);
-    // user generic comment_on() 
-    return comment_on($user->guid, 'messageboard', $comment);
-}
-
-// todo add some limit?
-function get_user_messageboard($username) {
-    //get user
-    $user = get_user_by_username($username);
-    
-    // call generic get_comments()
-    // return get_comments($user->guid, )
-}
-
 function delete_user($username) {
 
     $user = get_user_by_username($username);
@@ -3381,13 +3405,14 @@ function delete_user($username) {
         throw new Exception('You need to be logged in either as an admin or as '.$username.' to delete this user.');
     }
     
-    //$result = $user->delete(true);
     $result = array(
         'am-i-logged-in?' => elgg_is_logged_in(),
         'am-i-an-admin' => elgg_is_admin_logged_in(),
         'logged-in-user' => $logged_in_user->guid,
         'username' => $user->guid
     );
+
+    $result = $user->delete(true);
 
     return $result;
 }
