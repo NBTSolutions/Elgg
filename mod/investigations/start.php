@@ -617,6 +617,57 @@ function investigations_init() {
         false
     );
 
+    expose_function(
+        'wb.create_user',
+        'create_user',
+        array(
+            'displayname' => array('type' => 'string'),
+            'username' => array('type' => 'string'),
+            'email' => array('type' => 'string'),
+            'password' => array('type' => 'string'),
+            'password2' => array('type' => 'string'),
+            'profile_type' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.get_profile_type',
+        'get_profile_type',
+        array(),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.user_exists_by_email',
+        'user_exists_by_email',
+        array(
+            'email' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.user_exists_by_username',
+        'user_exists_by_username',
+        array(
+            'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
 
@@ -3417,3 +3468,113 @@ function delete_user($username) {
     return $result;
 }
 
+function create_user($displayname, $username, $email, $password, $password2, $profile_type) {
+
+    $name = $displayname;
+    var_dump(array(
+        displayname => $displayname, 
+        username => $username, 
+        email => $email, 
+        password => $password, 
+        password2 => $password2, 
+        profile_type => $profile_type
+    ));
+
+        try {
+            if (trim($password) == "" || trim($password2) == "") {
+                throw new RegistrationException(elgg_echo('RegistrationException:EmptyPassword'));
+            }
+
+            if (strcmp($password, $password2) != 0) {
+                throw new RegistrationException(elgg_echo('RegistrationException:PasswordMismatch'));
+            }
+
+            $guid = register_user($username, $password, $name, $email, false);
+            return $guid;
+
+            if ($guid) {
+                $new_user = get_entity($guid);
+
+                // allow plugins to respond to self registration
+                // note: To catch all new users, even those created by an admin,
+                // register for the create, user event instead.
+                // only passing vars that aren't in ElggUser.
+                $params = array(
+                    'user' => $new_user,
+                    'password' => $password,
+                    'friend_guid' => $friend_guid,
+                    'invitecode' => $invitecode
+                );
+                $new_user->custom_profile_type = $profile_type;
+                 return $new_user->save();
+
+                // @todo should registration be allowed no matter what the plugins return?
+                if (!elgg_trigger_plugin_hook('register', 'user', $params, TRUE)) {
+                    $ia = elgg_set_ignore_access(true);
+                    $new_user->delete();
+                    elgg_set_ignore_access($ia);
+                    // @todo this is a generic messages. We could have plugins
+                    // throw a RegistrationException, but that is very odd
+                    // for the plugin hooks system.
+                    throw new RegistrationException(elgg_echo('registerbad'));
+                }
+
+                //system_message(elgg_echo("registerok", array(elgg_get_site_entity()->name)));
+
+                // if exception thrown, this probably means there is a validation
+                // plugin that has disabled the user
+                try {
+                    login($new_user);
+                } catch (LoginException $e) {
+                    // do nothing
+                }
+
+                // Forward on success, assume everything else is an error...
+                //forward();
+            } else {
+                throw new RegistrationException('There was some problem registering a new user please try again.');
+            }
+        } catch (RegistrationException $r) {
+            throw new RegistrationException($r->getMessage());
+        }
+
+}
+
+function user_exists_by_email($email) {
+    $result = get_user_by_email($email);
+
+    return array(
+        exists => (count($result) > 0)
+    );
+}
+
+function user_exists_by_username($username) {
+    $result = get_user_by_username($username);
+
+    return array(
+        exists => ($result != false)
+    );
+}
+
+function get_profile_type() {
+
+    $dbprefix = elgg_get_config('dbprefix');
+
+    $profile_type = array();
+
+    $results = elgg_get_entities(array(
+        'type_subtype_pair'	=>	array('object' => 'custom_profile_type')
+    ));
+
+    foreach($results as $result) {
+
+        $label = get_metadata_byname($result->guid, 'metadata_label')->value;
+
+        $profile_type[] = array(
+            id => $result->guid,
+            label => $label
+        );
+    }
+
+    return $profile_type;
+}
