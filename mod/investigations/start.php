@@ -497,10 +497,10 @@ function investigations_init() {
             'name' => array('type' => 'string'),
             'description' => array('type' => 'string'),
             'brief_description' => array('type' => 'string'),
-            'tags' => array('type' => 'string'),
-            'proposal' => array('type' => 'string'),
-            'icon' => array('type' => 'string'),
-            'advisor_guid' => array('type' => 'int')
+            'tags' => array('type' => 'string', 'required' => false),
+            'proposal' => array('type' => 'string', 'required' => false),
+            'icon' => array('type' => 'string', 'required' => false),
+            'advisor_guid' => array('type' => 'int', 'required' => false)
         ),
         '',
         'GET',
@@ -2668,7 +2668,8 @@ function get_obs_by_username($username) {
 
     $results = elgg_get_entities(array(
         "type_subtype_pair"	=>	array('object' => 'observation'),
-        "owner_guids" => array($user->guid)
+        "owner_guids" => array($user->guid),
+        "limit" => 4
         //"metadata_name_value_pairs" => array('agg_id' => $agg_id)
     ));
 
