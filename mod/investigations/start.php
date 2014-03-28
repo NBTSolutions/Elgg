@@ -509,6 +509,25 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.edit_investigation",
+        "edit_investigation",
+        array(
+            'guid' => array('type' => 'int'),
+            'name' => array('type' => 'string'),
+            'description' => array('type' => 'string'),
+            'brief_description' => array('type' => 'string'),
+            'tags' => array('type' => 'string', 'required' => false),
+            'proposal' => array('type' => 'string', 'required' => false),
+            'icon' => array('type' => 'string', 'required' => false),
+            'advisor_guid' => array('type' => 'int', 'required' => false)
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_members",
         "get_members",
         array(
@@ -661,6 +680,18 @@ function investigations_init() {
         'user_exists_by_username',
         array(
             'username' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.delete_investigation',
+        'delete_investigation',
+        array(
+            'guid' => array('type' => 'int')
         ),
         '',
         'GET',
@@ -2204,6 +2235,163 @@ function get_latest_i_wonder_question() {
 
 }
 
+function delete_investigation($guid) {
+
+    $entity = get_entity($guid);
+
+    if (($entity) && ($entity instanceof ElggGroup)) {
+
+        $logged_in_user = elgg_get_logged_in_user_entity();
+
+        // allow deletion if you are and admin or this user
+        if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->guid != $entity->owner_guid && !elgg_is_admin_logged_in())) {
+            throw new Exception('You need to be logged in either as an admin or as the investigation owner to delete this investigation.');
+        }
+        
+        // delete group icons
+        $owner_guid = $entity->owner_guid;
+        $prefix = "groups/" . $entity->guid;
+        $imagenames = array('.jpg', 'tiny.jpg', 'small.jpg', 'medium.jpg', 'large.jpg');
+        $img = new ElggFile();
+        $img->owner_guid = $owner_guid;
+        foreach ($imagenames as $name) {
+            $img->setFilename($prefix . $name);
+            $img->delete();
+        }
+
+        // delete group
+        $result = $entity->delete();
+        if($result) {
+            return true;
+        } else {
+            throw new Exception('Deletion was not successful');
+        }
+    } else {
+        throw new Exception('Not a valid Investigation guid');
+    }
+
+}
+
+function edit_investigation($guid, $name, $description, $brief_description, $tags, $proposal, $icon, $advisor_guid) {
+
+    $inv = get_entity($guid);
+
+    if (($inv) && ($inv instanceof ElggGroup)) {
+
+        $logged_in_user = elgg_get_logged_in_user_entity();
+
+        // allow deletion if you are and admin or this user
+        if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->guid != $inv->owner_guid && !elgg_is_admin_logged_in())) {
+            throw new Exception('You need to be logged in either as an admin or as the investigation owner to delete this investigation.');
+        }
+
+        $inv->name = $name;
+        $inv->description = $description;
+        $inv->briefdescription = substr($brief_description, 0, 255) . '...';
+        $inv->interests = "";
+        $inv->membership = ACCESS_PUBLIC;
+        $inv->access_id = ACCESS_PUBLIC;
+        $inv->subtype = 'investigation';
+
+        $inv->save();
+
+        // store the advisor guid as a relationship:
+        if ($advisor_guid) {
+            $advisor_user = get_user($advisor_guid);
+            remove_entity_relationships($inv->guid, 'advisor', true);
+            add_entity_relationship($advisor_guid, 'advisor', $inv->guid);
+
+            //if not a member add to investigation
+            if(!$inv->isMember($advisor_user)) {
+               investigations_join_investigation($inv, $advisor_user);
+            }
+        }
+
+        // proposal test
+        if (!empty($_FILES['proposal']['type'])) {
+            if (strpos($_FILES['proposal']['type'], 'pdf') === false) {
+                throw new Exception('Proposals must be PDF format');
+            } else {
+                // remove any existing proposals before linking
+                // this new one to our investigation:
+                $existing = elgg_get_entities_from_relationship(array(
+                    'relationship' => 'proposal',
+                    'relationship_guid' => $inv->guid,
+                    'inverse_relationship' => true
+                ));
+                foreach($existing as $old) {
+                    $old->delete();
+                }
+
+                $fh = new ElggFile();
+                $fh->owner_guid = $inv->owner_guid;
+                $fh->name = 'proposal_' . $inv->guid . '.pdf';
+                $fh->setFilename('groups/proposal_' . $inv->guid . '.pdf');
+                $fh->set('file category', 'proposal');
+                $fh->open('write');
+                $fh->write(get_uploaded_file('proposal'));
+                $fh->close();
+                $fh->save();
+
+                remove_entity_relationships($inv->guid, 'proposal', true);
+                add_entity_relationship($fh->getGUID(), 'proposal', $inv->guid);
+            }
+        }
+
+        $has_uploaded_icon = (!empty($_FILES['icon']['type']) && substr_count($_FILES['icon']['type'], 'image/'));
+
+        if ($has_uploaded_icon) {
+
+            $icon_sizes = elgg_get_config('icon_sizes');
+
+            $prefix = "groups/" . $inv->guid;
+
+            $filehandler = new ElggFile();
+            $filehandler->owner_guid = $inv->owner_guid;
+            $filehandler->setFilename($prefix . ".jpg");
+            $filehandler->open("write");
+            $filehandler->write(get_uploaded_file('icon'));
+            $filehandler->close();
+            $filename = $filehandler->getFilenameOnFilestore();
+
+            $sizes = array('tiny', 'small', 'medium', 'large');
+
+            $thumbs = array();
+            foreach ($sizes as $size) {
+                $thumbs[$size] = get_resized_image_from_existing_file(
+                    $filename,
+                    $icon_sizes[$size]['w'],
+                    $icon_sizes[$size]['h'],
+                    $icon_sizes[$size]['square']
+                );
+            }
+
+            if ($thumbs['tiny']) { // just checking if resize successful
+                $thumb = new ElggFile();
+                $thumb->owner_guid = $inv->owner_guid;
+                $thumb->setMimeType('image/jpeg');
+
+                foreach ($sizes as $size) {
+                    $thumb->setFilename("{$prefix}{$size}.jpg");
+                    $thumb->open("write");
+                    $thumb->write($thumbs[$size]);
+                    $thumb->close();
+                }
+
+                $inv->icontime = time();
+            }
+        }
+        return array(
+            'guid' => $inv->guid
+        );
+
+    } 
+    else {
+        throw new Exception('Not a valid Investigation guid');
+    }
+
+}
+
 // todo get tags to work maybe we don't need them
 function create_investigation($name, $description, $brief_description, $tags, $proposal, $icon, $advisor_guid) {
 
@@ -2456,6 +2644,7 @@ function get_inv_by_id($id) {
         ),
         "image" => $result->getIcon("large"),
         "description" => $result->description,
+        "briefDescription" => $result->description,
         "discussions" => get_discs_by_inv_id($result->guid, null, $discussion_subtype)
     );
 
@@ -3579,3 +3768,4 @@ function get_profile_type() {
 
     return $profile_type;
 }
+
