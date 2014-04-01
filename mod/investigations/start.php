@@ -138,7 +138,9 @@ function investigations_init() {
         'get_comments',
         array(
             'id' => array('type' => 'int'),
-            'type' => array('type' => 'string')
+            'type' => array('type' => 'string'),
+            'limit' => array('type' => 'int', 'required' => false),
+            'offset' => array('type' => 'int', 'required' => false)
         ),
         '',
         'GET',
@@ -240,6 +242,19 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.get_obs_paged",
+        "get_obs_paged",
+        array(
+            'limit' => array('type' => 'int', 'required' => false),
+            'offset' => array('type' => 'int', 'required' => false)
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.comment_on_obs",
         "comment_on_obs",
         array(
@@ -263,6 +278,18 @@ function investigations_init() {
         'GET',
         false,
         false
+    );
+
+    expose_function(
+        'wb.toggle_like_entity',
+        'toggle_like_entity',
+        array(
+            entity_guid => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false  
     );
 
     expose_function(
@@ -522,7 +549,7 @@ function investigations_init() {
             'advisor_guid' => array('type' => 'int', 'required' => false)
         ),
         '',
-        'GET',
+        'POST',
         false,
         false
     );
@@ -695,6 +722,22 @@ function investigations_init() {
         ),
         '',
         'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.create_inv',
+        'create_inv',
+        array(
+            'name' => array('type' => 'string'),
+            'description' => array('type' => 'string'),
+            'brief_description' => array('type' => 'string'),
+            'tags' => array('type' => 'string', 'required' => false),
+            'advisor_guid' => array('type' => 'int', 'required' => false)
+        ),
+        '',
+        'POST',
         false,
         false
     );
@@ -1923,11 +1966,33 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
         $user = get_user($discussion->owner_guid);
         $likes = $discussion->getAnnotations('likes');
         $i_liked = false;
+        $comments = array();
 
         foreach($likes as $like) {
             if($like->owner_guid == $user_guid) {
                 $i_liked = true;
             }
+        }
+
+        $ignore = elgg_set_ignore_access(true);
+        $result_comments = $discussion->getAnnotations('group_topic_post', 3, 0, 'desc');
+        elgg_set_ignore_access($ignore);
+        
+        foreach($result_comments as $comment) {
+
+            $user = get_user($comment->owner_guid);
+
+            $comments[] = array(
+                'description' => $comment->value,
+                'like_count' => 0,
+                'date' => elgg_get_friendly_time($comment->time_created),
+                'user' => array(
+                    'id' => $user->guid,
+                    'displayname' => $user->name,
+                    'username' => $user->username,
+                    'image' => $user->getIcon('small')
+                )
+            );
         }
 
         $discussion_return_result[] = array(
@@ -1940,6 +2005,7 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
             'description' => $discussion->description,
             'like_count' => count($likes),
             'i_liked' => $i_liked,
+            'comments' => $comments,
             'comment_count' => count($discussion->getAnnotations('group_topic_post'))
         );
     }
@@ -1961,7 +2027,7 @@ function get_disc_by_id($id) {
     $result = $results[0];
 
     $ignore = elgg_set_ignore_access(true);
-    $elgg_comments = $results[0]->getAnnotations('group_topic_post');
+    $elgg_comments = $results[0]->getAnnotations('group_topic_post', 0, 0, 'desc');
     elgg_set_ignore_access($ignore);
     
     foreach($elgg_comments as $elgg_comment) {
@@ -2274,6 +2340,12 @@ function delete_investigation($guid) {
 
 function edit_investigation($guid, $name, $description, $brief_description, $tags, $proposal, $icon, $advisor_guid) {
 
+    $icon_formname = 'icon0';
+    $proposal_formname = 'proposal0';
+
+    $uploaded_icon = $_FILES[$icon_formname];
+    $proposal = $_FILES[$proposal_formname];
+
     $inv = get_entity($guid);
 
     if (($inv) && ($inv instanceof ElggGroup)) {
@@ -2287,7 +2359,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $tag
 
         $inv->name = $name;
         $inv->description = $description;
-        $inv->briefdescription = substr($brief_description, 0, 255) . '...';
+        $inv->briefdescription = $brief_description;
         $inv->interests = "";
         $inv->membership = ACCESS_PUBLIC;
         $inv->access_id = ACCESS_PUBLIC;
@@ -2308,7 +2380,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $tag
         }
 
         // proposal test
-        if (!empty($_FILES['proposal']['type'])) {
+        if (!empty($proposal['type'])) {
             if (strpos($_FILES['proposal']['type'], 'pdf') === false) {
                 throw new Exception('Proposals must be PDF format');
             } else {
@@ -2329,7 +2401,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $tag
                 $fh->setFilename('groups/proposal_' . $inv->guid . '.pdf');
                 $fh->set('file category', 'proposal');
                 $fh->open('write');
-                $fh->write(get_uploaded_file('proposal'));
+                $fh->write(get_uploaded_file($proposal));
                 $fh->close();
                 $fh->save();
 
@@ -2338,7 +2410,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $tag
             }
         }
 
-        $has_uploaded_icon = (!empty($_FILES['icon']['type']) && substr_count($_FILES['icon']['type'], 'image/'));
+        $has_uploaded_icon = (!empty($uploaded_icon['type']) && substr_count($uploaded_icon['type'], 'image/'));
 
         if ($has_uploaded_icon) {
 
@@ -2350,7 +2422,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $tag
             $filehandler->owner_guid = $inv->owner_guid;
             $filehandler->setFilename($prefix . ".jpg");
             $filehandler->open("write");
-            $filehandler->write(get_uploaded_file('icon'));
+            $filehandler->write(get_uploaded_file($icon_formname));
             $filehandler->close();
             $filename = $filehandler->getFilenameOnFilestore();
 
@@ -2392,6 +2464,150 @@ function edit_investigation($guid, $name, $description, $brief_description, $tag
 
 }
 
+function create_inv($name, $description, $brief_description, $tags, $advisor_guid) {
+    
+    $icon_formname = 'icon0';
+    $proposal_formname = 'proposal0';
+
+    $uploaded_icon = $_FILES[$icon_formname];
+    $proposal = $_FILES[$proposal_formname];
+
+    // Validate create
+    if (!$name) {
+        throw new Exception(elgg_echo("investigations:notitle"));
+    }
+
+    $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+
+    // get current user
+    $user = elgg_get_logged_in_user_entity();
+
+    if ($user == null) {
+        throw new Exception(elgg_echo("investigations:cantcreate"));
+    }
+
+    $group = new ElggGroup();
+
+    $group->name = $name;
+    $group->description = $description;
+    $group->briefdescription = $brief_description;
+    $group->interests = "";
+    $group->membership = ACCESS_PUBLIC;
+    $group->access_id = ACCESS_PUBLIC;
+    $group->subtype = 'investigation';
+
+    $group->save();
+
+    // after it's been saved up above (in the mess), update the briefdescription
+    // in order to restrict its length:
+    /*
+    $brief = $group->getMetaData('briefdescription');
+    if ($brief && strlen($brief) > 255) {
+        $group->setMetaData('briefdescription', substr($brief, 0, 255) . '...');
+        // Note: this is messy in that it's leaving extra lines in the metastrings
+        // table, but that table is kind of a disaster anyway so it's not worth it
+        // to try and fix.
+    }
+     */
+
+    // store the advisor guid as a relationship:
+    if ($advisor_guid) {
+        $advisor_user = get_user($advisor_guid);
+        remove_entity_relationships($group->guid, 'advisor', true);
+        add_entity_relationship($advisor_guid, 'advisor', $group->guid);
+
+        //if not a member add to investigation
+        if(!$group->isMember($advisor_user)) {
+           investigations_join_investigation($group, $advisor_user);
+        }
+    }
+
+    // @todo this should not be necessary...
+    elgg_set_page_owner_guid($group->guid);
+
+    $group->join($user);
+    add_to_river('river/investigation/create', 'create', $user->guid, $group->guid);
+
+    // proposal test
+    if (!empty($proposal['type'])) {
+        if (strpos($proposal['type'], 'pdf') === false) {
+            throw new Exception('Proposals must be PDF format');
+        } else {
+            // remove any existing proposals before linking
+            // this new one to our investigation:
+            $existing = elgg_get_entities_from_relationship(array(
+                'relationship' => 'proposal',
+                'relationship_guid' => $group->guid,
+                'inverse_relationship' => true
+            ));
+            foreach($existing as $old) {
+                $old->delete();
+            }
+
+            $fh = new ElggFile();
+            $fh->owner_guid = $group->owner_guid;
+            $fh->name = 'proposal_' . $group->guid . '.pdf';
+            $fh->setFilename('groups/proposal_' . $group->guid . '.pdf');
+            $fh->set('file category', 'proposal');
+            $fh->open('write');
+            $fh->write(get_uploaded_file($proposal_formname));
+            $fh->close();
+            $fh->save();
+
+            remove_entity_relationships($group->guid, 'proposal', true);
+            add_entity_relationship($fh->getGUID(), 'proposal', $group->guid);
+        }
+    }
+
+    $has_uploaded_icon = (!empty($uploaded_icon['type']) && substr_count($uploaded_icon['type'], 'image/'));
+
+    if ($has_uploaded_icon) {
+
+        $icon_sizes = elgg_get_config('icon_sizes');
+
+        $prefix = "groups/" . $group->guid;
+
+        $filehandler = new ElggFile();
+        $filehandler->owner_guid = $group->owner_guid;
+        $filehandler->setFilename($prefix . ".jpg");
+        $filehandler->open("write");
+        $filehandler->write(get_uploaded_file($icon_formname));
+        $filehandler->close();
+        $filename = $filehandler->getFilenameOnFilestore();
+
+        $sizes = array('tiny', 'small', 'medium', 'large');
+
+        $thumbs = array();
+        foreach ($sizes as $size) {
+            $thumbs[$size] = get_resized_image_from_existing_file(
+                $filename,
+                $icon_sizes[$size]['w'],
+                $icon_sizes[$size]['h'],
+                $icon_sizes[$size]['square']
+            );
+        }
+
+        if ($thumbs['tiny']) { // just checking if resize successful
+            $thumb = new ElggFile();
+            $thumb->owner_guid = $group->owner_guid;
+            $thumb->setMimeType('image/jpeg');
+
+            foreach ($sizes as $size) {
+                $thumb->setFilename("{$prefix}{$size}.jpg");
+                $thumb->open("write");
+                $thumb->write($thumbs[$size]);
+                $thumb->close();
+            }
+
+            $group->icontime = time();
+        }
+    }
+    return array(
+        'guid' => $group->guid
+    );
+
+}
+
 // todo get tags to work maybe we don't need them
 function create_investigation($name, $description, $brief_description, $tags, $proposal, $icon, $advisor_guid) {
 
@@ -2413,7 +2629,7 @@ function create_investigation($name, $description, $brief_description, $tags, $p
 
     $group->name = $name;
     $group->description = $description;
-    $group->briefdescription = substr($brief_description, 0, 255) . '...';
+    $group->briefdescription = $brief_description;
     $group->interests = "";
     $group->membership = ACCESS_PUBLIC;
     $group->access_id = ACCESS_PUBLIC;
@@ -2558,11 +2774,12 @@ function comment_on($id, $type, $comment) {
     }
 }
 
-function get_comments($id, $type) {
+function get_comments($id, $type, $limit, $offset) {
     
     $object = array();
     $comments = array();
     $user_guid = elgg_get_logged_in_user_guid();
+
 
     // get object
     $results = elgg_get_entities(array(
@@ -2580,7 +2797,8 @@ function get_comments($id, $type) {
     }
 
     $ignore = elgg_set_ignore_access(true);
-    $elgg_comments = $results[0]->getAnnotations($type);
+    $elgg_comments = $results[0]->getAnnotations($type, $limit, $offset, 'desc');
+    $comment_count = count($results[0]->getAnnotations($type));
     elgg_set_ignore_access($ignore);
     
     foreach($elgg_comments as $elgg_comment) {
@@ -2606,7 +2824,8 @@ function get_comments($id, $type) {
         'date' => elgg_get_friendly_time($result->time_created),
         'description' => $result->description,
         'comments' => $comments,
-        'like_count' => count(discussion_likes),
+        'comment_count' => $comment_count,
+        'like_count' => count($discussion_likes),
         'i_liked' => $i_liked
     );
 
@@ -2624,6 +2843,14 @@ function get_inv_by_id($id) {
     $result = $result[0];
 
     $inv_likes = $result->getAnnotations('likes');
+    $i_liked = false;
+    $user_guid = elgg_get_logged_in_user_guid();
+
+    foreach($inv_likes as $like) {
+        if($like->owner_guid == $user_guid) {
+            $i_liked = true;
+        }
+    }
 
     $coordinator = get_user($result->owner_guid);
     $e = $result->getEntitiesFromRelationship('advisor', true);
@@ -2632,6 +2859,7 @@ function get_inv_by_id($id) {
         "id" => $result->guid,
         "name" => $result->name,
         "like_count" => count($inv_likes),
+        "i_liked" => $i_liked,
         "coordinator" => array(
             "username" => $coordinator->get("username"),
             "displayname" => $coordinator->get("name"),
@@ -2644,7 +2872,7 @@ function get_inv_by_id($id) {
         ),
         "image" => $result->getIcon("large"),
         "description" => $result->description,
-        "briefDescription" => $result->description,
+        "briefDescription" => $result->briefdescription,
         "discussions" => get_discs_by_inv_id($result->guid, null, $discussion_subtype)
     );
 
@@ -2820,6 +3048,122 @@ function get_obs($offset, $limit) {
 
 }
 
+function get_obs_paged($offset, $limit) {
+
+    $limit = $_GET["limit"] ? $_GET["limit"] : "ALL";
+    $offset = $_GET["offset"] ? $_GET["offset"] : "0";
+
+    $hostname = 'ec2-54-225-138-16.compute-1.amazonaws.com';
+    $port = '5972';
+    $dbName = 'd2br84lqj1ij30';
+    $dbUser = 'u3l9t7fso9lsat';
+    $dbPass = 'p7oqdm3h5jtre5180hhjsomls6f';
+
+    try{
+        $dbObject = new PDO('pgsql:host='.$hostname.";port=".$port.";dbname=".$dbName, $dbUser, $dbPass);
+        $dbObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    }
+    catch(PDOException $e){
+        throw new Exception('Connection failed... '.$e->getMessage());
+    }
+
+    $server_env = "prod";
+
+    $query = "SELECT observation_id, uri as user, categories_json as categories, timestamp, (
+                    SELECT array_to_json(array_agg(row_to_json(results))) FROM (
+                        SELECT meta_elt as media
+                        FROM public.".$server_env."_measurement
+                        JOIN public.".$server_env."_measurement_meta
+				ON public.".$server_env."_measurement_meta.meta = public.".$server_env."_measurement.id
+                        WHERE observation_id = obs.id AND (public.prod_measurement_meta.meta_idx = 'thumbnailUrl' OR public.prod_measurement_meta.meta_idx = 'url') AND public.prod_measurement_meta.meta_elt NOT LIKE '%\$ext%'
+                    ) results) AS media
+                    FROM public.".$server_env."_observation obs
+                    LEFT JOIN public.".$server_env."_measurement
+                        ON ".$server_env."_measurement.observation_id = obs.id
+                    LEFT JOIN public.".$server_env."_observer
+                        ON public.".$server_env."_observer.id = obs.observer_id
+                    ORDER BY timestamp DESC
+                    LIMIT ".$limit."
+                    OFFSET ".$offset;
+
+    $query = "SELECT observation_id, uri as user, categories_json as categories, timestamp, (
+                    SELECT array_to_json(array_agg(row_to_json(results))) FROM (
+                        SELECT meta_elt as image
+                        FROM public.".$server_env."_measurement
+                        JOIN public.".$server_env."_measurement_meta
+				ON public.".$server_env."_measurement_meta.meta = public.".$server_env."_measurement.id
+                        WHERE observation_id = obs.id AND phenomenon_id != 'video' AND meta_idx = 'url'
+                    ) results) AS media
+                    FROM public.".$server_env."_observation obs
+                    LEFT JOIN public.".$server_env."_measurement
+                        ON ".$server_env."_measurement.observation_id = obs.id
+                    LEFT JOIN public.".$server_env."_observer
+                        ON public.".$server_env."_observer.id = obs.observer_id
+                    ORDER BY timestamp DESC
+                    LIMIT ".$limit."
+                    OFFSET ".$offset;
+
+    $prepared = $dbObject->prepare($query);
+    
+    if(!$prepared){
+      print "<p>DATABASE CONNECTION ERROR:</p>";
+      print_r($dbObject->errorInfo());
+      die;
+    }
+
+    $prepared->execute();
+
+    $results = $prepared->fetchAll(PDO::FETCH_ASSOC);
+
+    $dbObject = null;
+
+    foreach($results as $row => $result) {
+
+        $user_id = $result['user'];
+        $user_id = explode('/', $user);
+        $user_id = $user_id[count($user) - 1];
+
+        $user_id = 49;
+
+        $user = get_user($user_id);
+        $categories = json_decode($result['categories']);
+
+        if($user) {
+            $results[$row]['user'] = array(
+                displayname => $user->name,
+                username => $user->username
+            );
+        }
+        else {
+            $results[$row]['user'] = $user_id;
+        }
+
+        $results[$row]['categories'] = $categories;
+
+        $media = json_decode($result['media']);
+
+        if($media[0]->image) {
+            $media_array = explode('.', $media[0]->image);
+            $media = array_slice($media_array, 0, count($media_array) - 1);
+            $media = join('.', $media);
+            $media .= '-thumb.'.$media_array[count($media_array) - 1];
+        }
+        else {
+            $media = "";
+        }
+
+        $results[$row]['media'] = $media;
+
+        $results[$row]['timestamp'] = date('F jS, Y', strtotime($result['timestamp']));
+        $results[$row]['like_count'] = 3;
+        $results[$row]['i_liked'] = true;
+        $results[$row]['comment_count'] = 2;
+    }
+
+    return $results;
+
+}
+
 function get_obs_by_inv($investigation_guid) {
     // are you logged in?
     // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
@@ -2938,6 +3282,45 @@ function toggle_like_obs($observation_guid) {
             elgg_delete_annotation_by_id($my_like->id);
             return 0;
         }
+    }
+    else {
+        // not a valid login
+	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+    }
+}
+
+function toggle_like_entity($entity_guid) {
+
+    if(is_logged_in()) {
+
+        $entity = get_entity($entity_guid);
+        $i_liked = true;
+        $user_guid = elgg_get_logged_in_user_guid();
+
+        $likes = elgg_get_annotations(array(
+            'guid' => $entity_guid,
+            'annotation_owner_guid' => $user_guid,
+            'annotation_name' => 'likes'
+        ));
+
+        // remove like
+        if($likes) {
+            foreach($likes as $like) {
+                $like->delete();
+            }
+            $i_liked = false;
+        }
+        else {
+            $id = $entity->annotate('likes', 1, 2, $user_guid, 'integer');
+        }
+
+        $like_count = count($entity->getAnnotations('likes'));
+
+        return array(
+            'i_liked' => $i_liked,
+            'like_count' => $like_count
+        );
+
     }
     else {
         // not a valid login

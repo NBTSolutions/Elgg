@@ -38,6 +38,7 @@ if (is_array($items) && count($items) > 0) {
         //not a great name in the activity sentence structure SVO (subject verb object) it is the object
         $action_uri = $item->subtype;
         $actionLabel = $action_uri;
+        $object_guid = $item->object_guid;
         $preview = '';
 
         if($action == 'reply') {
@@ -96,10 +97,15 @@ if (is_array($items) && count($items) > 0) {
             $actionLabel = $investigation->name;
 
         }
+        else if($item->subtype == 'observation') {
+
+            $observation = get_entity($item->object_guid);
+            $object_guid = $observation->agg_id;
+        }
 
         $activities[] = array(
             'subject_guid' => $item->subject_guid,
-            'objectGuid' => $item->object_guid,
+            'objectGuid' => $object_guid,
             'annotation_id' => $item->annotation_id,
             'type' => $item->type,
             'actionUri' => $action_uri,
