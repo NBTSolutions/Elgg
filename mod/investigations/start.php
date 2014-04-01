@@ -2843,6 +2843,7 @@ function get_inv_by_id($id) {
     $result = $result[0];
 
     $inv_likes = $result->getAnnotations('likes');
+    $user = get_user($result->owner_guid);
     $i_liked = false;
     $user_guid = elgg_get_logged_in_user_guid();
 
@@ -2859,6 +2860,15 @@ function get_inv_by_id($id) {
         "id" => $result->guid,
         "name" => $result->name,
         "like_count" => count($inv_likes),
+        "user" => array(
+            "displayname" => $user->name,
+            "username" => $user->username,
+            "tiny_icon" => $user->getIcon('tiny'),
+            "small_icon" => $user->getIcon('small'),
+            "medium_icon" => $user->getIcon('medium'),
+            "large_icon" => $user->getIcon('large')
+        ),
+        "age" => elgg_get_friendly_time($result->time_created),
         "i_liked" => $i_liked,
         "coordinator" => array(
             "username" => $coordinator->get("username"),
