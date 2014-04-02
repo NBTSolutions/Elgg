@@ -3581,6 +3581,9 @@ function get_user_info($user_guid, $icon_size) {
     $profile_type_guid = $user->custom_profile_type;
     $profile_type = get_entity($profile_type_guid);
 
+    $skills = $user->skills;
+    $interests = $user->interests;
+
     return array(
         "id" => $user->guid,
         "users_display_name" => $user->name,
@@ -3592,8 +3595,8 @@ function get_user_info($user_guid, $icon_size) {
         "description" => $user->description,
         "brief_description" => $user->briefdescription,
         "location" => $user->location,
-        "interests" => $user->interests,
-        "skills" => $user->skills,
+        "interests" => is_array($interests) ? $interests : array($interest),
+        "skills" => is_array($skills) ? $skills : array($skills),
         "contactemail" => $user->contactemail,
         "phone" => $user->phone,
         "mobile" => $user->mobile,
