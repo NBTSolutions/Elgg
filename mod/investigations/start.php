@@ -2867,7 +2867,8 @@ function get_inv_by_id($id) {
         "advisor" => array(
             "username" => $e ? $e[0]->get("username") : "",
             "displayname" => $e ? $e[0]->get("name") : "",
-            "image" => $e ? $e[0]->getIcon("medium") : ""
+            "image" => $e ? $e[0]->getIcon("medium") : "",
+            "id" => $e ? $e[0]->guid : ""
         ),
         "image" => $result->getIcon("large"),
         "description" => $result->description,
@@ -3620,6 +3621,7 @@ function get_members($page, $search) {
             "displayname" => $result->name,
             "username" => $result->username,
             "icon" => $result->getIconUrl("large"),
+            "medium_icon" => $result->getIconUrl("medium"),
             "profile_type" => $profile_type ? $profile_type->getTitle() : '',
             "school" => $result->school,
             "id" => $result->guid
