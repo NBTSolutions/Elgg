@@ -3595,7 +3595,7 @@ function get_user_info($user_guid, $icon_size) {
         "brief_description" => $user->briefdescription,
         "location" => $user->location,
         "interests" => is_array($interests) ? $interests : array($interest),
-        "skills" => $skills ? is_array($skills) ? $skills : array($skills),
+        "skills" => is_array($skills) ? $skills : array($skills),
         "contactemail" => $user->contactemail,
         "phone" => $user->phone,
         "mobile" => $user->mobile,
