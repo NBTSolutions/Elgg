@@ -544,8 +544,6 @@ function investigations_init() {
             'description' => array('type' => 'string'),
             'brief_description' => array('type' => 'string'),
             'tags' => array('type' => 'string', 'required' => false),
-            'proposal' => array('type' => 'string', 'required' => false),
-            'icon' => array('type' => 'string', 'required' => false),
             'advisor_guid' => array('type' => 'int', 'required' => false)
         ),
         '',
@@ -2186,11 +2184,8 @@ function create_discussion($name, $description, $briefDescription, $subtype, $ta
         throw new Exception('Please enter a name and title');
     }
 
-    $container = get_entity($container_guid);
-    if (!$container || !$container->canWriteToContainer(0, 'object', $subtype)) {
-        throw new Exception('You do not have permissions to create a discussion on this investigation.');
-    }
 
+    $ignore = elgg_set_ignore_access(true);
     $topic = new ElggObject();
     $topic->subtype = $subtype;
     $topic->title = $title;
@@ -2204,19 +2199,13 @@ function create_discussion($name, $description, $briefDescription, $subtype, $ta
     $topic->tags = $tags;
 
     $result = $topic->save();
+    elgg_set_ignore_access($ignore);
 
     if (!$result) {
         throw new Exception(elgg_echo('discussion:error:notsaved'));
     }
 
-    add_to_river(array(
-        'view' => 'river/object/groupforumtopic/create',
-        'action_type' => 'create',
-        'subject_guid' => elgg_get_logged_in_user_guid(),
-        'object_guid' => $topic->guid,
-    ));
-
-    return 0;
+    return add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $topic->guid);
 }
 
 function get_entity_by_name($name) {
@@ -2274,14 +2263,14 @@ function create_i_wonder($question) {
 
         // create discussion
         $ignore = elgg_set_ignore_access(true);
-        create_discussion($name, $description, $brief_description, $subtype, $tags, $container_guid);
+        $result = create_discussion($name, $description, $brief_description, $subtype, $tags, $container_guid);
         elgg_set_ignore_access($ignore);
 	}
     else {
 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
     }
 
-    return 0;
+    return array('great' => $result);
 }
 
 function get_latest_i_wonder_question() {
@@ -2338,10 +2327,10 @@ function delete_investigation($guid) {
 
 }
 
-function edit_investigation($guid, $name, $description, $brief_description, $tags, $proposal, $icon, $advisor_guid) {
+function edit_investigation($guid, $name, $description, $brief_description, $tags, $advisor_guid) {
 
-    $icon_formname = 'icon0';
-    $proposal_formname = 'proposal0';
+    $icon_formname = 'icon';
+    $proposal_formname = 'proposal';
 
     $uploaded_icon = $_FILES[$icon_formname];
     $proposal = $_FILES[$proposal_formname];
@@ -2466,8 +2455,8 @@ function edit_investigation($guid, $name, $description, $brief_description, $tag
 
 function create_inv($name, $description, $brief_description, $tags, $advisor_guid) {
     
-    $icon_formname = 'icon0';
-    $proposal_formname = 'proposal0';
+    $icon_formname = 'icon';
+    $proposal_formname = 'proposal';
 
     $uploaded_icon = $_FILES[$icon_formname];
     $proposal = $_FILES[$proposal_formname];

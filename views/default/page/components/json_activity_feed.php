@@ -59,14 +59,15 @@ if (is_array($items) && count($items) > 0) {
             $comment = get_entity($item->object_guid);
 
             $action_uri = 'discussion';
-            $action = "commented on a";
             $actionLabel = 'discussion';
 
             if($item->annotation_id) {
+                $action = "commented on a";
                 $annotation = elgg_get_annotation_from_id($item->annotation_id);
                 $preview = $annotation->value;
             }
             else {
+                $action = "created a";
                 $preview = $comment->description;
             }
         }
