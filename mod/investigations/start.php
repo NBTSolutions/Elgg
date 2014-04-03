@@ -543,8 +543,8 @@ function investigations_init() {
             'name' => array('type' => 'string'),
             'description' => array('type' => 'string'),
             'brief_description' => array('type' => 'string'),
-            'tags' => array('type' => 'string', 'required' => false),
-            'advisor_guid' => array('type' => 'int', 'required' => false)
+            'advisor_guid' => array('type' => 'int', 'required' => false),
+            'tags' => array('type' => 'string', 'required' => false)
         ),
         '',
         'POST',
@@ -731,8 +731,8 @@ function investigations_init() {
             'name' => array('type' => 'string'),
             'description' => array('type' => 'string'),
             'brief_description' => array('type' => 'string'),
+            'advisor_guid' => array('type' => 'string', 'required' => false),
             'tags' => array('type' => 'string', 'required' => false),
-            'advisor_guid' => array('type' => 'int', 'required' => false)
         ),
         '',
         'POST',
@@ -2327,7 +2327,7 @@ function delete_investigation($guid) {
 
 }
 
-function edit_investigation($guid, $name, $description, $brief_description, $tags, $advisor_guid) {
+function edit_investigation($guid, $name, $description, $brief_description, $advisor_guid, $tags) {
 
     $icon_formname = 'icon';
     $proposal_formname = 'proposal';
@@ -2453,7 +2453,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $tag
 
 }
 
-function create_inv($name, $description, $brief_description, $tags, $advisor_guid) {
+function create_inv($name, $description, $brief_description, $advisor_guid, $tags) {
     
     $icon_formname = 'icon';
     $proposal_formname = 'proposal';
