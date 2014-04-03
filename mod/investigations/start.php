@@ -2816,6 +2816,7 @@ function get_comments($id, $type, $limit, $offset) {
         'name' => $result->title,
         'date' => elgg_get_friendly_time($result->time_created),
         'description' => $result->description,
+        'parent_guid' => $result->container_guid,
         'comments' => $comments,
         'comment_count' => $comment_count,
         'like_count' => count($discussion_likes),
