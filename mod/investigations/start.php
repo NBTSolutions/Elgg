@@ -1935,6 +1935,7 @@ function get_all_invs() {
             "coordinator" => $result->getOwnerEntity()->get('name'),
             "advisor" => $e ? $e[0]->get("name") : "",
             "image" => $result->getIcon("large"),
+            "description" => $result->description,
             "description" => $result->description
         );
     }
@@ -2360,7 +2361,7 @@ function delete_investigation($guid) {
 
 }
 
-function edit_investigation($guid, $name, $description, $brief_description, $advisor_guid, $tags) {
+function edit_investigation($guid, $name, $description, $brief_description, $advisor_guid = null, $tags = null) {
 
     $icon_formname = 'icon';
     $proposal_formname = 'proposal';
@@ -2399,6 +2400,9 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
             if(!$inv->isMember($advisor_user)) {
                investigations_join_investigation($inv, $advisor_user);
             }
+        }
+        else {
+            remove_entity_relationships($inv->guid, 'advisor', true);
         }
 
         // proposal test
@@ -2846,6 +2850,7 @@ function get_comments($id, $type, $limit, $offset) {
         'name' => $result->title,
         'date' => elgg_get_friendly_time($result->time_created),
         'description' => $result->description,
+        'parent_guid' => $result->container_guid,
         'comments' => $comments,
         'comment_count' => $comment_count,
         'like_count' => count($discussion_likes),
