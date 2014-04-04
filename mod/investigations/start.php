@@ -480,13 +480,11 @@ function investigations_init() {
         array(
             'name' => array('type' => 'string'),
             'description' => array('type' => 'string'),
-            'brief_description' => array('type' => 'string'),
             'subtype' => array('type' => 'string'),
-            'tags' => array('type' => 'string'),
             'container_guid' => array('type' => 'int')
         ),
         '',
-        'GET',
+        'POST',
         false,
         false
     );
@@ -1949,6 +1947,7 @@ function get_all_invs() {
 function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) {
 
     $user_guid = elgg_get_logged_in_user_guid();
+    $filepath = "";
 
     $ignore = elgg_set_ignore_access();
 	$discussions = elgg_get_entities(array(
@@ -1976,7 +1975,18 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
         $ignore = elgg_set_ignore_access(true);
         $result_comments = $discussion->getAnnotations('group_topic_post', 3, 0, 'desc');
         elgg_set_ignore_access($ignore);
-        
+
+        $file = elgg_get_entities_from_relationship(array(
+            'relationship' => 'file',
+            'relationship_guid' => $discussion->guid,
+            'inverse_relationship' => true
+        ));
+
+        if($file) {
+            $filepath = elgg_get_site_url().'file/'.$file[0]->guid.'/'.$file[0]->getFilename();
+            $filesystempath = $file[0]->getFilenameOnFilestore();
+        }
+
         foreach($result_comments as $comment) {
 
             $user = get_user($comment->owner_guid);
@@ -1997,6 +2007,8 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
         $discussion_return_result[] = array(
             'id' => $discussion->guid,
             'name' => $discussion->title,
+            'filepath' => $filepath,
+            'filesystempath' => $filesystempath,
             'username' => $user->username,
             'displayname' => $user->name,
             'userIcon' => $user->getIcon('small'),
@@ -2150,11 +2162,15 @@ function get_messageboard($username) {
 }
 
 // create a thread on any elgg object using a container_guid
-function create_discussion($name, $description, $briefDescription, $subtype, $tags, $container_guid) {
+function create_discussion($name, $description, $subtype, $container_guid) {
 
     if(!elgg_is_logged_in()) {
         throw new Exception("Please login to perform this action");
     }
+
+    // may need to deal with a file
+    $filename = 'discussion_file';
+    $file = $_FILES[$filename];
 
     switch ($subtype) {
         case 'video':
@@ -2185,7 +2201,6 @@ function create_discussion($name, $description, $briefDescription, $subtype, $ta
         throw new Exception('Please enter a name and title');
     }
 
-
     $ignore = elgg_set_ignore_access(true);
     $topic = new ElggObject();
     $topic->subtype = $subtype;
@@ -2200,11 +2215,29 @@ function create_discussion($name, $description, $briefDescription, $subtype, $ta
     $topic->tags = $tags;
 
     $result = $topic->save();
+
+    if($file) {
+
+        $fh = new ElggFile();
+        $fh->owner_guid = $topic->owner_guid;
+        $fh->name = 'topic_' . $topic->guid . '_' . $file['name'];
+        $fh->setFilename('topic_' . $topic->guid . '_' . $file['name']);
+        $fh->set('file category', 'discussion_file');
+        $fh->open('write');
+        $fh->write(get_uploaded_file($filename));
+        $fh->close();
+        $fh->save();
+
+        $ok = add_entity_relationship($fh->getGUID(), 'file', $topic->guid);
+    }
+
     elgg_set_ignore_access($ignore);
 
     if (!$result) {
         throw new Exception(elgg_echo('discussion:error:notsaved'));
     }
+
+    xdebug_break();
 
     return add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $topic->guid);
 }
@@ -2264,7 +2297,7 @@ function create_i_wonder($question) {
 
         // create discussion
         $ignore = elgg_set_ignore_access(true);
-        $result = create_discussion($name, $description, $brief_description, $subtype, $tags, $container_guid);
+        $result = create_discussion($name, $description, $subtype, $container_guid);
         elgg_set_ignore_access($ignore);
 	}
     else {
@@ -2358,7 +2391,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
         $inv->save();
 
         // store the advisor guid as a relationship:
-        if ($advisor_guid) {
+        if (isset($advisor_guid)) {
             $advisor_user = get_user($advisor_guid);
             remove_entity_relationships($inv->guid, 'advisor', true);
             add_entity_relationship($advisor_guid, 'advisor', $inv->guid);
@@ -2504,10 +2537,10 @@ function create_inv($name, $description, $brief_description, $advisor_guid, $tag
      */
 
     // store the advisor guid as a relationship:
-    if ($advisor_guid) {
+    if (isset($advisor_guid)) {
         $advisor_user = get_user($advisor_guid);
         remove_entity_relationships($group->guid, 'advisor', true);
-        add_entity_relationship($advisor_guid, 'advisor', $group->guid);
+        $ok = add_entity_relationship($advisor_guid, 'advisor', $group->guid);
 
         //if not a member add to investigation
         if(!$group->isMember($advisor_user)) {
@@ -2596,7 +2629,8 @@ function create_inv($name, $description, $brief_description, $advisor_guid, $tag
         }
     }
     return array(
-        'guid' => $group->guid
+        'guid' => $group->guid,
+        'ok' => $ok
     );
 
 }
