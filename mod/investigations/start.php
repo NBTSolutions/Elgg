@@ -1947,7 +1947,8 @@ function get_all_invs() {
 function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) {
 
     $user_guid = elgg_get_logged_in_user_guid();
-    $filepath = "";
+    $thumbnail_filepath = "";
+    $large_filepath = "";
 
     $ignore = elgg_set_ignore_access();
 	$discussions = elgg_get_entities(array(
@@ -1976,15 +1977,31 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
         $result_comments = $discussion->getAnnotations('group_topic_post', 3, 0, 'desc');
         elgg_set_ignore_access($ignore);
 
-        $file = elgg_get_entities_from_relationship(array(
-            'relationship' => 'file',
+        $file_thumbnail = elgg_get_entities_from_relationship(array(
+            'relationship' => 'thumbnail_file',
             'relationship_guid' => $discussion->guid,
             'inverse_relationship' => true
         ));
 
-        if($file) {
-            $filepath = elgg_get_site_url().'file/'.$file[0]->guid.'/'.$file[0]->getFilename();
-            $filesystempath = $file[0]->getFilenameOnFilestore();
+        if($file_thumbnail) {
+            $thumbnail_filepath = elgg_get_site_url().'file/download/'.$file_thumbnail[0]->guid.'/'.$file_thumbnail[0]->getFilename();
+        }
+        else {
+            $thumbnail_filepath = "";
+        }
+
+        // large file
+        $file_large = elgg_get_entities_from_relationship(array(
+            'relationship' => 'large_file',
+            'relationship_guid' => $discussion->guid,
+            'inverse_relationship' => true
+        ));
+
+        if($file_large) {
+            $large_filepath = elgg_get_site_url().'file/download/'.$file_large[0]->guid.'/'.$file_large[0]->getFilename();
+        }
+        else {
+            $large_filepath = "";
         }
 
         foreach($result_comments as $comment) {
@@ -2007,8 +2024,8 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
         $discussion_return_result[] = array(
             'id' => $discussion->guid,
             'name' => $discussion->title,
-            'filepath' => $filepath,
-            'filesystempath' => $filesystempath,
+            'thumbnail_filepath' => $thumbnail_filepath,
+            'large_filepath' => $large_filepath,
             'username' => $user->username,
             'displayname' => $user->name,
             'userIcon' => $user->getIcon('small'),
@@ -2218,17 +2235,44 @@ function create_discussion($name, $description, $subtype, $container_guid) {
 
     if($file) {
 
-        $fh = new ElggFile();
-        $fh->owner_guid = $topic->owner_guid;
-        $fh->name = 'topic_' . $topic->guid . '_' . $file['name'];
-        $fh->setFilename('topic_' . $topic->guid . '_' . $file['name']);
-        $fh->set('file category', 'discussion_file');
-        $fh->open('write');
-        $fh->write(get_uploaded_file($filename));
-        $fh->close();
-        $fh->save();
+        // original
+        $fh_original = new ElggFile();
+        $fh_original->owner_guid = $topic->owner_guid;
+        $fh_original->name = 'topic_' . $topic->guid . '_' . $file['name'];
+        $fh_original->setFilename('topic_' . $topic->guid . '_' . $file['name']);
+        $fh_original->set('file category', 'discussion_file');
+        $fh_original->open('write');
+        $fh_original->write(get_uploaded_file($filename));
+        $fh_original->close();
+        $fh_original->save();
 
-        $ok = add_entity_relationship($fh->getGUID(), 'file', $topic->guid);
+        $resized_large_file = get_resized_image_from_existing_file($fh_original->getFilenameOnFilestore(), 600, 400, 0, 0, 0, 0, false);
+        $resized_thumbnail_file = get_resized_image_from_existing_file($fh_original->getFilenameOnFilestore(), 250, 250, 0, 0, 0, 0, false);
+
+        $fh_large = new ElggFile();
+        $fh_large->owner_guid = $topic->owner_guid;
+        $fh_large->name = 'topic_' . $topic->guid . '_large_' . $file['name'];
+        $fh_large->setFilename('topic_' . $topic->guid . '_large_' . $file['name']);
+        $fh_large->set('file category', 'discussion_file');
+        $fh_large->open('write');
+        $fh_large->write($resized_large_file);
+        $fh_large->close();
+        $fh_large->save();
+
+        // thumbnail
+        $fh_thumbnail = new ElggFile();
+        $fh_thumbnail->owner_guid = $topic->owner_guid;
+        $fh_thumbnail->name = 'topic_' . $topic->guid . '_thumbnail_' . $file['name'];
+        $fh_thumbnail->setFilename('topic_' . $topic->guid . '_thumbnail_' . $file['name']);
+        $fh_thumbnail->set('file category', 'discussion_file');
+        $fh_thumbnail->open('write');
+        $fh_thumbnail->write($resized_thumbnail_file);
+        $fh_thumbnail->close();
+        $fh_thumbnail->save();
+
+        add_entity_relationship($fh_original->getGUID(), 'original_file', $topic->guid);
+        add_entity_relationship($fh_large->getGUID(), 'large_file', $topic->guid);
+        add_entity_relationship($fh_thumbnail->getGUID(), 'thumbnail_file', $topic->guid);
     }
 
     elgg_set_ignore_access($ignore);
@@ -2236,8 +2280,6 @@ function create_discussion($name, $description, $subtype, $container_guid) {
     if (!$result) {
         throw new Exception(elgg_echo('discussion:error:notsaved'));
     }
-
-    xdebug_break();
 
     return add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $topic->guid);
 }
@@ -2817,6 +2859,33 @@ function get_comments($id, $type, $limit, $offset) {
     $discussion_likes = $result->getAnnotations('likes');
     $i_liked = false;
 
+    $file_thumbnail = elgg_get_entities_from_relationship(array(
+        'relationship' => 'thumbnail_file',
+        'relationship_guid' => $discussion->guid,
+        'inverse_relationship' => true
+    ));
+
+    if($file_thumbnail) {
+        $thumbnail_filepath = elgg_get_site_url().'file/download/'.$file_thumbnail[0]->guid.'/'.$file_thumbnail[0]->getFilename();
+    }
+    else {
+        $thumbnail_filepath = "";
+    }
+
+    // large file
+    $file_large = elgg_get_entities_from_relationship(array(
+        'relationship' => 'large_file',
+        'relationship_guid' => $discussion->guid,
+        'inverse_relationship' => true
+    ));
+
+    if($file_large) {
+        $large_filepath = elgg_get_site_url().'file/download/'.$file_large[0]->guid.'/'.$file_large[0]->getFilename();
+    }
+    else {
+        $large_filepath = "";
+    }
+
     foreach($discussion_likes as $discussion_like) {
         if($discussion_like->owner_guid == $user_guid) {
             $i_liked = true;
@@ -2848,6 +2917,8 @@ function get_comments($id, $type, $limit, $offset) {
     $object = array(
         'id' => $result->guid,
         'name' => $result->title,
+        'thumbnail_filepath' => $thumbnail_filepath,
+        'large_filepath' => $large_filepath,
         'date' => elgg_get_friendly_time($result->time_created),
         'description' => $result->description,
         'parent_guid' => $result->container_guid,
@@ -3110,23 +3181,6 @@ function get_obs_paged($offset, $limit) {
 
     $query = "SELECT observation_id, uri as user, categories_json as categories, timestamp, (
                     SELECT array_to_json(array_agg(row_to_json(results))) FROM (
-                        SELECT meta_elt as media
-                        FROM public.".$server_env."_measurement
-                        JOIN public.".$server_env."_measurement_meta
-				ON public.".$server_env."_measurement_meta.meta = public.".$server_env."_measurement.id
-                        WHERE observation_id = obs.id AND (public.prod_measurement_meta.meta_idx = 'thumbnailUrl' OR public.prod_measurement_meta.meta_idx = 'url') AND public.prod_measurement_meta.meta_elt NOT LIKE '%\$ext%'
-                    ) results) AS media
-                    FROM public.".$server_env."_observation obs
-                    LEFT JOIN public.".$server_env."_measurement
-                        ON ".$server_env."_measurement.observation_id = obs.id
-                    LEFT JOIN public.".$server_env."_observer
-                        ON public.".$server_env."_observer.id = obs.observer_id
-                    ORDER BY timestamp DESC
-                    LIMIT ".$limit."
-                    OFFSET ".$offset;
-
-    $query = "SELECT observation_id, uri as user, categories_json as categories, timestamp, (
-                    SELECT array_to_json(array_agg(row_to_json(results))) FROM (
                         SELECT meta_elt as image
                         FROM public.".$server_env."_measurement
                         JOIN public.".$server_env."_measurement_meta
@@ -3158,11 +3212,10 @@ function get_obs_paged($offset, $limit) {
 
     foreach($results as $row => $result) {
 
+        // pull the user id from the aggregators annoying format :/
         $user_id = $result['user'];
         $user_id = explode('/', $user);
         $user_id = $user_id[count($user) - 1];
-
-        $user_id = 49;
 
         $user = get_user($user_id);
         $categories = json_decode($result['categories']);
@@ -3170,7 +3223,11 @@ function get_obs_paged($offset, $limit) {
         if($user) {
             $results[$row]['user'] = array(
                 displayname => $user->name,
-                username => $user->username
+                username => $user->username,
+                tiny_icon => $user->getIcon('tiny'),
+                small_icon => $user->getIcon('small'),
+                medium_icon => $user->getIcon('medium'),
+                large_icon => $user->getIcon('large')
             );
         }
         else {
