@@ -3601,6 +3601,131 @@ function get_user_info($user_guid, $icon_size) {
     );
 }
 
+function edit_user_info($username, $displayName, $image, $description, $location, $interests, $skills, $contactEmail, $website, $twitter, $school, $video) {
+
+    // Validate create
+    if (!$displayName) {
+        throw new Exception(elgg_echo("profile:nodisplayname"));
+    }
+
+    $displayName = htmlspecialchars($displayName, ENT_QUOTES, 'UTF-8');
+
+    // get current user
+    $user = elgg_get_logged_in_user_entity();
+
+    if ($user == null) {
+        throw new Exception(elgg_echo("profile:cantedit"));
+    }
+
+    $group = new ElggGroup();
+
+    $group->name = $name;
+    $group->description = $description;
+    $group->briefdescription = $brief_description;
+    $group->interests = "";
+    $group->membership = ACCESS_PUBLIC;
+    $group->access_id = ACCESS_PUBLIC;
+    $group->subtype = 'investigation';
+
+    $group->save();
+
+    // store the advisor guid as a relationship:
+    if ($advisor_guid) {
+        $advisor_user = get_user($advisor_guid);
+        remove_entity_relationships($group->guid, 'advisor', true);
+        add_entity_relationship($advisor_guid, 'advisor', $group->guid);
+
+        //if not a member add to investigation
+        if(!$group->isMember($advisor_user)) {
+           investigations_join_investigation($group, $advisor_user);
+        }
+    }
+
+    // @todo this should not be necessary...
+    elgg_set_page_owner_guid($group->guid);
+
+    $group->join($user);
+    add_to_river('river/investigation/create', 'create', $user->guid, $group->guid);
+
+    // proposal test
+    if (!empty($_FILES['proposal']['type'])) {
+        if (strpos($_FILES['proposal']['type'], 'pdf') === false) {
+            throw new Exception('Proposals must be PDF format');
+        } else {
+            // remove any existing proposals before linking
+            // this new one to our investigation:
+            $existing = elgg_get_entities_from_relationship(array(
+                'relationship' => 'proposal',
+                'relationship_guid' => $group->guid,
+                'inverse_relationship' => true
+            ));
+            foreach($existing as $old) {
+                $old->delete();
+            }
+
+            $fh = new ElggFile();
+            $fh->owner_guid = $group->owner_guid;
+            $fh->name = 'proposal_' . $group->guid . '.pdf';
+            $fh->setFilename('groups/proposal_' . $group->guid . '.pdf');
+            $fh->set('file category', 'proposal');
+            $fh->open('write');
+            $fh->write(get_uploaded_file('proposal'));
+            $fh->close();
+            $fh->save();
+
+            remove_entity_relationships($group->guid, 'proposal', true);
+            add_entity_relationship($fh->getGUID(), 'proposal', $group->guid);
+        }
+    }
+
+    $has_uploaded_icon = (!empty($_FILES['icon']['type']) && substr_count($_FILES['icon']['type'], 'image/'));
+
+    if ($has_uploaded_icon) {
+
+        $icon_sizes = elgg_get_config('icon_sizes');
+
+        $prefix = "groups/" . $group->guid;
+
+        $filehandler = new ElggFile();
+        $filehandler->owner_guid = $group->owner_guid;
+        $filehandler->setFilename($prefix . ".jpg");
+        $filehandler->open("write");
+        $filehandler->write(get_uploaded_file('icon'));
+        $filehandler->close();
+        $filename = $filehandler->getFilenameOnFilestore();
+
+        $sizes = array('tiny', 'small', 'medium', 'large');
+
+        $thumbs = array();
+        foreach ($sizes as $size) {
+            $thumbs[$size] = get_resized_image_from_existing_file(
+                $filename,
+                $icon_sizes[$size]['w'],
+                $icon_sizes[$size]['h'],
+                $icon_sizes[$size]['square']
+            );
+        }
+
+        if ($thumbs['tiny']) { // just checking if resize successful
+            $thumb = new ElggFile();
+            $thumb->owner_guid = $group->owner_guid;
+            $thumb->setMimeType('image/jpeg');
+
+            foreach ($sizes as $size) {
+                $thumb->setFilename("{$prefix}{$size}.jpg");
+                $thumb->open("write");
+                $thumb->write($thumbs[$size]);
+                $thumb->close();
+            }
+
+            $group->icontime = time();
+        }
+    }
+    return array(
+        'guid' => $group->guid
+    );
+}
+
 function get_members($page, $search) {
 
     //$results = get_data("SELECT guid FROM elgg_users_entity WHERE name LIKE '%jo%';");
