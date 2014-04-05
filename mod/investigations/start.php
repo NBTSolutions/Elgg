@@ -387,6 +387,29 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.edit_user_info_by_username",
+        "edit_user_info_by_username",
+        array(
+            'username' => array('type' => 'string'),
+            'displayname' => array('type' => 'string'),
+            'profiletype' => array('type' => 'int', 'required' => false, 'default' => ""),
+            'description' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'location' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'interests' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'skills' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'contactemail' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'website' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'twitter' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'school' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'video' => array('type' => 'string', 'required' => false, 'default' => "")
+            ),
+        '',
+        'POST',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_user_info",
         "get_user_info",
         array(
@@ -679,6 +702,16 @@ function investigations_init() {
     expose_function(
         'wb.get_profile_type',
         'get_profile_type',
+        array(),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.get_schools',
+        'get_schools',
         array(),
         '',
         'GET',
@@ -3623,7 +3656,7 @@ function get_user_info($user_guid, $icon_size) {
         "description" => $user->description,
         "brief_description" => $user->briefdescription,
         "location" => $user->location,
-        "interests" => is_array($interests) ? $interests : array($interest),
+        "interests" => is_array($interests) ? $interests : array($interests),
         "skills" => is_array($skills) ? $skills : array($skills),
         "contactemail" => $user->contactemail,
         "phone" => $user->phone,
@@ -3635,129 +3668,50 @@ function get_user_info($user_guid, $icon_size) {
     );
 }
 
-function edit_user_info($username, $displayName, $image, $description, $location, $interests, $skills, $contactEmail, $website, $twitter, $school, $video) {
+function edit_user_info_by_username($username, $displayname, $profiletype, $description, $location, $interests, $skills, $contactemail, $website, $twitter, $school, $video) {
 
-    // Validate create
-    if (!$displayName) {
+    // Validate edit
+    if (!$displayname) {
         throw new Exception(elgg_echo("profile:nodisplayname"));
     }
 
-    $displayName = htmlspecialchars($displayName, ENT_QUOTES, 'UTF-8');
+    $description = htmlspecialchars($description, ENT_QUOTES, 'UTF-8');
 
     // get current user
-    $user = elgg_get_logged_in_user_entity();
+    $logged_in_user = elgg_get_logged_in_user_entity();
 
-    if ($user == null) {
-        throw new Exception(elgg_echo("profile:cantedit"));
+    // allow deletion if you are and admin or this user
+    if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->username != $username && !elgg_is_admin_logged_in())) {
+        throw new Exception('You need to be logged in either as an admin or as this user to edit this profile.');
     }
 
-    $group = new ElggGroup();
+    $getUser = get_user_info_by_username($username, "large");
 
-    $group->name = $name;
-    $group->description = $description;
-    $group->briefdescription = $brief_description;
-    $group->interests = "";
-    $group->membership = ACCESS_PUBLIC;
-    $group->access_id = ACCESS_PUBLIC;
-    $group->subtype = 'investigation';
+    $userInfo = get_entity($getUser["id"]);
 
-    $group->save();
+    $userInfo->name = trim($displayname);
+    $userInfo->custom_profile_type = trim($profiletype);
+    // $userInfo->username;
+    // $userInfo->getIconUrl($icon_size);
+    // $userInfo->email;
+    $userInfo->description = trim($description);
+    // $userInfo->briefdescription;
+    $userInfo->location = trim($location);
+    $userInfo->interests = json_decode($interests);
+    $userInfo->skills = json_decode($skills);
+    $userInfo->contactemail = trim($contactemail);
+    // $userInfo->phone;
+    // $userInfo->mobile;
+    $userInfo->website = trim($website);
+    $userInfo->twitter = trim($twitter);
+    $userInfo->school = trim($school);
+    $userInfo->video = trim($video);
 
-    // store the advisor guid as a relationship:
-    if ($advisor_guid) {
-        $advisor_user = get_user($advisor_guid);
-        remove_entity_relationships($group->guid, 'advisor', true);
-        add_entity_relationship($advisor_guid, 'advisor', $group->guid);
+    $userInfo->save();
 
-        //if not a member add to investigation
-        if(!$group->isMember($advisor_user)) {
-           investigations_join_investigation($group, $advisor_user);
-        }
-    }
-
-    // @todo this should not be necessary...
-    elgg_set_page_owner_guid($group->guid);
-
-    $group->join($user);
-    add_to_river('river/investigation/create', 'create', $user->guid, $group->guid);
-
-    // proposal test
-    if (!empty($_FILES['proposal']['type'])) {
-        if (strpos($_FILES['proposal']['type'], 'pdf') === false) {
-            throw new Exception('Proposals must be PDF format');
-        } else {
-            // remove any existing proposals before linking
-            // this new one to our investigation:
-            $existing = elgg_get_entities_from_relationship(array(
-                'relationship' => 'proposal',
-                'relationship_guid' => $group->guid,
-                'inverse_relationship' => true
-            ));
-            foreach($existing as $old) {
-                $old->delete();
-            }
-
-            $fh = new ElggFile();
-            $fh->owner_guid = $group->owner_guid;
-            $fh->name = 'proposal_' . $group->guid . '.pdf';
-            $fh->setFilename('groups/proposal_' . $group->guid . '.pdf');
-            $fh->set('file category', 'proposal');
-            $fh->open('write');
-            $fh->write(get_uploaded_file('proposal'));
-            $fh->close();
-            $fh->save();
-
-            remove_entity_relationships($group->guid, 'proposal', true);
-            add_entity_relationship($fh->getGUID(), 'proposal', $group->guid);
-        }
-    }
-
-    $has_uploaded_icon = (!empty($_FILES['icon']['type']) && substr_count($_FILES['icon']['type'], 'image/'));
-
-    if ($has_uploaded_icon) {
-
-        $icon_sizes = elgg_get_config('icon_sizes');
-
-        $prefix = "groups/" . $group->guid;
-
-        $filehandler = new ElggFile();
-        $filehandler->owner_guid = $group->owner_guid;
-        $filehandler->setFilename($prefix . ".jpg");
-        $filehandler->open("write");
-        $filehandler->write(get_uploaded_file('icon'));
-        $filehandler->close();
-        $filename = $filehandler->getFilenameOnFilestore();
-
-        $sizes = array('tiny', 'small', 'medium', 'large');
-
-        $thumbs = array();
-        foreach ($sizes as $size) {
-            $thumbs[$size] = get_resized_image_from_existing_file(
-                $filename,
-                $icon_sizes[$size]['w'],
-                $icon_sizes[$size]['h'],
-                $icon_sizes[$size]['square']
-            );
-        }
-
-        if ($thumbs['tiny']) { // just checking if resize successful
-            $thumb = new ElggFile();
-            $thumb->owner_guid = $group->owner_guid;
-            $thumb->setMimeType('image/jpeg');
-
-            foreach ($sizes as $size) {
-                $thumb->setFilename("{$prefix}{$size}.jpg");
-                $thumb->open("write");
-                $thumb->write($thumbs[$size]);
-                $thumb->close();
-            }
-
-            $group->icontime = time();
-        }
-    }
     return array(
-        'guid' => $group->guid
-    );
+            'username' => $username
+        );
 }
 
 function get_members($page, $search) {
@@ -4320,3 +4274,19 @@ function get_profile_type() {
     return $profile_type;
 }
 
+function get_schools() {
+
+    $dbprefix = elgg_get_config('dbprefix');
+
+    $results = elgg_get_entities_from_metadata(array(
+        "metadata_values" => array('school')
+    ));
+
+    $result = $results[0];
+
+    $label = get_metadata_byname($result->guid, 'metadata_options')->value;
+
+    $school = explode(',', $label);
+
+    return $school;
+}
