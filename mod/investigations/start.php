@@ -564,8 +564,8 @@ function investigations_init() {
             'name' => array('type' => 'string'),
             'description' => array('type' => 'string'),
             'brief_description' => array('type' => 'string'),
-            'advisor_guid' => array('type' => 'int', 'required' => false),
-            'tags' => array('type' => 'string', 'required' => false)
+            'advisor_guid' => array('type' => 'int', 'required' => false, 'default' => ""),
+            'tags' => array('type' => 'string', 'required' => false, 'default' => "")
         ),
         '',
         'POST',
@@ -762,8 +762,8 @@ function investigations_init() {
             'name' => array('type' => 'string'),
             'description' => array('type' => 'string'),
             'brief_description' => array('type' => 'string'),
-            'advisor_guid' => array('type' => 'string', 'required' => false),
-            'tags' => array('type' => 'string', 'required' => false),
+            'advisor_guid' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'tags' => array('type' => 'string', 'required' => false, 'default' => ""),
         ),
         '',
         'POST',
@@ -2576,9 +2576,9 @@ function create_inv($name, $description, $brief_description, $advisor_guid, $tag
         $ok = add_entity_relationship($advisor_guid, 'advisor', $group->guid);
 
         //if not a member add to investigation
-        if(!$group->isMember($advisor_user)) {
-           investigations_join_investigation($group, $advisor_user);
-        }
+        // if(!$group->isMember($advisor_user)) {
+        //    investigations_join_investigation($group, $advisor_user);
+        // }
     }
 
     // @todo this should not be necessary...
