@@ -503,8 +503,9 @@ function investigations_init() {
         array(
             'name' => array('type' => 'string'),
             'description' => array('type' => 'string'),
-            'subtype' => array('type' => 'string'),
-            'container_guid' => array('type' => 'int')
+            'subtype' => array('type' => 'string', 'default' => ''),
+            'container_guid' => array('type' => 'int'),
+            'video' => array('type' => 'string', 'required' => false, 'default' => '')
         ),
         '',
         'POST',
@@ -2079,7 +2080,8 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
             'like_count' => count($likes),
             'i_liked' => $i_liked,
             'comments' => $comments,
-            'comment_count' => count($discussion->getAnnotations('group_topic_post'))
+            'comment_count' => count($discussion->getAnnotations('group_topic_post')),
+            'video' => $discussion->video
         );
     }
     elgg_set_ignore_access($ignore);
@@ -2224,7 +2226,7 @@ function get_messageboard($username) {
 }
 
 // create a thread on any elgg object using a container_guid
-function create_discussion($name, $description, $subtype, $container_guid) {
+function create_discussion($name, $description, $subtype, $container_guid, $video) {
 
     if(!elgg_is_logged_in()) {
         throw new Exception("Please login to perform this action");
@@ -2272,6 +2274,7 @@ function create_discussion($name, $description, $subtype, $container_guid) {
     $topic->access_id = $access_id;
     $topic->container_guid = $container_guid;
     $topic->owner_guid = elgg_get_logged_in_user_guid();
+    $topic->video = $video;
 
     $tags = explode(",", $tags);
     $topic->tags = $tags;
@@ -2326,7 +2329,11 @@ function create_discussion($name, $description, $subtype, $container_guid) {
         throw new Exception(elgg_echo('discussion:error:notsaved'));
     }
 
-    return add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $topic->guid);
+    add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $topic->guid);
+
+    return array(
+        "guid" => $topic->guid
+    );
 }
 
 function get_entity_by_name($name) {
@@ -2903,10 +2910,11 @@ function get_comments($id, $type, $limit, $offset) {
     $result = $results[0];
     $discussion_likes = $result->getAnnotations('likes');
     $i_liked = false;
+    $started_user = get_user($result->owner_guid);
 
     $file_thumbnail = elgg_get_entities_from_relationship(array(
         'relationship' => 'thumbnail_file',
-        'relationship_guid' => $discussion->guid,
+        'relationship_guid' => $id,
         'inverse_relationship' => true
     ));
 
@@ -2920,7 +2928,7 @@ function get_comments($id, $type, $limit, $offset) {
     // large file
     $file_large = elgg_get_entities_from_relationship(array(
         'relationship' => 'large_file',
-        'relationship_guid' => $discussion->guid,
+        'relationship_guid' => $id,
         'inverse_relationship' => true
     ));
 
@@ -2970,7 +2978,10 @@ function get_comments($id, $type, $limit, $offset) {
         'comments' => $comments,
         'comment_count' => $comment_count,
         'like_count' => count($discussion_likes),
-        'i_liked' => $i_liked
+        'i_liked' => $i_liked,
+        'video' => $result->video,
+        'username' => $started_user->username,
+        'displayname' => $started_user->name
     );
 
     return $object;
