@@ -1962,6 +1962,17 @@ function get_all_invs() {
     foreach($results as $result) {
         $e = $result->getEntitiesFromRelationship('advisor', true);
 
+        $inv_likes = $result->getAnnotations('likes');
+        $user = get_user($result->owner_guid);
+        $i_liked = false;
+        $user_guid = elgg_get_logged_in_user_guid();
+
+        foreach($inv_likes as $like) {
+            if($like->owner_guid == $user_guid) {
+                $i_liked = true;
+            }
+        }
+
         $inv[] = array(
             "id" => $result->guid,
             "name" => $result->name,
@@ -1969,7 +1980,8 @@ function get_all_invs() {
             "advisor" => $e ? $e[0]->get("name") : "",
             "image" => $result->getIcon("large"),
             "description" => $result->description,
-            "description" => $result->description
+            "like_count" => count($inv_likes),
+            "i_liked" => $i_liked
         );
     }
 
