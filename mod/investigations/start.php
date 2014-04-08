@@ -3287,6 +3287,8 @@ function get_obs_paged($offset, $limit) {
         $user = get_user($user_id);
         $categories = json_decode($result['categories']);
 
+        $likes = toggle_like_entity($elgg_obs->guid);
+
         if($user) {
             $results[$row]['user'] = array(
                 displayname => $user->name,
@@ -3318,8 +3320,8 @@ function get_obs_paged($offset, $limit) {
         $results[$row]['media'] = $media;
 
         $results[$row]['timestamp'] = date('F jS, Y', strtotime($result['timestamp']));
-        $results[$row]['like_count'] = 3;
-        $results[$row]['i_liked'] = true;
+        $results[$row]['like_count'] = $likes['like_count'];
+        $results[$row]['i_liked'] = $likes['i_liked'];
         $results[$row]['comment_count'] = 2;
     }
 
