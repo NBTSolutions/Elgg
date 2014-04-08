@@ -711,8 +711,8 @@ function investigations_init() {
     );
 
     expose_function(
-        'wb.get_schools',
-        'get_schools',
+        'wb.get_school_list',
+        'get_school_list',
         array(),
         '',
         'GET',
@@ -4354,7 +4354,7 @@ function get_profile_type() {
     return $profile_type;
 }
 
-function get_schools() {
+function get_school_list() {
 
     $dbprefix = elgg_get_config('dbprefix');
 
