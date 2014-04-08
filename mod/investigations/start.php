@@ -3235,7 +3235,7 @@ function get_obs_paged($offset, $limit) {
         throw new Exception('Connection failed... '.$e->getMessage());
     }
 
-    $server_env = "prod";
+    $server_env = "unstable";
 
     $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
                     SELECT array_to_json(array_agg(row_to_json(results))) FROM (
@@ -3268,10 +3268,21 @@ function get_obs_paged($offset, $limit) {
 
     foreach($results as $row => $result) {
 
+        $elgg_obs = elgg_get_entities_from_metadata(array(
+            "metadata_name_value_pairs" => array('agg_id' => $result['observation_id'])
+        ));
+
+        // take first result
+        $elgg_obs = $elgg_obs[0];
+        $results[$row]['id'] = $elgg_obs->guid;
+        
         // pull the user id from the aggregators annoying format :/
         $user_id = $result['user'];
-        $user_id = explode('/', $user);
-        $user_id = $user_id[count($user) - 1];
+        $user_id = explode('/', $user_id);
+        $user_id = $user_id[count($user_id) - 1];
+
+        // fix on production
+        //$user_id = 49;
 
         $user = get_user($user_id);
         $categories = json_decode($result['categories']);
@@ -3467,7 +3478,7 @@ function toggle_like_entity($entity_guid) {
             $id = $entity->annotate('likes', 1, 2, $user_guid, 'integer');
         }
 
-        $like_count = count($entity->getAnnotations('likes'));
+        $like_count = count($entity->getAnnotations('likes')) + count($entity->getAnnotations('observation_likes'));
         elgg_set_ignore_access($ignore);
 
         return array(
