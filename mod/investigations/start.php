@@ -503,8 +503,9 @@ function investigations_init() {
         array(
             'name' => array('type' => 'string'),
             'description' => array('type' => 'string'),
-            'subtype' => array('type' => 'string'),
-            'container_guid' => array('type' => 'int')
+            'subtype' => array('type' => 'string', 'default' => ''),
+            'container_guid' => array('type' => 'int'),
+            'video' => array('type' => 'string', 'required' => false, 'default' => '')
         ),
         '',
         'POST',
@@ -710,8 +711,8 @@ function investigations_init() {
     );
 
     expose_function(
-        'wb.get_schools',
-        'get_schools',
+        'wb.get_school_list',
+        'get_school_list',
         array(),
         '',
         'GET',
@@ -1989,6 +1990,17 @@ function get_all_invs() {
     foreach($results as $result) {
         $e = $result->getEntitiesFromRelationship('advisor', true);
 
+        $inv_likes = $result->getAnnotations('likes');
+        $user = get_user($result->owner_guid);
+        $i_liked = false;
+        $user_guid = elgg_get_logged_in_user_guid();
+
+        foreach($inv_likes as $like) {
+            if($like->owner_guid == $user_guid) {
+                $i_liked = true;
+            }
+        }
+
         $inv[] = array(
             "id" => $result->guid,
             "name" => $result->name,
@@ -1996,7 +2008,8 @@ function get_all_invs() {
             "advisor" => $e ? $e[0]->get("name") : "",
             "image" => $result->getIcon("large"),
             "description" => $result->description,
-            "description" => $result->description
+            "like_count" => count($inv_likes),
+            "i_liked" => $i_liked
         );
     }
 
@@ -2094,7 +2107,8 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
             'like_count' => count($likes),
             'i_liked' => $i_liked,
             'comments' => $comments,
-            'comment_count' => count($discussion->getAnnotations('group_topic_post'))
+            'comment_count' => count($discussion->getAnnotations('group_topic_post')),
+            'video' => $discussion->video
         );
     }
     elgg_set_ignore_access($ignore);
@@ -2239,7 +2253,7 @@ function get_messageboard($username) {
 }
 
 // create a thread on any elgg object using a container_guid
-function create_discussion($name, $description, $subtype, $container_guid) {
+function create_discussion($name, $description, $subtype, $container_guid, $video) {
 
     if(!elgg_is_logged_in()) {
         throw new Exception("Please login to perform this action");
@@ -2287,6 +2301,7 @@ function create_discussion($name, $description, $subtype, $container_guid) {
     $topic->access_id = $access_id;
     $topic->container_guid = $container_guid;
     $topic->owner_guid = elgg_get_logged_in_user_guid();
+    $topic->video = $video;
 
     $tags = explode(",", $tags);
     $topic->tags = $tags;
@@ -2341,7 +2356,11 @@ function create_discussion($name, $description, $subtype, $container_guid) {
         throw new Exception(elgg_echo('discussion:error:notsaved'));
     }
 
-    return add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $topic->guid);
+    add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $topic->guid);
+
+    return array(
+        "guid" => $topic->guid
+    );
 }
 
 function get_entity_by_name($name) {
@@ -2911,17 +2930,20 @@ function get_comments($id, $type, $limit, $offset) {
 
 
     // get object
+    $ignore = elgg_set_ignore_access();
     $results = elgg_get_entities(array(
         'guid' => array($id)
     ));
+    elgg_set_ignore_access($ignore);
 
     $result = $results[0];
     $discussion_likes = $result->getAnnotations('likes');
     $i_liked = false;
+    $started_user = get_user($result->owner_guid);
 
     $file_thumbnail = elgg_get_entities_from_relationship(array(
         'relationship' => 'thumbnail_file',
-        'relationship_guid' => $discussion->guid,
+        'relationship_guid' => $id,
         'inverse_relationship' => true
     ));
 
@@ -2935,7 +2957,7 @@ function get_comments($id, $type, $limit, $offset) {
     // large file
     $file_large = elgg_get_entities_from_relationship(array(
         'relationship' => 'large_file',
-        'relationship_guid' => $discussion->guid,
+        'relationship_guid' => $id,
         'inverse_relationship' => true
     ));
 
@@ -2985,7 +3007,10 @@ function get_comments($id, $type, $limit, $offset) {
         'comments' => $comments,
         'comment_count' => $comment_count,
         'like_count' => count($discussion_likes),
-        'i_liked' => $i_liked
+        'i_liked' => $i_liked,
+        'video' => $result->video,
+        'username' => $started_user->username,
+        'displayname' => $started_user->name
     );
 
     return $object;
@@ -3237,9 +3262,9 @@ function get_obs_paged($offset, $limit) {
         throw new Exception('Connection failed... '.$e->getMessage());
     }
 
-    $server_env = "prod";
+    $server_env = "unstable";
 
-    $query = "SELECT observation_id, uri as user, categories_json as categories, timestamp, (
+    $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
                     SELECT array_to_json(array_agg(row_to_json(results))) FROM (
                         SELECT meta_elt as image
                         FROM public.".$server_env."_measurement
@@ -3248,8 +3273,6 @@ function get_obs_paged($offset, $limit) {
                         WHERE observation_id = obs.id AND phenomenon_id != 'video' AND meta_idx = 'url'
                     ) results) AS media
                     FROM public.".$server_env."_observation obs
-                    LEFT JOIN public.".$server_env."_measurement
-                        ON ".$server_env."_measurement.observation_id = obs.id
                     LEFT JOIN public.".$server_env."_observer
                         ON public.".$server_env."_observer.id = obs.observer_id
                     ORDER BY timestamp DESC
@@ -3272,13 +3295,26 @@ function get_obs_paged($offset, $limit) {
 
     foreach($results as $row => $result) {
 
+        $elgg_obs = elgg_get_entities_from_metadata(array(
+            "metadata_name_value_pairs" => array('agg_id' => $result['observation_id'])
+        ));
+
+        // take first result
+        $elgg_obs = $elgg_obs[0];
+        $results[$row]['id'] = $elgg_obs->guid;
+        
         // pull the user id from the aggregators annoying format :/
         $user_id = $result['user'];
-        $user_id = explode('/', $user);
-        $user_id = $user_id[count($user) - 1];
+        $user_id = explode('/', $user_id);
+        $user_id = $user_id[count($user_id) - 1];
+
+        // fix on production
+        //$user_id = 49;
 
         $user = get_user($user_id);
         $categories = json_decode($result['categories']);
+
+        $likes = toggle_like_entity($elgg_obs->guid);
 
         if($user) {
             $results[$row]['user'] = array(
@@ -3311,8 +3347,8 @@ function get_obs_paged($offset, $limit) {
         $results[$row]['media'] = $media;
 
         $results[$row]['timestamp'] = date('F jS, Y', strtotime($result['timestamp']));
-        $results[$row]['like_count'] = 3;
-        $results[$row]['i_liked'] = true;
+        $results[$row]['like_count'] = $likes['like_count'];
+        $results[$row]['i_liked'] = $likes['i_liked'];
         $results[$row]['comment_count'] = 2;
     }
 
@@ -3449,6 +3485,7 @@ function toggle_like_entity($entity_guid) {
 
     if(is_logged_in()) {
 
+        $ignore = elgg_set_ignore_access(true);
         $entity = get_entity($entity_guid);
         $i_liked = true;
         $user_guid = elgg_get_logged_in_user_guid();
@@ -3470,7 +3507,8 @@ function toggle_like_entity($entity_guid) {
             $id = $entity->annotate('likes', 1, 2, $user_guid, 'integer');
         }
 
-        $like_count = count($entity->getAnnotations('likes'));
+        $like_count = count($entity->getAnnotations('likes')) + count($entity->getAnnotations('observation_likes'));
+        elgg_set_ignore_access($ignore);
 
         return array(
             'i_liked' => $i_liked,
@@ -4358,7 +4396,7 @@ function get_profile_type() {
     return $profile_type;
 }
 
-function get_schools() {
+function get_school_list() {
 
     $dbprefix = elgg_get_config('dbprefix');
 
