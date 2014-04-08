@@ -3287,7 +3287,16 @@ function get_obs_paged($offset, $limit) {
         $user = get_user($user_id);
         $categories = json_decode($result['categories']);
 
-        $likes = toggle_like_entity($elgg_obs->guid);
+        $likes = $result->getAnnotations('likes');
+        $i_liked = false;
+        $user_guid = elgg_get_logged_in_user_guid();
+
+        foreach($inv_likes as $like) {
+            if($like->owner_guid == $user_guid) {
+                $i_liked = true;
+            }
+        }
+        $like_count = count($elgg_obs->getAnnotations('likes')) + count($elgg_obs->getAnnotations('observation_likes'));
 
         if($user) {
             $results[$row]['user'] = array(
@@ -3320,8 +3329,8 @@ function get_obs_paged($offset, $limit) {
         $results[$row]['media'] = $media;
 
         $results[$row]['timestamp'] = date('F jS, Y', strtotime($result['timestamp']));
-        $results[$row]['like_count'] = $likes['like_count'];
-        $results[$row]['i_liked'] = $likes['i_liked'];
+        $results[$row]['like_count'] = $like_count;
+        $results[$row]['i_liked'] = $i_liked;
         $results[$row]['comment_count'] = 2;
     }
 
