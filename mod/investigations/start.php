@@ -771,6 +771,18 @@ function investigations_init() {
         false
     );
 
+    expose_function(
+        'wb.search_site',
+        'search_site',
+        array(
+            'terms' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
 	// Add some widgets
 	elgg_register_widget_type('a_users_groups', elgg_echo('investigations:widget:membership'), elgg_echo('investigations:widgets:description'));
 
@@ -779,6 +791,21 @@ function investigations_init() {
 
     //elgg investigation entity
 	//elgg_extend_view('investigations/tool_latest', 'investigations/profile/activity_module');
+
+    // register search hooks
+    // register some default search hooks
+    elgg_register_plugin_hook_handler('search', 'object', 'search_objects_hook');
+    elgg_register_plugin_hook_handler('search', 'user', 'search_users_hook');
+    elgg_register_plugin_hook_handler('search', 'group', 'search_groups_hook');
+
+    // tags and comments are a bit different.
+    // register a search types and a hooks for them.
+    elgg_register_plugin_hook_handler('search_types', 'get_types', 'search_custom_types_tags_hook');
+    elgg_register_plugin_hook_handler('search', 'tags', 'search_tags_hook');
+
+    elgg_register_plugin_hook_handler('search_types', 'get_types', 'search_custom_types_comments_hook');
+    elgg_register_plugin_hook_handler('search', 'comments', 'search_comments_hook');
+
 
 	// add link to owner block
 	elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'investigation_activity_owner_block_menu');
@@ -3732,7 +3759,7 @@ function edit_user_info_by_username($username, $displayname, $profiletype, $desc
         throw new Exception(elgg_echo("profile:nodisplayname"));
     }
 
-    $description = htmlspecialchars($description, ENT_QUOTES, 'UTF-8');
+    // $displayname = htmlspecialchars($displayname, ENT_QUOTES, 'UTF-8');
 
     // get current user
     $logged_in_user = elgg_get_logged_in_user_entity();
@@ -4346,4 +4373,29 @@ function get_schools() {
     $school = explode(',', $label);
 
     return $school;
+}
+
+function search_site($searchTerms){
+
+    $params = array(
+    'query' => $searchTerms,
+    'offset' => 0,
+    'limit' => 100,
+    'sort' => 'relevance',
+    'order' => 'asc',
+    'search_type' => 'all',
+    'type' => ELGG_ENTITIES_ANY_VALUE,
+    'subtype' => ELGG_ENTITIES_ANY_VALUE,
+//  'tag_type' => $tag_type,
+    'owner_guid' => ELGG_ENTITIES_ANY_VALUE,
+    'container_guid' => ELGG_ENTITIES_ANY_VALUE,
+//  'friends' => $friends
+    'pagination' => FALSE
+    );
+
+    $types = get_registered_entity_types();
+    $custom_types = elgg_trigger_plugin_hook('search_types', 'get_types', $params, array());
+
+
+
 }
