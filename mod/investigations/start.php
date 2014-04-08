@@ -3314,9 +3314,8 @@ function get_obs_paged($offset, $limit) {
         $user = get_user($user_id);
         $categories = json_decode($result['categories']);
 
-
         $ignore = elgg_set_ignore_access(true);
-        $likes = $result->getAnnotations('likes');
+        $likes = $elgg_obs->getAnnotations('likes');
         $i_liked = false;
         $user_guid = elgg_get_logged_in_user_guid();
 
