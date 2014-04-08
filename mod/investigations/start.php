@@ -3237,7 +3237,7 @@ function get_obs_paged($offset, $limit) {
 
     $server_env = "prod";
 
-    $query = "SELECT observation_id, uri as user, categories_json as categories, timestamp, (
+    $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
                     SELECT array_to_json(array_agg(row_to_json(results))) FROM (
                         SELECT meta_elt as image
                         FROM public.".$server_env."_measurement
@@ -3246,8 +3246,6 @@ function get_obs_paged($offset, $limit) {
                         WHERE observation_id = obs.id AND phenomenon_id != 'video' AND meta_idx = 'url'
                     ) results) AS media
                     FROM public.".$server_env."_observation obs
-                    LEFT JOIN public.".$server_env."_measurement
-                        ON ".$server_env."_measurement.observation_id = obs.id
                     LEFT JOIN public.".$server_env."_observer
                         ON public.".$server_env."_observer.id = obs.observer_id
                     ORDER BY timestamp DESC
@@ -3447,6 +3445,7 @@ function toggle_like_entity($entity_guid) {
 
     if(is_logged_in()) {
 
+        $ignore = elgg_set_ignore_access(true);
         $entity = get_entity($entity_guid);
         $i_liked = true;
         $user_guid = elgg_get_logged_in_user_guid();
@@ -3469,6 +3468,7 @@ function toggle_like_entity($entity_guid) {
         }
 
         $like_count = count($entity->getAnnotations('likes'));
+        elgg_set_ignore_access($ignore);
 
         return array(
             'i_liked' => $i_liked,
