@@ -2903,9 +2903,11 @@ function get_comments($id, $type, $limit, $offset) {
 
 
     // get object
+    $ignore = elgg_set_ignore_access();
     $results = elgg_get_entities(array(
         'guid' => array($id)
     ));
+    elgg_set_ignore_access($ignore);
 
     $result = $results[0];
     $discussion_likes = $result->getAnnotations('likes');
