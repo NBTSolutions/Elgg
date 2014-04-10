@@ -1984,7 +1984,8 @@ function get_all_invs() {
     $inv = array();
 
     $results = elgg_get_entities(array(
-        'type_subtype_pair'	=>	array('group' => 'investigation')
+        'type_subtype_pair'	=>	array('group' => 'investigation'),
+        'limit' => 0
     ));
 
     foreach($results as $result) {
@@ -3262,7 +3263,7 @@ function get_obs_paged($offset, $limit) {
         throw new Exception('Connection failed... '.$e->getMessage());
     }
 
-    $server_env = "unstable";
+    $server_env = "prod";
 
     $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
                     SELECT array_to_json(array_agg(row_to_json(results))) FROM (
