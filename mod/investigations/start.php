@@ -269,6 +269,20 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.comment_on_obs_by_agg_id",
+        "comment_on_obs_by_agg_id",
+        array(
+            'agg_id' => array('type' => 'int'),
+            'comment' => array('type' => 'string'),
+            'token' => array('type' => 'string')
+        ),
+        '',
+        'POST',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.toggle_like_obs",
         "toggle_like_obs",
         array(
@@ -289,7 +303,7 @@ function investigations_init() {
         '',
         'GET',
         false,
-        false  
+        false
     );
 
     expose_function(
@@ -461,7 +475,7 @@ function investigations_init() {
     );
 
     expose_function(
-        "wb.delete_obs_by_agg_id",        
+        "wb.delete_obs_by_agg_id",
         "delete_obs_by_agg_id",
         array(
             'agg_id' => array('type' => 'string')
@@ -473,7 +487,7 @@ function investigations_init() {
     );
 
     expose_function(
-        "wb.delete_obs_by_guid",        
+        "wb.delete_obs_by_guid",
         "delete_obs_by_guid",
         array(
             'agg_id' => array('type' => 'string')
@@ -2117,7 +2131,7 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
 }
 
 function get_disc_by_id($id) {
-    
+
     $discussion = array();
     $comments = array();
 
@@ -2131,7 +2145,7 @@ function get_disc_by_id($id) {
     $ignore = elgg_set_ignore_access(true);
     $elgg_comments = $results[0]->getAnnotations('group_topic_post', 0, 0, 'desc');
     elgg_set_ignore_access($ignore);
-    
+
     foreach($elgg_comments as $elgg_comment) {
 
         $user = get_user($elgg_comment->owner_guid);
@@ -2249,7 +2263,7 @@ function get_messageboard($username) {
     }
 
     return $messages;
-        
+
 }
 
 // create a thread on any elgg object using a container_guid
@@ -2364,7 +2378,7 @@ function create_discussion($name, $description, $subtype, $container_guid, $vide
 }
 
 function get_entity_by_name($name) {
-    
+
     $results = elgg_get_entities_from_metadata(array(
         type => 'group'
     ));
@@ -2457,7 +2471,7 @@ function delete_investigation($guid) {
         if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->guid != $entity->owner_guid && !elgg_is_admin_logged_in())) {
             throw new Exception('You need to be logged in either as an admin or as the investigation owner to delete this investigation.');
         }
-        
+
         // delete group icons
         $owner_guid = $entity->owner_guid;
         $prefix = "groups/" . $entity->guid;
@@ -2604,7 +2618,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
             'guid' => $inv->guid
         );
 
-    } 
+    }
     else {
         throw new Exception('Not a valid Investigation guid');
     }
@@ -2612,7 +2626,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
 }
 
 function create_inv($name, $description, $brief_description, $advisor_guid, $tags) {
-    
+
     $icon_formname = 'icon';
     $proposal_formname = 'proposal';
 
@@ -2923,7 +2937,7 @@ function comment_on($id, $type, $comment) {
 }
 
 function get_comments($id, $type, $limit, $offset) {
-    
+
     $object = array();
     $comments = array();
     $user_guid = elgg_get_logged_in_user_guid();
@@ -2978,7 +2992,7 @@ function get_comments($id, $type, $limit, $offset) {
     $elgg_comments = $results[0]->getAnnotations($type, $limit, $offset, 'desc');
     $comment_count = count($results[0]->getAnnotations($type));
     elgg_set_ignore_access($ignore);
-    
+
     foreach($elgg_comments as $elgg_comment) {
 
         $user = get_user($elgg_comment->owner_guid);
@@ -3076,7 +3090,7 @@ function get_inv_by_id($id) {
 }
 
 function get_invs_by_token($token) {
-    
+
     $user_guid = validate_user_token($token, null);
     $user = get_user($user_guid);
 
@@ -3280,7 +3294,7 @@ function get_obs_paged($offset, $limit) {
                     OFFSET ".$offset;
 
     $prepared = $dbObject->prepare($query);
-    
+
     if(!$prepared){
       print "<p>DATABASE CONNECTION ERROR:</p>";
       print_r($dbObject->errorInfo());
@@ -3302,7 +3316,7 @@ function get_obs_paged($offset, $limit) {
         // take first result
         $elgg_obs = $elgg_obs[0];
         $results[$row]['id'] = $elgg_obs->guid;
-        
+
         // pull the user id from the aggregators annoying format :/
         $user_id = $result['user'];
         $user_id = explode('/', $user_id);
@@ -3612,6 +3626,7 @@ function get_comments_on_obs($observation_guid) {
         foreach($comments as $comment) {
             $results[] = array(
                 "time_created" => $comment->time_created,
+                "user_guid" => $comment->owner_guid,
                 "value" => $comment->value
             );
         }
@@ -3627,7 +3642,19 @@ function get_comments_on_obs_by_agg_id($agg_id) {
     ));
 
     if($results) {
-        return get_comments_on_obs($results[0]->guid);
+
+        $comments =  get_comments_on_obs($results[0]->guid);
+
+        foreach($comments as $key => $val){
+          $user_info = get_user_info($val["user_guid"], "tiny");
+          $val["username"] = $user_info["username"];
+          $val["display_name"] = $user_info["users_display_name"];
+          $val["icon"] = $user_info["image"];
+          $val["time"] = elgg_get_friendly_time($val["time_created"]);
+          $finalResults[] = $val;
+        }
+
+        return $finalResults;
     }
     else {
         return 0;
@@ -3657,6 +3684,35 @@ function comment_on_obs($observation_guid, $comment, $token) {
 
 }
 
+function comment_on_obs_by_agg_id($agg_id, $comment, $token) {
+    // are you logged in?
+    // passing in null as 2nd param means we will use the default timeout 60mins unless core is modified
+
+    $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair"	=>	array('object' => 'observation'),
+        "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+    ));
+
+    $user_guid = validate_user_token($token, null);
+    if($user_guid) {
+
+        // need to ignore access to set owner_id
+        $ignore = elgg_set_ignore_access(true);
+        $observation = get_entity($results[0]->guid);
+        $id = $observation->annotate('observation_comments', $comment, 2, $user_guid, 'text');
+        $observation->save();
+        elgg_set_ignore_access($ignore);
+
+        return $id ? 1 : 0;
+
+    }
+    else {
+        // not a valid login
+      throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+    }
+
+}
+
 // list of observations by date/user
 function is_logged_in() {
 
@@ -3666,7 +3722,7 @@ function is_logged_in() {
         $user = get_user($user_guid);
 
         if($token) {
-            return array(   
+            return array(
                 "user_guid" => $user->guid,
                 "name" => $user->name,
                 "username" => $user->username,
@@ -3683,7 +3739,7 @@ function is_logged_in() {
                 "username" => $user->username,
                 "icon" => $user->getIcon('tiny'),
                 "token" => $token
-            );    
+            );
         }
     }
     else {
@@ -3874,7 +3930,7 @@ function get_members($page, $search) {
 
 function get_people_picker_people($search) {
     // get people
-    
+
     // get school
 
     // get people from school
@@ -3953,7 +4009,7 @@ function rotate_image_by_agg_id($rotate_degrees, $agg_id) {
         $user = get_user($user_guid);
     }
     else {
-        throw new Exception("You need to login");    
+        throw new Exception("You need to login");
     }
 
     $results = elgg_get_entities_from_metadata(array(
@@ -3962,7 +4018,7 @@ function rotate_image_by_agg_id($rotate_degrees, $agg_id) {
     ));
 
     $obs = get_entity($results[0]->guid);
-    
+
     if($obs) {
         //if owner or admin
         if(elgg_is_admin_logged_in() || $user->guid == $obs->owner_guid) {
@@ -4018,7 +4074,7 @@ function rotate_image_by_agg_id($rotate_degrees, $agg_id) {
             if(!$gd_image){
                 throw new Exception('Downloading image from s3 failed');
             }
-            
+
             // if we use imagecreatetruecolor on pngs it will message up things
             $gd_image_thumbnail = $image_ext == 'jpg' ? imagecreatetruecolor($thumbnail_width, $thumbnail_height) : imagecreate($thumbnail_width, $thumbnail_height);
 
@@ -4116,7 +4172,7 @@ function write_to_s3($bucket, $content_type, $image_name, $image_data, $client, 
 }
 
 function get_news($limit, $offset) {
-    
+
     $news = array();
 
     $results = elgg_get_entities(array(
@@ -4183,7 +4239,7 @@ function get_user_stats($username) {
       'type' => 'object',
       'subtype' => 'investigationforumtopic_map',
       'limit' => false
-    )); 
+    ));
 
     //count graphs
     $graphs = elgg_get_entities( array(
@@ -4267,12 +4323,12 @@ function delete_user($username) {
     }
 
     $logged_in_user = elgg_get_logged_in_user_entity();
-    
+
     // allow deletion if you are and admin or this user
     if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->guid != $user->guid && !elgg_is_admin_logged_in())) {
         throw new Exception('You need to be logged in either as an admin or as '.$username.' to delete this user.');
     }
-    
+
     $result = array(
         'am-i-logged-in?' => elgg_is_logged_in(),
         'am-i-an-admin' => elgg_is_admin_logged_in(),
@@ -4289,11 +4345,11 @@ function create_user($displayname, $username, $email, $password, $password2, $pr
 
     $name = $displayname;
     var_dump(array(
-        displayname => $displayname, 
-        username => $username, 
-        email => $email, 
-        password => $password, 
-        password2 => $password2, 
+        displayname => $displayname,
+        username => $username,
+        email => $email,
+        password => $password,
+        password2 => $password2,
         profile_type => $profile_type
     ));
 

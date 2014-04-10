@@ -88,6 +88,9 @@ $params = array(
 $types = get_registered_entity_types();
 $custom_types = elgg_trigger_plugin_hook('search_types', 'get_types', $params, array());
 
+echo var_dump($types);
+echo var_dump($custom_types);
+
 // add sidebar items for all and native types
 // @todo should these maintain any existing type / subtype filters or reset?
 $data = htmlspecialchars(http_build_query(array(
@@ -261,7 +264,6 @@ if ($search_type != 'entities' || $search_type == 'all') {
     }
 }
 
-echo print_r($all_results);
 
 // highlight search terms
 if ($search_type == 'tags') {
