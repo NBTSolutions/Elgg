@@ -3683,7 +3683,8 @@ function is_logged_in() {
                 "name" => $user->name,
                 "username" => $user->username,
                 "icon" => $user->getIcon('tiny'),
-                "token" => $token ? $token[0]->token : 0
+                "token" => $token ? $token[0]->token : 0,
+                "is_admin" => elgg_is_admin_logged_in()
             );
         }
         else {
@@ -3694,7 +3695,8 @@ function is_logged_in() {
                 "name" => $user->name,
                 "username" => $user->username,
                 "icon" => $user->getIcon('tiny'),
-                "token" => $token
+                "token" => $token,
+                "is_admin" => elgg_is_admin_logged_in()
             );    
         }
     }
@@ -3704,7 +3706,8 @@ function is_logged_in() {
             "name" => "",
             "username" => "",
             "icon" => "",
-            "token" => 0
+            "token" => 0,
+            "is_admin" => false
         );
     }
 }
