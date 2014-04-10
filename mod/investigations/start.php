@@ -1998,7 +1998,8 @@ function get_all_invs() {
     $inv = array();
 
     $results = elgg_get_entities(array(
-        'type_subtype_pair'	=>	array('group' => 'investigation')
+        'type_subtype_pair'	=>	array('group' => 'investigation'),
+        'limit' => 0
     ));
 
     foreach($results as $result) {
@@ -3276,7 +3277,7 @@ function get_obs_paged($offset, $limit) {
         throw new Exception('Connection failed... '.$e->getMessage());
     }
 
-    $server_env = "unstable";
+    $server_env = "prod";
 
     $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
                     SELECT array_to_json(array_agg(row_to_json(results))) FROM (
@@ -3328,7 +3329,18 @@ function get_obs_paged($offset, $limit) {
         $user = get_user($user_id);
         $categories = json_decode($result['categories']);
 
-        $likes = toggle_like_entity($elgg_obs->guid);
+        $ignore = elgg_set_ignore_access(true);
+        $likes = $elgg_obs->getAnnotations('likes');
+        $i_liked = false;
+        $user_guid = elgg_get_logged_in_user_guid();
+
+        foreach($inv_likes as $like) {
+            if($like->owner_guid == $user_guid) {
+                $i_liked = true;
+            }
+        }
+        $like_count = count($elgg_obs->getAnnotations('likes')) + count($elgg_obs->getAnnotations('observation_likes'));
+        elgg_set_ignore_access($ignore);
 
         if($user) {
             $results[$row]['user'] = array(
@@ -3361,8 +3373,8 @@ function get_obs_paged($offset, $limit) {
         $results[$row]['media'] = $media;
 
         $results[$row]['timestamp'] = date('F jS, Y', strtotime($result['timestamp']));
-        $results[$row]['like_count'] = $likes['like_count'];
-        $results[$row]['i_liked'] = $likes['i_liked'];
+        $results[$row]['like_count'] = $like_count;
+        $results[$row]['i_liked'] = $i_liked;
         $results[$row]['comment_count'] = 2;
     }
 
@@ -3727,7 +3739,8 @@ function is_logged_in() {
                 "name" => $user->name,
                 "username" => $user->username,
                 "icon" => $user->getIcon('tiny'),
-                "token" => $token ? $token[0]->token : 0
+                "token" => $token ? $token[0]->token : 0,
+                "is_admin" => elgg_is_admin_logged_in()
             );
         }
         else {
@@ -3738,8 +3751,14 @@ function is_logged_in() {
                 "name" => $user->name,
                 "username" => $user->username,
                 "icon" => $user->getIcon('tiny'),
+<<<<<<< HEAD
                 "token" => $token
             );
+=======
+                "token" => $token,
+                "is_admin" => elgg_is_admin_logged_in()
+            );    
+>>>>>>> f1528e820bd002994ab2a9af0ed8ad05305362b0
         }
     }
     else {
@@ -3748,7 +3767,8 @@ function is_logged_in() {
             "name" => "",
             "username" => "",
             "icon" => "",
-            "token" => 0
+            "token" => 0,
+            "is_admin" => false
         );
     }
 }
