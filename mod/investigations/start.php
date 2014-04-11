@@ -389,8 +389,8 @@ function investigations_init() {
     );
 
     expose_function(
-        "wb.get_comments_on_obs_by_agg_id",
-        "get_comments_on_obs_by_agg_id",
+        "wb.get_obs_elgg_data_by_agg_id",
+        "get_obs_elgg_data_by_agg_id",
         array(
             'agg_id' => array('type' => 'string')
         ),
@@ -3646,7 +3646,7 @@ function get_comments_on_obs($observation_guid) {
         return $results;
 }
 
-function get_comments_on_obs_by_agg_id($agg_id) {
+function get_obs_elgg_data_by_agg_id($agg_id) {
 
     $results = elgg_get_entities_from_metadata(array(
         "type_subtype_pair"	=>	array('object' => 'observation'),
@@ -3654,6 +3654,22 @@ function get_comments_on_obs_by_agg_id($agg_id) {
     ));
 
     if($results) {
+
+        // Get the like_count and i_liked
+        $ignore = elgg_set_ignore_access(true);
+        $likes = $results[0]->getAnnotations('likes');
+        $i_liked = false;
+        $user_guid = elgg_get_logged_in_user_guid();
+
+        foreach($likes as $like) {
+            if($like->owner_guid == $user_guid) {
+                $i_liked = true;
+            }
+        }
+
+        $like_count = count($results[0]->getAnnotations('likes')) + count($results[0]->getAnnotations('observation_likes'));
+        elgg_set_ignore_access($ignore);
+
 
         $comments =  get_comments_on_obs($results[0]->guid);
 
@@ -3663,10 +3679,10 @@ function get_comments_on_obs_by_agg_id($agg_id) {
           $val["display_name"] = $user_info["users_display_name"];
           $val["icon"] = $user_info["image"];
           $val["time"] = elgg_get_friendly_time($val["time_created"]);
-          $finalResults[] = $val;
+          $finalComments[] = $val;
         }
 
-        return $finalResults;
+        return array("guid" => $results[0]->guid, "comments" => $finalComments, "like_count" => $like_count, "i_liked" => $i_liked);
     }
     else {
         return 0;
@@ -3751,14 +3767,10 @@ function is_logged_in() {
                 "name" => $user->name,
                 "username" => $user->username,
                 "icon" => $user->getIcon('tiny'),
-<<<<<<< HEAD
-                "token" => $token
-            );
-=======
                 "token" => $token,
                 "is_admin" => elgg_is_admin_logged_in()
-            );    
->>>>>>> f1528e820bd002994ab2a9af0ed8ad05305362b0
+            );
+
         }
     }
     else {
