@@ -3375,7 +3375,7 @@ function get_obs_paged($offset, $limit) {
         $results[$row]['timestamp'] = date('F jS, Y', strtotime($result['timestamp']));
         $results[$row]['like_count'] = $like_count;
         $results[$row]['i_liked'] = $i_liked;
-        $results[$row]['comment_count'] = 2;
+        $results[$row]['comment_count'] = count(get_comments_on_obs($elgg_obs->guid));
     }
 
     return $results;
