@@ -759,6 +759,18 @@ function investigations_init() {
     );
 
     expose_function(
+        'wb.request_new_password',
+        'request_new_password',
+        array(
+            'email' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         'wb.delete_investigation',
         'delete_investigation',
         array(
@@ -4459,6 +4471,27 @@ function user_exists_by_username($username) {
     return array(
         exists => ($result != false)
     );
+}
+
+function request_new_password($email) {
+
+  // allow email addresses
+  if (strpos($username, '@') !== false && ($users = get_user_by_email($username))) {
+  	$username = $users[0]->username;
+  }
+
+  $user = get_user_by_username($username);
+  if ($user) {
+  	if (send_new_password_request($user->guid)) {
+  		system_message(elgg_echo('user:password:changereq:success'));
+  	} else {
+  		register_error(elgg_echo('user:password:changereq:fail'));
+  	}
+  } else {
+  	register_error(elgg_echo('user:username:notfound', array($username)));
+  }
+
+
 }
 
 function get_profile_type() {
