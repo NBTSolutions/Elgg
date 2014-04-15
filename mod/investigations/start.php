@@ -1915,7 +1915,14 @@ function investigation_filter($text) {
 // start rest calls
 function login_user($username, $password) {
 	if (true === elgg_authenticate($username, $password)) {
-		return create_user_token($username, PHP_INT_MAX);
+
+		$token = create_user_token($username, PHP_INT_MAX);
+        $user_guid = validate_user_token($token, null);
+
+        $user = get_user($user_guid);
+        login($user, false);
+
+		return is_logged_in();
 	}
     else {
 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
