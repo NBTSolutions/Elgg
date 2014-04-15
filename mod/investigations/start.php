@@ -1927,7 +1927,14 @@ function investigation_filter($text) {
 // start rest calls
 function login_user($username, $password) {
 	if (true === elgg_authenticate($username, $password)) {
-		return create_user_token($username, PHP_INT_MAX);
+
+		$token = create_user_token($username, PHP_INT_MAX);
+        $user_guid = validate_user_token($token, null);
+
+        $user = get_user($user_guid);
+        login($user, false);
+
+		return is_logged_in();
 	}
     else {
 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
@@ -3387,7 +3394,7 @@ function get_obs_paged($offset, $limit) {
         $results[$row]['timestamp'] = date('F jS, Y', strtotime($result['timestamp']));
         $results[$row]['like_count'] = $like_count;
         $results[$row]['i_liked'] = $i_liked;
-        $results[$row]['comment_count'] = 2;
+        $results[$row]['comment_count'] = count(get_comments_on_obs($elgg_obs->guid));
     }
 
     return $results;

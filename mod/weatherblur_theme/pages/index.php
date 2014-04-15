@@ -74,6 +74,86 @@ $content .= '
 	</div><!-- End featured three columns-->
 </div><!--End wb body-->';
 
-			$canvas_area = elgg_view_layout('default', array('content' => $content));
-			echo elgg_view_page($title, $canvas_area, 'default', array('bodyclass' => 'weatherblur-front'));
+			//$canvas_area = elgg_view_layout('default', array('content' => $content));
+			//echo elgg_view_page($title, $canvas_area, 'default', array('bodyclass' => 'weatherblur-front'));
+
+            
+
 		?>
+
+<!DOCTYPE html>
+<html lang="en" ng-app="weatherblur">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WeatherBlur</title>
+    <link rel="stylesheet" href="styles/app.css">
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+</head>
+<body>
+    <div class="container-fuild">
+        <div id="header" class="row" ng-controller="header">
+            <accountheader></accountheader>
+            <div class="pageWidth">
+                <div id="header-middle" class="col-md-12">
+                    <div id="header-logo" class="col-md-6">
+                        <a href="{{appPath}}{{appFilename}}/"><img src='media/images/wb_logo.png'></a>
+                    </div>
+
+                    <div id="search" class="col-md-6 pull-right">
+                        <div class="col-md-8">
+                            <input type="text" ng-model="search" class="form-control" placeholder="Search">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="form-control">Search</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="nav" class="col-md-12">
+                    <a href="{{appPath}}{{appFilename}}/enterdata"><span class="observationIcon"></span>Enter Data</a>
+                    <a href="{{appPath}}{{appFilename}}/investigations"><span class="investigationIcon"></span>Investigations</a>
+                    <a href="{{appPath}}{{appFilename}}/observations"><span class="exploreDataIcon"></span>Explore Data</a>
+                    <a href="{{appPath}}{{appFilename}}/members"><span class="membersIcon"></span>Members</a>
+                    <a href="{{appPath}}{{appFilename}}/resources"><span class="resourcesIcon"></span>Resources</a>
+                </div>
+            </div>
+        </div>
+        <div id="content" class="row">
+            <div ng-view></div>
+        </div>
+        <div id="footer" class="row" ng-controller="footer">
+            <div class="pageWidth">
+                <div class="col-md-12">
+                    <ul class="links col-centered">
+                        <li><a class="footer-link" href="/#/enterdata">Enter Data</a></li>
+                        <li><a class="footer-link" href="/#/investigations">Investigate</a></li>
+                        <li><a class="footer-link" href="/#/exploredata">Explore Data</a></li>
+                        <li><a class="footer-link" href="/#/members">Members</a></li>
+                        <li><a class="footer-link" href="/#/resources">Resources</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-12">
+                    <ul class="links col-centered">
+                        <li>WeatherBlur</li>
+                        <li>Island Institute</li>
+                        <li>386 Main Street Rockland, ME 04841</li>
+                        <li>207.594.9209</li>
+                        <li><a href="#">Email: weatherblur@islandinstitute.org</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-centered">
+                        <div class="mini-wb-logo"></div>
+                        <div class="mini-island-institute-logo"></div>
+                        <div class="mini-nsf-logo"></div>
+                    </div>
+                </div>
+
+                <span class="copyright">&copy; Copyright 2014 WeatherBlur</span>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="scripts/app.js"></script>
+</body>
+</html>

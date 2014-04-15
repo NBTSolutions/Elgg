@@ -104,23 +104,25 @@ if (is_array($items) && count($items) > 0) {
             $object_guid = $observation->agg_id;
         }
 
-        $activities[] = array(
-            'subject_guid' => $item->subject_guid,
-            'objectGuid' => $object_guid,
-            'annotation_id' => $item->annotation_id,
-            'type' => $item->type,
-            'actionUri' => $action_uri,
-            'actionLabel' => $actionLabel,
-            'subtype' => $item->subtype,
-            'action_type' => $action,
-            'date' => elgg_get_friendly_time($item->posted),
-            'displayname' => $user->name,
-            'user_id' => $user->guid,
-            'username' => $user->username,
-            'userIcon' => $user->getIcon('small'),
-            'userIconTiny' => $user->getIcon('tiny'),
-            'preview' => $preview
-        );
+        if($actionLabel != 'file') {
+            $activities[] = array(
+                'subject_guid' => $item->subject_guid,
+                'objectGuid' => $object_guid,
+                'annotation_id' => $item->annotation_id,
+                'type' => $item->type,
+                'actionUri' => $action_uri,
+                'actionLabel' => $actionLabel,
+                'subtype' => $item->subtype,
+                'action_type' => $action,
+                'date' => elgg_get_friendly_time($item->posted),
+                'displayname' => $user->name,
+                'user_id' => $user->guid,
+                'username' => $user->username,
+                'userIcon' => $user->getIcon('small'),
+                'userIconTiny' => $user->getIcon('tiny'),
+                'preview' => $preview
+            );
+        }
 	}
 }
 
