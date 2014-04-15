@@ -77,7 +77,7 @@ $content .= '
 			//$canvas_area = elgg_view_layout('default', array('content' => $content));
 			//echo elgg_view_page($title, $canvas_area, 'default', array('bodyclass' => 'weatherblur-front'));
 
-            
+
 
 		?>
 
@@ -127,7 +127,7 @@ $content .= '
                     <ul class="links col-centered">
                         <li><a class="footer-link" href="/#/enterdata">Enter Data</a></li>
                         <li><a class="footer-link" href="/#/investigations">Investigate</a></li>
-                        <li><a class="footer-link" href="/#/exploredata">Explore Data</a></li>
+                        <li><a class="footer-link" href="/#/observations">Explore Data</a></li>
                         <li><a class="footer-link" href="/#/members">Members</a></li>
                         <li><a class="footer-link" href="/#/resources">Resources</a></li>
                     </ul>
