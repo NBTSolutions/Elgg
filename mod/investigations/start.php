@@ -3191,7 +3191,7 @@ function create_obs($inv_guid, $token, $agg_id) {
             add_to_river('river/object/investigation/create', 'create', $user_guid, $observation->guid);
 
             return $observation->guid;
-        }
+        //}
         //not part of this investigation
         /*
         else {
