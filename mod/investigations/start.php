@@ -4559,7 +4559,11 @@ function request_new_password($email) {
   }
 
   $user = get_user_by_username($username);
+
   if ($user) {
+
+    $user_guid = $user->guid;
+
   	// generate code
      $code = generate_random_cleartext_password();
      $user->setPrivateSetting('passwd_conf_code', $code);
@@ -4608,7 +4612,14 @@ function send_new_password($user_guid, $conf_code){
         // clean the logins failures
         reset_login_failure_count($user_guid);
 
-        $email = elgg_echo('email:resetpassword:body', array($user->name, $password));
+        $email_body = "Hi %s,
+
+      Your password has been reset to: %s
+
+      After you've logged in, remember to change your password by going to the 'edit user' section from your profile.";
+
+
+        $email = elgg_echo($email_body, array($user->name, $password));
 
         return notify_user($user->guid, $CONFIG->site->guid,
           elgg_echo('email:resetpassword:subject'), $email, array(), 'email');
