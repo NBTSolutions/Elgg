@@ -125,11 +125,11 @@ $content .= '
             <div class="pageWidth">
                 <div class="col-md-12">
                     <ul class="links col-centered">
-                        <li><a class="footer-link" href="/#/enterdata">Enter Data</a></li>
-                        <li><a class="footer-link" href="/#/investigations">Investigate</a></li>
-                        <li><a class="footer-link" href="/#/observations">Explore Data</a></li>
-                        <li><a class="footer-link" href="/#/members">Members</a></li>
-                        <li><a class="footer-link" href="/#/resources">Resources</a></li>
+                        <li><a class="footer-link" href="{{appPath}}{{appFilename}}/enterdata">Enter Data</a></li>
+                        <li><a class="footer-link" href="{{appPath}}{{appFilename}}/investigations">Investigate</a></li>
+                        <li><a class="footer-link" href="{{appPath}}{{appFilename}}/observations">Explore Data</a></li>
+                        <li><a class="footer-link" href="{{appPath}}{{appFilename}}/members">Members</a></li>
+                        <li><a class="footer-link" href="{{appPath}}{{appFilename}}/resources">Resources</a></li>
                     </ul>
                 </div>
                 <div class="col-md-12">
