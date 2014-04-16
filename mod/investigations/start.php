@@ -706,7 +706,7 @@ function investigations_init() {
             'email' => array('type' => 'string'),
             'password' => array('type' => 'string'),
             'password2' => array('type' => 'string'),
-            'profile_type' => array('type' => 'string')
+            'profile_type' => array('type' => 'int')
         ),
         '',
         'GET',
