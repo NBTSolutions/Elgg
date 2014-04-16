@@ -1988,6 +1988,7 @@ function get_invs($username, $password) {
 
 	$results = elgg_get_entities_from_relationship(array(
         'type_subtype_pair'	=>	array('group' => 'investigation'),
+        'limit' => 0,
         /*
 		'relationship' => 'member',
 		'relationship_guid' => $user_guid,
@@ -3124,6 +3125,7 @@ function get_invs_by_token($token) {
 
 	$results = elgg_get_entities_from_relationship(array(
         'type_subtype_pair'	=>	array('group' => 'investigation'),
+        'limit' => 0,
         /*
 		'relationship' => 'member',
 		'relationship_guid' => $user_guid,
@@ -3161,7 +3163,7 @@ function create_obs($inv_guid, $token, $agg_id) {
         $investigation = get_entity($inv_guid);
 
         // check if user is part of this investigation
-        if($investigation->isMember($user)) {
+        //if($investigation->isMember($user)) {
 
             $profile_type_guid = $user->custom_profile_type;
             $profile_type = get_entity($profile_type_guid);
@@ -3191,10 +3193,12 @@ function create_obs($inv_guid, $token, $agg_id) {
             return $observation->guid;
         }
         //not part of this investigation
+        /*
         else {
             // not a member of this investigation
             throw new Exception('User not a member of this investigation.');
         }
+         */
     }
     else {
         // not a valid token
