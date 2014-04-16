@@ -4174,12 +4174,9 @@ function rotate_image_by_agg_id($rotate_degrees, $agg_id) {
             $thumbnail_width = 270;
             $thumbnail_height = 170;
 
-            // $s3_key = 'AKIAJ7SN4WICVZFZO6KQ';
-            // $s3_secret = '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';
-            // $s3_bucket = 'weatherblur-media';
-            $s3_key = 'AKIAIKR7TW5R63EAEODA';
-$s3_secret = '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';
-$s3_bucket = 'weatherblur-media';
+            $s3_key = 'AKIAJ7SN4WICVZFZO6KQ';
+            $s3_secret = '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';
+            $s3_bucket = 'weatherblur-media';
             $s3_content_type = 'image/';
             $s3_url = 'https://s3.amazonaws.com/weatherblur-media/';
 
@@ -4610,7 +4607,14 @@ function send_new_password($user_guid, $conf_code){
         // clean the logins failures
         reset_login_failure_count($user_guid);
 
-        $email = elgg_echo('email:resetpassword:body', array($user->name, $password));
+        $email_body = "Hi %s,
+
+      Your password has been reset to: %s
+
+      After you've logged in, remember to change your password by going to the 'edit user' section from your profile.";
+
+
+        $email = elgg_echo($email_body, array($user->name, $password));
 
         return notify_user($user->guid, $CONFIG->site->guid,
           elgg_echo('email:resetpassword:subject'), $email, array(), 'email');
