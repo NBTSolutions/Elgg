@@ -771,6 +771,47 @@ function investigations_init() {
     );
 
     expose_function(
+      'wb.send_new_password',
+      'send_new_password',
+      array(
+        'user_guid' => array('type' => 'int'),
+        'conf_code' => array('type' => 'string')
+      ),
+      '',
+      'GET',
+      false,
+      false
+    );
+
+    expose_function(
+      'wb.change_password',
+      'change_password',
+      array(
+        'user_guid' => array('type' => 'int'),
+        'current_password' => array('type' => 'string'),
+        'password' => array('type' => 'string'),
+        'password2' => array('type' => 'string')
+      ),
+      '',
+      'POST',
+      false,
+      false
+    );
+
+    expose_function(
+      'wb.change_email',
+      'change_email',
+      array(
+        'email' => array('type' => 'string'),
+        'user_guid' => array('type' => 'int')
+      ),
+      '',
+      'POST',
+      false,
+      false
+    );
+
+    expose_function(
         'wb.delete_investigation',
         'delete_investigation',
         array(
@@ -1926,6 +1967,7 @@ function investigation_filter($text) {
 
 // start rest calls
 function login_user($username, $password) {
+
 	if (true === elgg_authenticate($username, $password)) {
 
 		$token = create_user_token($username, PHP_INT_MAX);
@@ -3874,7 +3916,7 @@ function get_user_info($user_guid, $icon_size) {
     $skills = $user->skills;
     $interests = $user->interests;
 
-    return array(
+    $returned_info =  array(
         "id" => $user->guid,
         "users_display_name" => $user->name,
         "username" => $user->username,
@@ -3895,6 +3937,14 @@ function get_user_info($user_guid, $icon_size) {
         "school" => $user->school,
         "video" => $user->video
     );
+
+    foreach($returned_info as $key => $value){
+
+      $returned_info[$key] = ($value == null || $value == "null") ? "" : $value;
+
+    }
+
+    return $returned_info;
 }
 
 function edit_user_info_by_username($username, $displayname, $profiletype, $description, $location, $interests, $skills, $contactemail, $website, $twitter, $school, $video) {
@@ -4549,6 +4599,115 @@ function send_new_password($user_guid, $conf_code){
   }
 
   return FALSE;
+}
+
+function change_password($user_guid, $current_password, $password, $password2){
+
+  // COPIED FROM /engine/lib/user_settings.php
+
+  if (!$user_guid) {
+    $user = elgg_get_logged_in_user_entity();
+  } else {
+    $user = get_entity($user_guid);
+  }
+
+  if ($user && $password) {
+    // let admin user change anyone's password without knowing it except his own.
+    if (!elgg_is_admin_logged_in() || elgg_is_admin_logged_in() && $user->guid == elgg_get_logged_in_user_guid()) {
+      $credentials = array(
+        'username' => $user->username,
+        'password' => $current_password
+      );
+
+      try {
+        pam_auth_userpass($credentials);
+      } catch (LoginException $e) {
+        //register_error(elgg_echo('LoginException:ChangePasswordFailure'));
+        throw new Exception('could not verify login.');
+        return false;
+      }
+    }
+
+    try {
+      $result = validate_password($password);
+    } catch (RegistrationException $e) {
+      //register_error($e->getMessage());
+      throw new Exception($e->getMessage());
+      return false;
+    }
+
+    if ($result) {
+      if ($password == $password2) {
+        $user->salt = generate_random_cleartext_password(); // Reset the salt
+        $user->password = generate_user_password($user, $password);
+        if ($user->save()) {
+          // system_message(elgg_echo('user:password:success'));
+          return true;
+        } else {
+          // register_error(elgg_echo('user:password:fail'));
+          throw new Exception('failed to save new password.');
+        }
+      } else {
+        // register_error(elgg_echo('user:password:fail:notsame'));
+        throw new Exception('password duplicate verification is not the same.');
+      }
+    } else {
+      // register_error(elgg_echo('user:password:fail:tooshort'));
+      throw new Exception('new password is too short.');
+    }
+  } else {
+    // no change
+    return null;
+  }
+
+  return false;
+
+}
+
+function change_email($email, $user_id){
+
+  // COPIED FROM /engine/lib/user_settings.php
+
+  if (!$user_id) {
+    $user = elgg_get_logged_in_user_entity();
+  } else {
+    $user = get_entity($user_id);
+  }
+
+  if (!is_email_address($email)) {
+    // register_error(elgg_echo('email:save:fail'));
+    throw new Exception('not in proper email format.');
+    return false;
+  }
+
+  if ($user) {
+    if (strcmp($email, $user->email) != 0) {
+      if (!get_user_by_email($email)) {
+        if ($user->email != $email) {
+
+          $user->email = $email;
+          if ($user->save()) {
+            // system_message(elgg_echo('email:save:success'));
+            return true;
+          } else {
+            // register_error(elgg_echo('email:save:fail'));
+            throw new Exception('failed to save new email address.');
+
+          }
+        }
+      } else {
+        // register_error(elgg_echo('registration:dupeemail'));
+        throw new Exception('same email as currently registered email.');
+      }
+    } else {
+      // no change
+      return null;
+    }
+  } else {
+    // register_error(elgg_echo('email:save:fail'));
+    throw new Exception('could not verify login.');
+  }
+  return false;
 }
 
 function get_profile_type() {
