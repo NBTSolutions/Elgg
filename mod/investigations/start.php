@@ -2580,6 +2580,8 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
             throw new Exception('You need to be logged in either as an admin or as the investigation owner to delete this investigation.');
         }
 
+        $ignore = elgg_set_ignore_access(true);
+
         $inv->name = $name;
         $inv->description = $description;
         $inv->briefdescription = $brief_description;
@@ -2679,6 +2681,9 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
                 $inv->icontime = time();
             }
         }
+
+        elgg_set_ignore_access($ignore);
+
         return array(
             'guid' => $inv->guid
         );
