@@ -4174,9 +4174,12 @@ function rotate_image_by_agg_id($rotate_degrees, $agg_id) {
             $thumbnail_width = 270;
             $thumbnail_height = 170;
 
-            $s3_key = 'AKIAJ7SN4WICVZFZO6KQ';
-            $s3_secret = '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';
-            $s3_bucket = 'weatherblur-media';
+            // $s3_key = 'AKIAJ7SN4WICVZFZO6KQ';
+            // $s3_secret = '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';
+            // $s3_bucket = 'weatherblur-media';
+            $s3_key = 'AKIAIKR7TW5R63EAEODA';
+$s3_secret = '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';
+$s3_bucket = 'weatherblur-media';
             $s3_content_type = 'image/';
             $s3_url = 'https://s3.amazonaws.com/weatherblur-media/';
 
@@ -4554,7 +4557,11 @@ function request_new_password($email) {
   }
 
   $user = get_user_by_username($username);
+
   if ($user) {
+
+    $user_guid = $user->guid;
+
   	// generate code
      $code = generate_random_cleartext_password();
      $user->setPrivateSetting('passwd_conf_code', $code);
