@@ -1,5 +1,5 @@
 <?php
-header('Location: www.weatherblur.com',true,301);
+header('Location: http://www.weatherblur.com',true,301);
 exit;
 /**
  * Elgg page header
