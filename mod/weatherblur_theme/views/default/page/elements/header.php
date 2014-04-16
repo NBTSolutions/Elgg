@@ -1,4 +1,6 @@
 <?php
+header('Location: http://www.weatherblur.com',true,301);
+exit;
 /**
  * Elgg page header
  * In the default theme, the header lives between the topbar and main content area.
