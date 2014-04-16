@@ -3343,66 +3343,71 @@ function get_obs_paged($offset, $limit) {
 
         // take first result
         $elgg_obs = $elgg_obs[0];
-        $results[$row]['id'] = $elgg_obs->guid;
+        if($elgg_obs) {
+            $results[$row]['id'] = $elgg_obs->guid;
 
-        // pull the user id from the aggregators annoying format :/
-        $user_id = $result['user'];
-        $user_id = explode('/', $user_id);
-        $user_id = $user_id[count($user_id) - 1];
+            // pull the user id from the aggregators annoying format :/
+            $user_id = $result['user'];
+            $user_id = explode('/', $user_id);
+            $user_id = $user_id[count($user_id) - 1];
 
-        // fix on production
-        //$user_id = 49;
+            // fix on production
+            //$user_id = 49;
 
-        $user = get_user($user_id);
-        $categories = json_decode($result['categories']);
+            $user = get_user($user_id);
+            $categories = json_decode($result['categories']);
 
-        $ignore = elgg_set_ignore_access(true);
-        $likes = $elgg_obs->getAnnotations('likes');
-        $i_liked = false;
-        $user_guid = elgg_get_logged_in_user_guid();
+            $ignore = elgg_set_ignore_access(true);
+            $likes = $elgg_obs->getAnnotations('likes');
+            $i_liked = false;
+            $user_guid = elgg_get_logged_in_user_guid();
 
-        foreach($inv_likes as $like) {
-            if($like->owner_guid == $user_guid) {
-                $i_liked = true;
+            foreach($inv_likes as $like) {
+                if($like->owner_guid == $user_guid) {
+                    $i_liked = true;
+                }
             }
-        }
-        $like_count = count($elgg_obs->getAnnotations('likes')) + count($elgg_obs->getAnnotations('observation_likes'));
-        elgg_set_ignore_access($ignore);
+            $like_count = count($elgg_obs->getAnnotations('likes')) + count($elgg_obs->getAnnotations('observation_likes'));
+            elgg_set_ignore_access($ignore);
 
-        if($user) {
-            $results[$row]['user'] = array(
-                displayname => $user->name,
-                username => $user->username,
-                tiny_icon => $user->getIcon('tiny'),
-                small_icon => $user->getIcon('small'),
-                medium_icon => $user->getIcon('medium'),
-                large_icon => $user->getIcon('large')
-            );
+            if($user) {
+                $results[$row]['user'] = array(
+                    displayname => $user->name,
+                    username => $user->username,
+                    tiny_icon => $user->getIcon('tiny'),
+                    small_icon => $user->getIcon('small'),
+                    medium_icon => $user->getIcon('medium'),
+                    large_icon => $user->getIcon('large')
+                );
+            }
+            else {
+                $results[$row]['user'] = $user_id;
+            }
+
+            $results[$row]['categories'] = $categories;
+
+            $media = json_decode($result['media']);
+
+            if($media[0]->image) {
+                $media_array = explode('.', $media[0]->image);
+                $media = array_slice($media_array, 0, count($media_array) - 1);
+                $media = join('.', $media);
+                $media .= '-thumb.'.$media_array[count($media_array) - 1];
+            }
+            else {
+                $media = "";
+            }
+
+            $results[$row]['media'] = $media;
+
+            $results[$row]['timestamp'] = date('F jS, Y', strtotime($result['timestamp']));
+            $results[$row]['like_count'] = $like_count;
+            $results[$row]['i_liked'] = $i_liked;
+            $results[$row]['comment_count'] = count(get_comments_on_obs($elgg_obs->guid));
         }
         else {
-            $results[$row]['user'] = $user_id;
+            unset($results[$row]);
         }
-
-        $results[$row]['categories'] = $categories;
-
-        $media = json_decode($result['media']);
-
-        if($media[0]->image) {
-            $media_array = explode('.', $media[0]->image);
-            $media = array_slice($media_array, 0, count($media_array) - 1);
-            $media = join('.', $media);
-            $media .= '-thumb.'.$media_array[count($media_array) - 1];
-        }
-        else {
-            $media = "";
-        }
-
-        $results[$row]['media'] = $media;
-
-        $results[$row]['timestamp'] = date('F jS, Y', strtotime($result['timestamp']));
-        $results[$row]['like_count'] = $like_count;
-        $results[$row]['i_liked'] = $i_liked;
-        $results[$row]['comment_count'] = count(get_comments_on_obs($elgg_obs->guid));
     }
 
     return $results;
