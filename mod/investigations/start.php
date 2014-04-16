@@ -3124,10 +3124,12 @@ function get_invs_by_token($token) {
 
 	$results = elgg_get_entities_from_relationship(array(
         'type_subtype_pair'	=>	array('group' => 'investigation'),
+        /*
 		'relationship' => 'member',
 		'relationship_guid' => $user_guid,
 		'inverse_relationship' => false,
 		'full_view' => false,
+        */
 		'joins' => array("JOIN {$dbprefix}groups_entity ge ON e.guid = ge.guid"),
 		'order_by' => 'ge.name asc'
 	));
