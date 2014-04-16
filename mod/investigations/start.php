@@ -759,6 +759,18 @@ function investigations_init() {
     );
 
     expose_function(
+        'wb.request_new_password',
+        'request_new_password',
+        array(
+            'email' => array('type' => 'string')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         'wb.delete_investigation',
         'delete_investigation',
         array(
@@ -4468,6 +4480,77 @@ function user_exists_by_username($username) {
     return array(
         exists => ($result != false)
     );
+}
+
+function request_new_password($email) {
+
+  // allow email addresses
+  if (strpos($email, '@') !== false && ($users = get_user_by_email($email))) {
+  	$username = $users[0]->username;
+  }
+  else{
+    throw new Exception('no account associated with this email.');
+  }
+
+  $user = get_user_by_username($username);
+  if ($user) {
+  	// generate code
+     $code = generate_random_cleartext_password();
+     $user->setPrivateSetting('passwd_conf_code', $code);
+
+     // generate link
+     $link = elgg_get_site_url() . "resetpassword/$user_guid/$code";
+
+      $emailBody = "Hi %s,
+
+    Somebody (from the IP address %s) has requested a new password for their account.
+
+    If you requested this, click on the link below. Otherwise ignore this email.
+
+    %s
+    ";
+
+     // generate email
+     //$email = elgg_echo('email:resetreq:body', array($user->name, $_SERVER['REMOTE_ADDR'], $link));
+     $email = elgg_echo($emailBody, array($user->name, $_SERVER['REMOTE_ADDR'], $link));
+
+     return notify_user($user->guid, elgg_get_site_entity()->guid,
+       elgg_echo('email:resetreq:subject'), $email, array(), 'email');
+
+  } else {
+  	// register_error(elgg_echo('user:username:notfound', array($username)));
+    throw new Exception('Could not find the user associated with the email address: '.$email);
+  }
+
+
+}
+
+function send_new_password($user_guid, $conf_code){
+  global $CONFIG;
+
+  $user_guid = (int)$user_guid;
+  $user = get_entity($user_guid);
+
+  if ($user instanceof ElggUser) {
+    $saved_code = $user->getPrivateSetting('passwd_conf_code');
+
+    if ($saved_code && $saved_code == $conf_code) {
+      $password = generate_random_cleartext_password();
+
+      if (force_user_password_reset($user_guid, $password)) {
+        remove_private_setting($user_guid, 'passwd_conf_code');
+        // clean the logins failures
+        reset_login_failure_count($user_guid);
+
+        $email = elgg_echo('email:resetpassword:body', array($user->name, $password));
+
+        return notify_user($user->guid, $CONFIG->site->guid,
+          elgg_echo('email:resetpassword:subject'), $email, array(), 'email');
+      }
+    }
+  }
+
+  return FALSE;
 }
 
 function get_profile_type() {
