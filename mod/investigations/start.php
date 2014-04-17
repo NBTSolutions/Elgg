@@ -2580,6 +2580,8 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
             throw new Exception('You need to be logged in either as an admin or as the investigation owner to delete this investigation.');
         }
 
+        $ignore = elgg_set_ignore_access(true);
+
         $inv->name = $name;
         $inv->description = $description;
         $inv->briefdescription = $brief_description;
@@ -2591,7 +2593,7 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
         $inv->save();
 
         // store the advisor guid as a relationship:
-        if (isset($advisor_guid)) {
+        if (isset($advisor_guid) && $advisor_guid != "") {
             $advisor_user = get_user($advisor_guid);
             remove_entity_relationships($inv->guid, 'advisor', true);
             add_entity_relationship($advisor_guid, 'advisor', $inv->guid);
@@ -2679,6 +2681,9 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
                 $inv->icontime = time();
             }
         }
+
+        elgg_set_ignore_access($ignore);
+
         return array(
             'guid' => $inv->guid
         );
@@ -3346,6 +3351,8 @@ function get_obs_paged($offset, $limit) {
         throw new Exception('Connection failed... '.$e->getMessage());
     }
 
+    $app_env = getenv("APP_ENV");
+    $app_env = $app_env == "prod" ? $app_env : "unstable";
     $server_env = "prod";
 
     $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
