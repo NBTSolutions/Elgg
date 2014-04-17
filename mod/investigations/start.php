@@ -4564,7 +4564,8 @@ function request_new_password($email) {
      $user->setPrivateSetting('passwd_conf_code', $code);
 
      // generate link
-     $link = elgg_get_site_url() . "resetpassword/$user_guid/$code";
+     $app_env = getenv("APP_ENV");
+     $link = $app_env == "prod" ? elgg_get_site_url() . "#/resetpassword/$user_guid/$code" : elgg_get_site_url() . "#/resetpassword/$user_guid/$code";
 
       $emailBody = "Hi %s,
 
