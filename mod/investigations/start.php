@@ -592,8 +592,10 @@ function investigations_init() {
         "wb.get_members",
         "get_members",
         array(
-            'page' => array('type' => 'int', 'required' => false),
-            'search' => array('type' => 'string', 'required' => false)
+            'page' => array('type' => 'int', 'required' => false, 'default' => 0),
+            'search' => array('type' => 'string', 'required' => false, 'default' => ""),
+            'type_filter' => array('type' => 'int', 'required' => false, 'default' => 0),
+            'school_filter' => array('type' => 'string', 'required' => false, 'default' => "")
         ),
         '',
         'GET',
@@ -4013,19 +4015,24 @@ function edit_user_info_by_username($username, $displayname, $profiletype, $desc
         );
 }
 
-function get_members($page, $search) {
+function get_members($page, $search, $typeFilter, $schoolFilter) {
 
     //$results = get_data("SELECT guid FROM elgg_users_entity WHERE name LIKE '%jo%';");
     $limit = 12;
     $offset = $page * $limit;
 
-    $results = elgg_get_entities(array(
+    $schoolWhere = ($schoolFilter !== "") ? array('name' => 'school', 'value' => $schoolFilter) : null;
+    $typeWhere = ($typeFilter !== 0) ? array('name' => 'custom_profile_type', 'value' => $typeFilter) : null;
+
+    $results = elgg_get_entities_from_metadata(array(
         'types' => 'user',
         //'callback' => 'my_get_entity_callback',
         'limit' => $limit,
         'offset' => $offset,
+        'metadata_name_value_pairs' => array($typeWhere, $schoolWhere),
+        'metadata_name_value_pairs_operator' => 'AND',
         'joins' => array("JOIN {$CONFIG->dbprefix}elgg_users_entity users ON (e.guid = users.guid)"),
-        'wheres' => array("users.name LIKE '%".$search."%' OR users.username LIKE '%".$search."%'")
+        'wheres' => array("(users.name LIKE '%".$search."%' OR users.username LIKE '%".$search."%')")
     ));
 
     $members = array();
