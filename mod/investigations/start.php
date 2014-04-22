@@ -2160,17 +2160,17 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
 
         foreach($result_comments as $comment) {
 
-            $user = get_user($comment->owner_guid);
+            $comment_user = get_user($comment->owner_guid);
 
             $comments[] = array(
                 'description' => $comment->value,
                 'like_count' => 0,
                 'date' => elgg_get_friendly_time($comment->time_created),
                 'user' => array(
-                    'id' => $user->guid,
-                    'displayname' => $user->name,
-                    'username' => $user->username,
-                    'image' => $user->getIcon('small')
+                    'id' => $comment_user->guid,
+                    'displayname' => $comment_user->name,
+                    'username' => $comment_user->username,
+                    'image' => $comment_user->getIcon('small')
                 )
             );
         }
@@ -2352,7 +2352,7 @@ function create_discussion($name, $description, $subtype, $container_guid, $vide
         case 'map':
             $subtype = "investigationforumtopic_map";
             break;
-        case 'image':
+        case 'camera':
             $subtype = "investigationforumtopic_image";
             break;
         case 'graph':
@@ -4776,10 +4776,10 @@ function get_profile_type() {
 
 function get_school_list() {
 
-    $dbprefix = elgg_get_config('dbprefix');
+    //$dbprefix = elgg_get_config('dbprefix');
 
     $results = elgg_get_entities_from_metadata(array(
-        "metadata_values" => array('school')
+        "metadata_value" => 'school'
     ));
 
     $result = $results[0];
