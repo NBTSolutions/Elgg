@@ -3356,7 +3356,8 @@ function get_obs_paged($offset, $limit) {
     }
 
     $app_env = getenv("APP_ENV");
-    $app_env = $app_env == "prod" ? $app_env : "unstable";
+    // $app_env = $app_env == "prod" ? $app_env : "unstable";
+    $app_env = "prod"
     $server_env = "prod";
 
     $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
@@ -4157,7 +4158,8 @@ function rotate_image_by_agg_id($rotate_degrees, $agg_id) {
             $ch = curl_init();
 
             $app_env = getenv("APP_ENV");
-            $app_env = $app_env ? $app_env : "unstable";
+            //$app_env = $app_env ? $app_env : "unstable";
+            $app_env = "prod";
 
             curl_setopt_array($ch, array(
                 CURLOPT_RETURNTRANSFER => 1,
