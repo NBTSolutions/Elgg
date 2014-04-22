@@ -2189,7 +2189,8 @@ function get_discs_by_inv_id($id, $limit = null, $discussion_subtype = array()) 
             'i_liked' => $i_liked,
             'comments' => $comments,
             'comment_count' => count($discussion->getAnnotations('group_topic_post')),
-            'video' => $discussion->video
+            'video' => $discussion->video,
+            'type' => $discussion->getSubtype()
         );
     }
     elgg_set_ignore_access($ignore);
@@ -3084,6 +3085,7 @@ function get_comments($id, $type, $limit, $offset) {
 
     $object = array(
         'id' => $result->guid,
+        'type' => $result->getSubtype(),
         'name' => $result->title,
         'thumbnail_filepath' => $thumbnail_filepath,
         'large_filepath' => $large_filepath,
