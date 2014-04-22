@@ -3357,7 +3357,7 @@ function get_obs_paged($offset, $limit) {
 
     $app_env = getenv("APP_ENV");
     // $app_env = $app_env == "prod" ? $app_env : "unstable";
-    $app_env = "prod"
+    $app_env = "prod";
     $server_env = "prod";
 
     $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
