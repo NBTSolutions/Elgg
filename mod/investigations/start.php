@@ -149,6 +149,30 @@ function investigations_init() {
     );
 
     expose_function(
+        'wb.delete_comment',
+        'delete_comment',
+        array(
+            'id' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        'wb.delete_discussion',
+        'delete_discussion',
+        array(
+            'id' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_inv_by_id",
         "get_inv_by_id",
         array(
@@ -3009,6 +3033,40 @@ function comment_on($id, $type, $comment) {
     }
 }
 
+function delete_comment($id){
+
+  $comment = elgg_get_annotation_from_id($id);
+
+  $logged_in_user = elgg_get_logged_in_user_entity();
+
+  // allow deletion if you are and admin or this user
+  if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->guid != $comment->owner_guid && !elgg_is_admin_logged_in())) {
+      throw new Exception('You need to be logged in either as an admin or as the comment owner to delete this comment.');
+  }
+  else{
+    $comment->delete();
+    return true;
+  }
+
+}
+
+function delete_discussion($id){
+
+  $discussion = get_entity($id);
+
+  $logged_in_user = elgg_get_logged_in_user_entity();
+
+  // allow deletion if you are and admin or this user
+  if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->guid != $comment->owner_guid && !elgg_is_admin_logged_in())) {
+      throw new Exception('You need to be logged in either as an admin or as the discussion owner to delete this discussion.');
+  }
+  else{
+    $discussion->delete();
+    return true;
+  }
+
+}
+
 function get_comments($id, $type, $limit, $offset) {
 
     $object = array();
@@ -3071,6 +3129,7 @@ function get_comments($id, $type, $limit, $offset) {
         $user = get_user($elgg_comment->owner_guid);
 
         $comments[] = array(
+            'id' => $elgg_comment->id,
             'description' => $elgg_comment->value,
             'like_count' => 0,
             'date' => elgg_get_friendly_time($elgg_comment->time_created),
