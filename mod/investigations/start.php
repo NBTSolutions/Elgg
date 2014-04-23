@@ -4157,8 +4157,9 @@ function rotate_image_by_agg_id($rotate_degrees, $agg_id) {
             // get all of our data from the aggregator
             $ch = curl_init();
 
-            $app_env = getenv("APP_ENV");
-            $app_env = $app_env ? $app_env : "unstable";
+            //$app_env = getenv("APP_ENV");
+            //$app_env = $app_env ? $app_env : "unstable";
+            $app_env = 'prod';
 
             curl_setopt_array($ch, array(
                 CURLOPT_RETURNTRANSFER => 1,
