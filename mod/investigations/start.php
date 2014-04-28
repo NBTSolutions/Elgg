@@ -628,6 +628,18 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.get_members_by_school",
+        "get_members_by_school",
+        array(
+            'search' => array('type' => 'string', 'default' => '')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         'wb.create_i_wonder',
         'create_i_wonder',
         array(
@@ -3775,6 +3787,7 @@ function get_my_obs_like_by_agg_id($agg_id) {
 }
 function get_comments_on_obs($observation_guid) {
 
+        $ignore = elgg_set_ignore_access(true);
         $obs = get_entity($observation_guid);
         $comments = $obs->getAnnotations("observation_comments");
 
@@ -3782,12 +3795,14 @@ function get_comments_on_obs($observation_guid) {
 
         foreach($comments as $comment) {
             $results[] = array(
+                "id" => $comment->id,
                 "time_created" => $comment->time_created,
                 "user_guid" => $comment->owner_guid,
                 "value" => $comment->value
             );
         }
 
+        elgg_set_ignore_access($ignore);
         return $results;
 }
 
@@ -3813,7 +3828,6 @@ function get_obs_elgg_data_by_agg_id($agg_id) {
         }
 
         $like_count = count($results[0]->getAnnotations('likes')) + count($results[0]->getAnnotations('observation_likes'));
-        elgg_set_ignore_access($ignore);
 
 
         $comments =  get_comments_on_obs($results[0]->guid);
@@ -3826,6 +3840,7 @@ function get_obs_elgg_data_by_agg_id($agg_id) {
           $val["time"] = elgg_get_friendly_time($val["time_created"]);
           $finalComments[] = $val;
         }
+        elgg_set_ignore_access($ignore);
 
         return array("guid" => $results[0]->guid, "comments" => $finalComments, "like_count" => $like_count, "i_liked" => $i_liked);
     }
@@ -3847,7 +3862,7 @@ function comment_on_obs($observation_guid, $comment, $token) {
         $observation->save();
         elgg_set_ignore_access($ignore);
 
-        return $id ? 1 : 0;
+        return $id;
 
     }
     else {
@@ -3876,7 +3891,7 @@ function comment_on_obs_by_agg_id($agg_id, $comment, $token) {
         $observation->save();
         elgg_set_ignore_access($ignore);
 
-        return $id ? 1 : 0;
+        return $id;
 
     }
     else {
@@ -4116,6 +4131,43 @@ function get_members($page, $search, $typeFilter, $schoolFilter) {
     }
 
     return $members;
+}
+
+function get_members_by_school($search) {
+
+  $limit = 10;
+
+  $results = elgg_get_entities_from_metadata(array(
+      'types' => 'user',
+      'limit' => $limit,
+      'metadata_name_value_pairs' => array(array('name' => 'school', 'operand' => 'LIKE', 'value' => '%'.$search.'%', 'case_sensitive' => false))
+  ));
+
+  $members = array();
+  $schools = array();
+
+  foreach($results as $key => $result){
+      $members[] = array(
+        "displayname" => $result->name,
+        "username" => $result->username,
+        "icon" => $result->getIconUrl("large"),
+        "medium_icon" => $result->getIconUrl("medium"),
+        "profile_type" => $profile_type ? $profile_type->getTitle() : '',
+        "school" => $result->school,
+        "id" => $result->guid
+      );
+      if(!in_array($result->school, $schools, true)){
+          $schools[] = $result->school;
+      }
+  }
+
+  $final = array(
+    'schools' => $schools,
+    'members' => $members
+  );
+
+  return $final;
+
 }
 
 function get_people_picker_people($search) {
