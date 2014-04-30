@@ -430,7 +430,7 @@ function investigations_init() {
         array(
             'username' => array('type' => 'string'),
             'displayname' => array('type' => 'string'),
-            'profiletype' => array('type' => 'int', 'required' => false, 'default' => ""),
+            'profiletype' => array('type' => 'int', 'required' => false, 'default' => 44),
             'description' => array('type' => 'string', 'required' => false, 'default' => ""),
             'location' => array('type' => 'string', 'required' => false, 'default' => ""),
             'interests' => array('type' => 'string', 'required' => false, 'default' => ""),
@@ -744,7 +744,7 @@ function investigations_init() {
             'email' => array('type' => 'string'),
             'password' => array('type' => 'string'),
             'password2' => array('type' => 'string'),
-            'profile_type' => array('type' => 'int')
+            'profile_type' => array('type' => 'int', 'default' => 44)
         ),
         '',
         'GET',
@@ -2006,6 +2006,9 @@ function investigation_filter($text) {
 // start rest calls
 function login_user($username, $password) {
 
+  $username = urldecode($username);
+  $password = urldecode($password);
+
 	if (true === elgg_authenticate($username, $password)) {
 
 		$token = create_user_token($username, PHP_INT_MAX);
@@ -2413,8 +2416,8 @@ function create_discussion($name, $description, $subtype, $container_guid, $vide
     $ignore = elgg_set_ignore_access(true);
     $topic = new ElggObject();
     $topic->subtype = $subtype;
-    $topic->title = $title;
-    $topic->description = $description;
+    $topic->title = urldecode($title);
+    $topic->description = urldecode($description);
     //$topic->status = $status;
     $topic->access_id = $access_id;
     $topic->container_guid = $container_guid;
@@ -2496,6 +2499,8 @@ function get_entity_by_name($name) {
 }
 
 function create_i_wonder($question) {
+
+    $question = urldecode($question);
 
     // if logged in you can ask a question
     $results = is_logged_in();
@@ -2621,9 +2626,9 @@ function edit_investigation($guid, $name, $description, $brief_description, $adv
 
         $ignore = elgg_set_ignore_access(true);
 
-        $inv->name = $name;
-        $inv->description = $description;
-        $inv->briefdescription = $brief_description;
+        $inv->name = urldecode($name);
+        $inv->description = urldecode($description);
+        $inv->briefdescription = urldecode($brief_description);
         $inv->interests = "";
         $inv->membership = ACCESS_PUBLIC;
         $inv->access_id = ACCESS_PUBLIC;
@@ -2758,9 +2763,9 @@ function create_inv($name, $description, $brief_description, $advisor_guid, $tag
 
     $group = new ElggGroup();
 
-    $group->name = $name;
-    $group->description = $description;
-    $group->briefdescription = $brief_description;
+    $group->name = urldecode($name);
+    $group->description = urldecode($description);
+    $group->briefdescription = urldecode($brief_description);
     $group->interests = "";
     $group->membership = ACCESS_PUBLIC;
     $group->access_id = ACCESS_PUBLIC;
@@ -2898,9 +2903,9 @@ function create_investigation($name, $description, $brief_description, $tags, $p
 
     $group = new ElggGroup();
 
-    $group->name = $name;
-    $group->description = $description;
-    $group->briefdescription = $brief_description;
+    $group->name = urldecode($name);
+    $group->description = urldecode($description);
+    $group->briefdescription = urldecode($brief_description);
     $group->interests = "";
     $group->membership = ACCESS_PUBLIC;
     $group->access_id = ACCESS_PUBLIC;
@@ -3019,6 +3024,8 @@ function create_investigation($name, $description, $brief_description, $tags, $p
 }
 
 function comment_on($id, $type, $comment) {
+
+    $comment = urldecode($comment);
 
     // is user logged in?
     if(elgg_is_logged_in()) {
@@ -4067,23 +4074,23 @@ function edit_user_info_by_username($username, $displayname, $profiletype, $desc
 
     $userInfo = get_entity($getUser["id"]);
 
-    $userInfo->name = trim($displayname);
-    $userInfo->custom_profile_type = trim($profiletype);
+    $userInfo->name = trim(urldecode($displayname));
+    $userInfo->custom_profile_type = trim(urldecode($profiletype));
     // $userInfo->username;
     // $userInfo->getIconUrl($icon_size);
     // $userInfo->email;
-    $userInfo->description = trim($description);
+    $userInfo->description = trim(urldecode($description));
     // $userInfo->briefdescription;
-    $userInfo->location = trim($location);
+    $userInfo->location = trim(urldecode($location));
     $userInfo->interests = json_decode($interests);
     $userInfo->skills = json_decode($skills);
-    $userInfo->contactemail = trim($contactemail);
+    $userInfo->contactemail = trim(urldecode($contactemail));
     // $userInfo->phone;
     // $userInfo->mobile;
-    $userInfo->website = trim($website);
-    $userInfo->twitter = trim($twitter);
-    $userInfo->school = trim($school);
-    $userInfo->video = trim($video);
+    $userInfo->website = trim(urldecode($website));
+    $userInfo->twitter = trim(urldecode($twitter));
+    $userInfo->school = trim(urldecode($school));
+    $userInfo->video = trim(urldecode($video));
 
     $userInfo->save();
 
@@ -4560,7 +4567,7 @@ function get_inv_by_username($username) {
 
 function delete_user($username) {
 
-    $user = get_user_by_username($username);
+    $user = get_user_by_username(urldecode($username));
     if(!$user) {
         throw new Exception('Not a valid username');
     }
@@ -4586,15 +4593,12 @@ function delete_user($username) {
 
 function create_user($displayname, $username, $email, $password, $password2, $profile_type) {
 
-    $name = $displayname;
-    var_dump(array(
-        displayname => $displayname,
-        username => $username,
-        email => $email,
-        password => $password,
-        password2 => $password2,
-        profile_type => $profile_type
-    ));
+    $name = urldecode($displayname);
+    $username = urldecode($username);
+    $email = urldecode($email);
+    $password = urldecode($password);
+    $password2 = urldecode($password2);
+    $profile_type = urldecode($profile_type);
 
         try {
             if (trim($password) == "" || trim($password2) == "") {
@@ -4657,6 +4661,9 @@ function create_user($displayname, $username, $email, $password, $password2, $pr
 }
 
 function user_exists_by_email($email) {
+
+    $email = urldecode($email);
+
     $result = get_user_by_email($email);
 
     return array(
@@ -4665,6 +4672,9 @@ function user_exists_by_email($email) {
 }
 
 function user_exists_by_username($username) {
+
+    $username = urldecode($username);
+
     $result = get_user_by_username($username);
 
     return array(
@@ -4757,6 +4767,10 @@ function send_new_password($user_guid, $conf_code){
 
 function change_password($user_guid, $current_password, $password, $password2){
 
+  $current_password = urldecode($current_password);
+  $password = urldecode($password);
+  $password2 = urldecode($password2);
+
   // COPIED FROM /engine/lib/user_settings.php
 
   if (!$user_guid) {
@@ -4819,6 +4833,8 @@ function change_password($user_guid, $current_password, $password, $password2){
 }
 
 function change_email($email, $user_id){
+
+  $email = urldecode($email);
 
   // COPIED FROM /engine/lib/user_settings.php
 
