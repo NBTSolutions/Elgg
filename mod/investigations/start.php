@@ -4908,6 +4908,7 @@ function get_school_list() {
     //$dbprefix = elgg_get_config('dbprefix');
 
     $results = elgg_get_entities_from_metadata(array(
+        "type_subtype_pair" => array('object' => 'custom_profile_field'),
         "metadata_value" => 'school'
     ));
 
