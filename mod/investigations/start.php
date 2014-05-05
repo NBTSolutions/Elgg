@@ -3441,6 +3441,11 @@ function get_obs_paged_from_elgg($offset, $limit) {
 
     $final = array();
 
+    // return empty array if no results
+    if(!$elgg_obs){
+      return $final;
+    }
+
     $hostname = 'ec2-54-225-138-16.compute-1.amazonaws.com';
     $port = '5972';
     $dbName = 'd2br84lqj1ij30';
@@ -3460,7 +3465,13 @@ function get_obs_paged_from_elgg($offset, $limit) {
     $app_env = "prod";
     $server_env = "prod";
 
+    $elgg_agg_ids = "";
+
     foreach($elgg_obs as $key => $elgg_obj){
+      $elgg_agg_ids .= "'".$elgg_obj->agg_id."', ";
+    }
+
+    $query_ids = substr($elgg_agg_ids, 0, -2);
 
       $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
                       SELECT array_to_json(array_agg(row_to_json(results))) FROM (
@@ -3473,7 +3484,7 @@ function get_obs_paged_from_elgg($offset, $limit) {
                       FROM public.".$server_env."_observation obs
                       LEFT JOIN public.".$server_env."_observer
                           ON public.".$server_env."_observer.id = obs.observer_id
-                      WHERE obs.id = '".$elgg_obj->agg_id."'";
+                      WHERE obs.id IN (".$query_ids.")";
 
       $prepared = $dbObject->prepare($query);
 
@@ -3487,20 +3498,26 @@ function get_obs_paged_from_elgg($offset, $limit) {
 
       $results = $prepared->fetchAll(PDO::FETCH_ASSOC);
 
-      $results = $results[0];
+    foreach($elgg_obs as $key => $elgg_obj){
 
+      foreach($results as $result){
+
+        if($result["observation_id"] == $elgg_obj->agg_id){
+          $agg_results = $result;
+        }
+      }
       $final[$key] = array();
 
       // pull the user id from the aggregators annoying format :/
-      $user_id = $results[0]['user'];
+      $user_id = $agg_results[0]['user'];
       $user_id = explode('/', $user_id);
       $user_id = $user_id[count($user_id) - 1];
 
       // fix on production
-      // $user_id = 49;
+      $user_id = 49;
 
       $user = get_user($user_id);
-      $categories = json_decode($results['categories']);
+      $categories = json_decode($agg_results['categories']);
 
       $ignore = elgg_set_ignore_access(true);
       $likes = $elgg_obj->getAnnotations('likes');
@@ -3515,7 +3532,7 @@ function get_obs_paged_from_elgg($offset, $limit) {
       $like_count = count($elgg_obj->getAnnotations('likes')) + count($elgg_obj->getAnnotations('observation_likes'));
       elgg_set_ignore_access($ignore);
 
-      $final[$key]['observation_id'] = $results['observation_id'];
+      $final[$key]['observation_id'] = $agg_results['observation_id'];
 
       if($user) {
           $final[$key]['user'] = array(
@@ -3533,10 +3550,9 @@ function get_obs_paged_from_elgg($offset, $limit) {
 
       $final[$key]['categories'] = $categories;
 
-      //$final[$key]['timestamp'] = date('F jS, Y', strtotime($results['timestamp']));
       $final[$key]['timestamp'] = date('F jS, Y', $elgg_obj->time_created);
 
-      $media = json_decode($results['media']);
+      $media = json_decode($agg_results['media']);
 
       if($media[0]->image) {
           $media_array = explode('.', $media[0]->image);
