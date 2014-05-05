@@ -3514,7 +3514,7 @@ function get_obs_paged_from_elgg($offset, $limit) {
       $final[$key] = array();
 
       // pull the user id from the aggregators annoying format :/
-      $user_id = $agg_results[0]['user'];
+      $user_id = $agg_results['user'];
       $user_id = explode('/', $user_id);
       $user_id = $user_id[count($user_id) - 1];
 
