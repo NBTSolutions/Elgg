@@ -279,6 +279,19 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.get_obs_paged_from_elgg",
+        "get_obs_paged_from_elgg",
+        array(
+            'limit' => array('type' => 'int', 'required' => false),
+            'offset' => array('type' => 'int', 'required' => false)
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.comment_on_obs",
         "comment_on_obs",
         array(
@@ -3414,6 +3427,145 @@ function get_obs($offset, $limit) {
 
 }
 
+function get_obs_paged_from_elgg($offset, $limit) {
+
+    $limit = $_GET["limit"] ? $_GET["limit"] : "ALL";
+    $offset = $_GET["offset"] ? $_GET["offset"] : "0";
+
+    $elgg_obs = elgg_get_entities_from_metadata(array(
+        "metadata_name" => "agg_id",
+        "order_by" => "time_created desc",
+        "limit" => $limit,
+        "offset" => $offset
+    ));
+
+    $final = array();
+
+    $hostname = 'ec2-54-225-138-16.compute-1.amazonaws.com';
+    $port = '5972';
+    $dbName = 'd2br84lqj1ij30';
+    $dbUser = 'u3l9t7fso9lsat';
+    $dbPass = 'p7oqdm3h5jtre5180hhjsomls6f';
+
+    try{
+        $dbObject = new PDO('pgsql:host='.$hostname.";port=".$port.";dbname=".$dbName, $dbUser, $dbPass);
+        $dbObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    }
+    catch(PDOException $e){
+        throw new Exception('Connection failed... '.$e->getMessage());
+    }
+
+    $app_env = getenv("APP_ENV");
+    // $app_env = $app_env == "prod" ? $app_env : "unstable";
+    $app_env = "prod";
+    $server_env = "prod";
+
+    foreach($elgg_obs as $key => $elgg_obj){
+
+      $query = "SELECT obs.id AS observation_id, uri as user, categories_json as categories, timestamp, (
+                      SELECT array_to_json(array_agg(row_to_json(results))) FROM (
+                          SELECT meta_elt as image
+                          FROM public.".$server_env."_measurement
+                          JOIN public.".$server_env."_measurement_meta
+          ON public.".$server_env."_measurement_meta.meta = public.".$server_env."_measurement.id
+                          WHERE observation_id = obs.id AND phenomenon_id != 'video' AND meta_idx = 'url'
+                      ) results) AS media
+                      FROM public.".$server_env."_observation obs
+                      LEFT JOIN public.".$server_env."_observer
+                          ON public.".$server_env."_observer.id = obs.observer_id
+                      WHERE obs.id = '".$elgg_obj->agg_id."'";
+
+      $prepared = $dbObject->prepare($query);
+
+      if(!$prepared){
+        print "<p>DATABASE CONNECTION ERROR:</p>";
+        print_r($dbObject->errorInfo());
+        die;
+      }
+
+      $prepared->execute();
+
+      $results = $prepared->fetchAll(PDO::FETCH_ASSOC);
+
+      $results = $results[0];
+
+      $final[$key] = array();
+
+      // pull the user id from the aggregators annoying format :/
+      $user_id = $results[0]['user'];
+      $user_id = explode('/', $user_id);
+      $user_id = $user_id[count($user_id) - 1];
+
+      // fix on production
+      // $user_id = 49;
+
+      $user = get_user($user_id);
+      $categories = json_decode($results['categories']);
+
+      $ignore = elgg_set_ignore_access(true);
+      $likes = $elgg_obj->getAnnotations('likes');
+      $i_liked = false;
+      $user_guid = elgg_get_logged_in_user_guid();
+
+      foreach($likes as $like) {
+          if($like->owner_guid == $user_guid) {
+              $i_liked = true;
+          }
+      }
+      $like_count = count($elgg_obj->getAnnotations('likes')) + count($elgg_obj->getAnnotations('observation_likes'));
+      elgg_set_ignore_access($ignore);
+
+      $final[$key]['observation_id'] = $results['observation_id'];
+
+      if($user) {
+          $final[$key]['user'] = array(
+              displayname => $user->name,
+              username => $user->username,
+              tiny_icon => $user->getIcon('tiny'),
+              small_icon => $user->getIcon('small'),
+              medium_icon => $user->getIcon('medium'),
+              large_icon => $user->getIcon('large')
+          );
+      }
+      else {
+          $final[$key]['user'] = $user_id;
+      }
+
+      $final[$key]['categories'] = $categories;
+
+      //$final[$key]['timestamp'] = date('F jS, Y', strtotime($results['timestamp']));
+      $final[$key]['timestamp'] = date('F jS, Y', $elgg_obj->time_created);
+
+      $media = json_decode($results['media']);
+
+      if($media[0]->image) {
+          $media_array = explode('.', $media[0]->image);
+          $media = array_slice($media_array, 0, count($media_array) - 1);
+          $media = join('.', $media);
+          $media .= '-thumb.'.$media_array[count($media_array) - 1];
+      }
+      else {
+          $media = "";
+      }
+
+      $final[$key]['media'] = $media;
+
+      $final[$key]['id'] = $elgg_obj->guid;
+      $final[$key]['like_count'] = $like_count;
+      $final[$key]['i_liked'] = $i_liked;
+      $final[$key]['comment_count'] = count(get_comments_on_obs($elgg_obj->guid));
+
+
+    }
+
+    $dbObject = null;
+
+    return $final;
+    // return array($results);
+
+}
+
+
 function get_obs_paged($offset, $limit) {
 
     $limit = $_GET["limit"] ? $_GET["limit"] : "ALL";
@@ -3494,7 +3646,7 @@ function get_obs_paged($offset, $limit) {
             $i_liked = false;
             $user_guid = elgg_get_logged_in_user_guid();
 
-            foreach($inv_likes as $like) {
+            foreach($likes as $like) {
                 if($like->owner_guid == $user_guid) {
                     $i_liked = true;
                 }
