@@ -3445,6 +3445,13 @@ function get_obs_paged_from_elgg($offset, $limit) {
     if(!$elgg_obs){
       return $final;
     }
+    else{
+      foreach($elgg_obs as $key => $value){
+        if($value->agg_id == null){
+          $elgg_obs = array_splice($elgg_obs, $key, 1);
+        }
+      }
+    }
 
     $hostname = 'ec2-54-225-138-16.compute-1.amazonaws.com';
     $port = '5972';
