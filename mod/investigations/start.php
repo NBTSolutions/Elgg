@@ -3514,7 +3514,7 @@ function get_obs_paged_from_elgg($offset, $limit) {
       $user_id = $user_id[count($user_id) - 1];
 
       // fix on production
-      $user_id = 49;
+      // $user_id = 49;
 
       $user = get_user($user_id);
       $categories = json_decode($agg_results['categories']);
