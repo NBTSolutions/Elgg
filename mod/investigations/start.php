@@ -3445,13 +3445,6 @@ function get_obs_paged_from_elgg($offset, $limit) {
     if(!$elgg_obs){
       return $final;
     }
-    else{
-      foreach($elgg_obs as $key => $value){
-        if($value->agg_id == null){
-          $elgg_obs = array_splice($elgg_obs, $key, 1);
-        }
-      }
-    }
 
     $hostname = 'ec2-54-225-138-16.compute-1.amazonaws.com';
     $port = '5972';
@@ -3475,6 +3468,11 @@ function get_obs_paged_from_elgg($offset, $limit) {
     $elgg_agg_ids = "";
 
     foreach($elgg_obs as $key => $elgg_obj){
+
+      if($elgg_obj->agg_id == ''){
+        $elgg_obs = array_splice($elgg_obs, $key, 1);
+      }
+
       $elgg_agg_ids .= "'".$elgg_obj->agg_id."', ";
     }
 
@@ -3539,7 +3537,7 @@ function get_obs_paged_from_elgg($offset, $limit) {
       $like_count = count($elgg_obj->getAnnotations('likes')) + count($elgg_obj->getAnnotations('observation_likes'));
       elgg_set_ignore_access($ignore);
 
-      $final[$key]['observation_id'] = $agg_results['observation_id'];
+      $final[$key]['observation_id'] = $elgg_obj->agg_id;
 
       if($user) {
           $final[$key]['user'] = array(
