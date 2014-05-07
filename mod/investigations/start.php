@@ -202,7 +202,8 @@ function investigations_init() {
         array(
             'inv_guid' => array('type' => 'int'),
             'token'     => array('type' => 'string'),
-            'agg_id'    => array('type' => 'string')
+            'agg_id'    => array('type' => 'string'),
+            'with_users' => array('type' => 'string', 'required' => false)
         ),
         'Create Observation for an investigation',
         'GET',
@@ -211,19 +212,32 @@ function investigations_init() {
     );
 
     expose_function(
-        "wb.create_obs_2",
-        "create_obs_2",
+        "wb.assoc_obs_with_users",
+        "assoc_obs_with_users",
         array(
-            'inv_guid'  => array('type' => 'int'),
-            'token'     => array('type' => 'string'),
-            'agg_id'    => array('type' => 'string'),
-            'collaborators' => array('type' => 'string')
+            'agg_id' => array('type' => 'int'),
+            'with_users' => array('type' => 'string', 'required' => false)
         ),
-        'Create Observation for an investigation',
+        '',
         'GET',
         false,
         false
     );
+
+    // expose_function(
+    //     "wb.create_obs_2",
+    //     "create_obs_2",
+    //     array(
+    //         'inv_guid'  => array('type' => 'int'),
+    //         'token'     => array('type' => 'string'),
+    //         'agg_id'    => array('type' => 'string'),
+    //         'collaborators' => array('type' => 'string')
+    //     ),
+    //     'Create Observation for an investigation',
+    //     'GET',
+    //     false,
+    //     false
+    // );
 
     expose_function(
         "wb.get_obs_by_user_type",
@@ -704,7 +718,8 @@ function investigations_init() {
         'wb.get_obs_by_username',
         'get_obs_by_username',
         array(
-            'username' => array('type' => 'string')
+            'username' => array('type' => 'string'),
+            'limit' => array('type' => 'int', 'required' => false, 'default' => 4)
         ),
         '',
         'GET',
@@ -3296,11 +3311,12 @@ function get_invs_by_token($token) {
 }
 
 // create observation
-function create_obs($inv_guid, $token, $agg_id) {
+function create_obs($inv_guid, $token, $agg_id, $with_users) {
     // are you logged in?
 
     $user_guid = validate_user_token($token, null);
     if($user_guid) {
+
         $user = get_user($user_guid);
         $investigation = get_entity($inv_guid);
 
@@ -3321,7 +3337,19 @@ function create_obs($inv_guid, $token, $agg_id) {
 
             $observation->user_type = $profile_type->getTitle();
             $observation->agg_id = $agg_id;
+
             $observation->save();
+
+            if($with_users){
+
+              // Set the user relationships
+              $with_users = explode(',', $with_users);
+
+              foreach($with_users as $key => $value){
+                add_entity_relationship($observation->guid, 'with_users', (int)$value);
+              }
+
+            }
 
             elgg_set_ignore_access($ignore);
 
@@ -3348,62 +3376,86 @@ function create_obs($inv_guid, $token, $agg_id) {
     }
 }
 
-function create_obs_2($inv_guid, $token, $agg_id, $collaborators) {
-    // are you logged in?
+function assoc_obs_with_users($agg_id, $with_users){
 
-    $collaborators = explode(',', $collaborators);
+  $results = elgg_get_entities_from_metadata(array(
+      "type_subtype_pair"	=>	array('object' => 'observation'),
+      "metadata_name_value_pairs" => array('agg_id' => $agg_id)
+  ));
 
-    $user_guid = validate_user_token($token, null);
-    if($user_guid) {
-        $user = get_user($user_guid);
-        $investigation = get_entity($inv_guid);
+  if($results){
+    // Set the user relationships
+    $with_users = explode(',', $with_users);
 
-        // check if user is part of this investigation
-        if($investigation->isMember($user)) {
-
-            $profile_type_guid = $user->custom_profile_type;
-            $profile_type = get_entity($profile_type_guid);
-
-            $observation = new ElggObject();
-
-            $observation->subtype = "observation";
-            $observation->access_id = 2;
-
-            //this is needed to set the owner_guid
-            $ignore = elgg_set_ignore_access(true);
-            $observation->owner_guid = $user_guid;
-
-            $observation->user_type = $profile_type->getTitle();
-            $observation->agg_id = $agg_id;
-            $observation->save();
-
-            elgg_set_ignore_access($ignore);
-
-            // I can only add metadata after the initial save of a new object
-            $observation->parent_guid = $inv_guid;
-            $observation->save();
-
-            // attached collaborators to it
-            foreach($collaborators as $collaborator) {
-                add_entity_relationship($observation->guid, 'collaborator', $collaborator);
-            }
-
-            // post notification to the river
-            add_to_river('river/object/investigation/create', 'create', $user_guid, $observation->guid);
-
-            return $observation->guid;
-        }
-        //not part of this investigation
-        else {
-            // not a member of this investigation
-            throw new Exception('User not a member of this investigation.');
-        }
+    foreach($with_users as $key => $value){
+      add_entity_relationship($results[0]->guid, 'with_users', (int)$value);
     }
-    else {
-        // not a valid token
-	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
-    }
+
+    return $results[0]->guid;
+  }
+  else{
+    throw new Exception('Could not find this observation');
+  }
+
+
 }
+
+// function create_obs_2($inv_guid, $token, $agg_id, $collaborators) {
+//     // are you logged in?
+//
+//     $collaborators = explode(',', $collaborators);
+//
+//     $user_guid = validate_user_token($token, null);
+//     if($user_guid) {
+//         $user = get_user($user_guid);
+//         $investigation = get_entity($inv_guid);
+//
+//         // check if user is part of this investigation
+//         if($investigation->isMember($user)) {
+//
+//             $profile_type_guid = $user->custom_profile_type;
+//             $profile_type = get_entity($profile_type_guid);
+//
+//             $observation = new ElggObject();
+//
+//             $observation->subtype = "observation";
+//             $observation->access_id = 2;
+//
+//             //this is needed to set the owner_guid
+//             $ignore = elgg_set_ignore_access(true);
+//             $observation->owner_guid = $user_guid;
+//
+//             $observation->user_type = $profile_type->getTitle();
+//             $observation->agg_id = $agg_id;
+//             $observation->save();
+//
+//             elgg_set_ignore_access($ignore);
+//
+//             // I can only add metadata after the initial save of a new object
+//             $observation->parent_guid = $inv_guid;
+//             $observation->save();
+//
+//             // attached collaborators to it
+//             foreach($collaborators as $collaborator) {
+//                 add_entity_relationship($observation->guid, 'collaborator', $collaborator);
+//             }
+//
+//             // post notification to the river
+//             add_to_river('river/object/investigation/create', 'create', $user_guid, $observation->guid);
+//
+//             return $observation->guid;
+//         }
+//         //not part of this investigation
+//         else {
+//             // not a member of this investigation
+//             throw new Exception('User not a member of this investigation.');
+//         }
+//     }
+//     else {
+//         // not a valid token
+// 	    throw new SecurityException(elgg_echo('SecurityException:authenticationfailed'));
+//     }
+// }
 
 function get_obs($offset, $limit) {
     $results = elgg_get_entities(array(
@@ -3553,6 +3605,29 @@ function get_obs_paged_from_elgg($offset, $limit) {
           $final[$key]['user'] = $user_id;
       }
 
+      $with_users = array();
+
+      $with_users_relationship = elgg_get_entities_from_relationship(array(
+          'types'	=>	'user',
+          'relationship' => 'with_users',
+          'relationship_guid' => $elgg_obj->guid,
+          'inverse_relationship' => false,
+          'full_view' => false
+      ));
+
+      foreach($with_users_relationship as $user){
+        $with_users[] = array(
+          displayname => $user->name,
+          username => $user->username,
+          tiny_icon => $user->getIcon('tiny'),
+          small_icon => $user->getIcon('small'),
+          medium_icon => $user->getIcon('medium'),
+          large_icon => $user->getIcon('large')
+        );
+      }
+
+      $final[$key]['with_users'] = $with_users;
+
       $final[$key]['categories'] = $categories;
 
       $final[$key]['timestamp'] = date('F jS, Y', $elgg_obj->time_created);
@@ -3575,7 +3650,6 @@ function get_obs_paged_from_elgg($offset, $limit) {
       $final[$key]['like_count'] = $like_count;
       $final[$key]['i_liked'] = $i_liked;
       $final[$key]['comment_count'] = count(get_comments_on_obs($elgg_obj->guid));
-
 
     }
 
@@ -3750,28 +3824,91 @@ function get_obs_by_inv($investigation_guid) {
 }
 
 
-function get_obs_by_username($username) {
+function get_obs_by_username($username, $limit) {
     $user = get_user_by_username($username);
     $observations = array();
 
     $results = elgg_get_entities(array(
         "type_subtype_pair"	=>	array('object' => 'observation'),
         "owner_guids" => array($user->guid),
-        "limit" => 4
+        "limit" => $limit
         //"metadata_name_value_pairs" => array('agg_id' => $agg_id)
     ));
 
-    foreach($results as $observation) {
-		$inv_guid = $observation->parent_guid;
-		$inv = get_entity($inv_guid);
+    $secondary_results = elgg_get_entities_from_relationship(array(
+      "type_subtype_pair"	=>	array('object' => 'observation'),
+      'relationship' => 'with_users',
+      "relationship_guid" => $user->guid,
+      'inverse_relationship' => true,
+      'full_view' => false,
+      "limit" => $limit
+    ));
 
-        $observations[] = array(
-            id => $observation->guid,
-            agg_id => $observation->agg_id,
-            investigation => $inv->name,
-            date => elgg_get_friendly_time($observation->time_created),
-            inv_id => $inv->guid
-        );
+    foreach($secondary_results as $item){
+      $results[] = $item;
+    }
+
+    function sortObs($a, $b){
+      return $b->time_created - $a->time_created;
+    }
+
+    usort($results, 'sortObs');
+
+    foreach($results as $key => $observation) {
+      if($key < $limit){
+      		$inv_guid = $observation->parent_guid;
+      		$inv = get_entity($inv_guid);
+
+          $obs_users = elgg_get_entities_from_relationship(array(
+            'types'	=>	'user',
+            'relationship' => 'with_users',
+            'relationship_guid' => $observation->guid,
+            'inverse_relationship' => false,
+            'full_view' => false
+          ));
+
+          $with_users = array();
+          // If current user is not owner of observation, push owner in as an associated user
+          if($obs_users){
+
+            if((int)$user->guid !== (int)$observation->owner_guid){
+
+              $owner = get_user($observation->owner_guid);
+
+              $with_users[] = array(
+                displayname => $owner->name,
+                username => $owner->username,
+                tiny_icon => $owner->getIcon('tiny'),
+                small_icon => $owner->getIcon('small'),
+                medium_icon => $owner->getIcon('medium'),
+                large_icon => $owner->getIcon('large')
+              );
+            }
+
+            foreach($obs_users as $person){
+              if($person->username !== $username){
+
+                $with_users[] = array(
+                  displayname => $person->name,
+                  username => $person->username,
+                  tiny_icon => $person->getIcon('tiny'),
+                  small_icon => $person->getIcon('small'),
+                  medium_icon => $person->getIcon('medium'),
+                  large_icon => $person->getIcon('large')
+                );
+              }
+            }
+          }
+
+          $observations[] = array(
+              id => $observation->guid,
+              agg_id => $observation->agg_id,
+              investigation => $inv->name,
+              date => elgg_get_friendly_time($observation->time_created),
+              inv_id => $inv->guid,
+              with_users => $with_users
+          );
+      }
     }
 
     return $observations;
@@ -4009,6 +4146,26 @@ function get_obs_elgg_data_by_agg_id($agg_id) {
 
         $like_count = count($results[0]->getAnnotations('likes')) + count($results[0]->getAnnotations('observation_likes'));
 
+        $with_users = array();
+
+        $with_users_relationship = elgg_get_entities_from_relationship(array(
+            'types'	=>	'user',
+            'relationship' => 'with_users',
+            'relationship_guid' => $results[0]->guid,
+            'inverse_relationship' => false,
+            'full_view' => false
+        ));
+
+        foreach($with_users_relationship as $user){
+          $with_users[] = array(
+            displayname => $user->name,
+            username => $user->username,
+            tiny_icon => $user->getIcon('tiny'),
+            small_icon => $user->getIcon('small'),
+            medium_icon => $user->getIcon('medium'),
+            large_icon => $user->getIcon('large')
+          );
+        }
 
         $comments =  get_comments_on_obs($results[0]->guid);
 
@@ -4022,7 +4179,7 @@ function get_obs_elgg_data_by_agg_id($agg_id) {
         }
         elgg_set_ignore_access($ignore);
 
-        return array("guid" => $results[0]->guid, "comments" => $finalComments, "like_count" => $like_count, "i_liked" => $i_liked);
+        return array("guid" => $results[0]->guid, "comments" => $finalComments, "like_count" => $like_count, "i_liked" => $i_liked, "with_users" => $with_users);
     }
     else {
         return 0;

@@ -34,12 +34,13 @@ if (is_array($items) && count($items) > 0) {
 
         $user = get_user($item->subject_guid);
         $action = $item->action_type;
-        
+
         //not a great name in the activity sentence structure SVO (subject verb object) it is the object
         $action_uri = $item->subtype;
         $actionLabel = $action_uri;
         $object_guid = $item->object_guid;
         $preview = '';
+        $with_users = array();
 
         if($action == 'reply') {
             $action = 'replied to a';
@@ -102,6 +103,26 @@ if (is_array($items) && count($items) > 0) {
 
             $observation = get_entity($item->object_guid);
             $object_guid = $observation->agg_id;
+
+            $with_users_relationship = elgg_get_entities_from_relationship(array(
+                'types'	=>	'user',
+                'relationship' => 'with_users',
+                'relationship_guid' => $item->object_guid,
+                'inverse_relationship' => false,
+                'full_view' => false
+            ));
+
+            foreach($with_users_relationship as $person){
+              $with_users[] = array(
+                displayname => $person->name,
+                username => $person->username,
+                tiny_icon => $person->getIcon('tiny'),
+                small_icon => $person->getIcon('small'),
+                medium_icon => $person->getIcon('medium'),
+                large_icon => $person->getIcon('large')
+              );
+            }
+
         }
 
         if($actionLabel != 'file') {
@@ -120,6 +141,7 @@ if (is_array($items) && count($items) > 0) {
                 'username' => $user->username,
                 'userIcon' => $user->getIcon('small'),
                 'userIconTiny' => $user->getIcon('tiny'),
+                'with_users' => $with_users,
                 'preview' => $preview
             );
         }
