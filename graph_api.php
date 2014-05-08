@@ -34,7 +34,7 @@ function connect($creds){
         echo 'Connection failed... '.$e->getMessage();
 
         exit;
-    
+
     }
 
   return $dbObject;
@@ -61,22 +61,22 @@ function getObservations(){
     if($people){
 
       $peopleString = implode("','", $people);
-      
+
       $observerSearch = " AND regexp_replace(prod_observer.uri, '^.*/', '') IN ('{$peopleString}')";
     }
     $query =   "SELECT prod_measurement.value AS obsData,
-                        prod_observation.\"timestamp\" AS month 
+                        prod_observation.\"timestamp\" AS month
                  FROM public.prod_measurement
                  LEFT JOIN public.prod_observation
                    ON prod_measurement.observation_id = prod_observation.id
                  LEFT JOIN public.prod_observer
                    ON prod_observation.observer_id = prod_observer.id
-                 WHERE prod_observation.timestamp >= '{$startDate}' 
+                 WHERE prod_observation.timestamp >= '{$startDate}'
                    AND prod_observation.timestamp <= '{$endDate}'
                    AND prod_measurement.phenomenon_id LIKE '{$dataType}'".$observerSearch;
 
     $prepared = $dbObject->prepare($query);
-    
+
     if(!$prepared){
       print "<p>DATABASE CONNECTION ERROR:</p>";
       print_r($dbObject->errorInfo());
@@ -95,7 +95,7 @@ function getObservations(){
 
        $entry['month'] = date("Y-m-d\TH:i:s", strtotime($entry['month']));
      }
-    
+
     $result = json_encode($results);
 
     $dbObject = null;
@@ -127,7 +127,7 @@ function getHistoricalData(){
 
     $fileString = "noaa_cache/".$city."-".$years."-".$infoType;
 
-    
+
 
 
     if(file_exists($fileString) && file_get_contents($fileString) !== '[]'){
@@ -177,7 +177,7 @@ function getHistoricalData(){
       else{
         $currentDate = date('Y-m-d');
       }
-      
+
       $resultsArray = array();
 
       // Iterate through number of queries set, and write results to file
@@ -216,27 +216,27 @@ function getHistoricalData(){
         foreach($decodedResult["results"] as $id => $value){
           $resultsArray[] = $value;
         }
-        
+
       }
 
       $dataToWrite = json_encode($resultsArray);
 
       // Make sure to preserve cache from being overwritten with empty results
-      if($dataToWrite === '[]'){
-
-        return file_get_contents($fileString);
-      
-      }
-      else{
+      if(!empty($resultsArray)){
 
         file_put_contents($fileString, $dataToWrite);
 
         return file_get_contents($fileString);
 
       }
+      else{
+
+        return file_get_contents($fileString);
+
+      }
 
     }
-      
+
 }
 
 header('Content-Type: application/json charset=utf-8');
