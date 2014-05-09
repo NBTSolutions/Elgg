@@ -4400,6 +4400,10 @@ function edit_user_info_by_username($username, $displayname, $profiletype, $desc
         throw new Exception('You need to be logged in either as an admin or as this user to edit this profile.');
     }
 
+    // may need to deal with a file
+    $filename = 'avatar';
+    $newFile = $_FILES[$filename];
+
     $getUser = get_user_info_by_username($username, "large");
 
     $userInfo = get_entity($getUser["id"]);
@@ -4423,6 +4427,47 @@ function edit_user_info_by_username($username, $displayname, $profiletype, $desc
     $userInfo->video = trim(urldecode($video));
 
     $userInfo->save();
+
+    if($newFile) {
+
+      $icon_sizes = elgg_get_config('icon_sizes');
+
+      // get the images and save their file handlers into an array
+      // so we can do clean up if one fails.
+      $files = array();
+
+      foreach ($icon_sizes as $name => $size_info) {
+        $resized = get_resized_image_from_uploaded_file('avatar', $size_info['w'], $size_info['h'], false, $size_info['upscale']);
+
+        if ($resized) {
+          //@todo Make these actual entities.  See exts #348.
+          $file = new ElggFile();
+          $file->owner_guid = $userInfo->guid;
+          $file->setFilename("profile/{$userInfo->guid}{$name}.jpg");
+          $file->open('write');
+          $file->write($resized);
+          $file->close();
+          $files[] = $file;
+
+        } else {
+          // cleanup on fail
+          foreach ($files as $file) {
+            $file->delete();
+          }
+
+          register_error(elgg_echo('avatar:resize:fail'));
+        }
+      }
+
+      $userInfo->icontime = time();
+      if (elgg_trigger_event('profileiconupdate', $userInfo->type, $userInfo)) {
+        system_message(elgg_echo("avatar:upload:success"));
+      }
+      else{
+        throw new Exception('Failed to save new avatar');
+      }
+
+    }
 
     return array(
             'username' => $username
@@ -4472,7 +4517,7 @@ function get_members($page, $search, $typeFilter, $schoolFilter) {
 
 function get_members_by_school($search) {
 
-  $limit = 10;
+  $limit = 0;
 
   $results = elgg_get_entities_from_metadata(array(
       'types' => 'user',
