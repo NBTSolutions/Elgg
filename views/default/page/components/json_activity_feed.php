@@ -78,6 +78,7 @@ if (is_array($items) && count($items) > 0) {
             $action = 'published a news article';
             $actionLabel = $news->title;
             $preview = $news->excerpt;
+            $action_uri = 'newsarticle';
         }
         else if($item->subtype == 'messageboard') {
             // get other users name

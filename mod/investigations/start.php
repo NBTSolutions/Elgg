@@ -715,6 +715,61 @@ function investigations_init() {
     );
 
     expose_function(
+        'wb.get_article_by_id',
+        'get_article_by_id',
+        array(
+            'id' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.create_article",
+        "create_article",
+        array(
+            'title' => array('type' => 'string'),
+            'description' => array('type' => 'string'),
+            'excerpt' => array('type' => 'string'),
+            'tags' => array('type' => 'string', 'required' => false, 'default' => "")
+        ),
+        '',
+        'POST',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.edit_article",
+        "edit_article",
+        array(
+            'guid' => array('type' => 'int'),
+            'title' => array('type' => 'string'),
+            'description' => array('type' => 'string'),
+            'excerpt' => array('type' => 'string'),
+            'tags' => array('type' => 'string', 'required' => false, 'default' => "")
+        ),
+        '',
+        'POST',
+        false,
+        false
+    );
+
+    expose_function(
+        "wb.delete_article",
+        "delete_article",
+        array(
+            'guid' => array('type' => 'int')
+        ),
+        '',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         'wb.get_obs_by_username',
         'get_obs_by_username',
         array(
@@ -4799,6 +4854,7 @@ function write_to_s3($bucket, $content_type, $image_name, $image_data, $client, 
 function get_news($limit, $offset) {
 
     $news = array();
+    $user_guid = elgg_get_logged_in_user_guid();
 
     $results = elgg_get_entities(array(
         'type_subtype_pair'	=>	array('object' => 'news'),
@@ -4807,21 +4863,381 @@ function get_news($limit, $offset) {
     ));
 
     foreach($results as $result) {
+
         $user = get_user($result->owner_guid);
 
+        $likes = $result->getAnnotations('likes');
+        $i_liked = false;
+        $comments = array();
+
+        foreach($likes as $like) {
+            if($like->owner_guid == $user_guid) {
+                $i_liked = true;
+            }
+        }
+
+        $ignore = elgg_set_ignore_access(true);
+        $result_comments = $result->getAnnotations('group_topic_post', 3, 0, 'desc');
+
+        $file_thumbnail = elgg_get_entities_from_relationship(array(
+            'relationship' => 'thumbnail_file',
+            'relationship_guid' => $result->guid,
+            'inverse_relationship' => true
+        ));
+
+        if($file_thumbnail) {
+            $thumbnail_filepath = elgg_get_site_url().'file/download/'.$file_thumbnail[0]->guid.'/'.$file_thumbnail[0]->getFilename();
+        }
+        else {
+            $thumbnail_filepath = "";
+        }
+
+        // large file
+        $file_large = elgg_get_entities_from_relationship(array(
+            'relationship' => 'large_file',
+            'relationship_guid' => $result->guid,
+            'inverse_relationship' => true
+        ));
+
+        if($file_large) {
+            $large_filepath = elgg_get_site_url().'file/download/'.$file_large[0]->guid.'/'.$file_large[0]->getFilename();
+        }
+        else {
+            $large_filepath = "";
+        }
+
+        foreach($result_comments as $comment) {
+
+            $comment_user = get_user($comment->owner_guid);
+
+            $comments[] = array(
+                'description' => $comment->value,
+                'like_count' => 0,
+                'date' => elgg_get_friendly_time($comment->time_created),
+                'user' => array(
+                    'id' => $comment_user->guid,
+                    'displayname' => $comment_user->name,
+                    'username' => $comment_user->username,
+                    'image' => $comment_user->getIcon('small')
+                )
+            );
+        }
+
         $news[] = array(
+            'id' => $result->guid,
             'displayname' => $user->name,
             'username' => $user->username,
             'userIcon' => $user->getIcon('small'),
             'title' => $result->title,
             'description' => $result->description,
             'excerpt' => $result->excerpt,
-            'date' => elgg_get_friendly_time($result->time_created)
+            'date' => elgg_get_friendly_time($result->time_created),
+            'thumbnail_filepath' => $thumbnail_filepath,
+            'large_filepath' => $large_filepath,
+            'like_count' => count($likes),
+            'i_liked' => $i_liked,
+            'comments' => $comments,
+            'comment_count' => count($result->getAnnotations('group_topic_post')),
+            'video' => $result->video,
+            'type' => $result->getSubtype()
         );
     }
 
+    elgg_set_ignore_access($ignore);
+
     return $news;
 }
+
+function get_article_by_id($id) {
+
+    $news = array();
+    $user_guid = elgg_get_logged_in_user_guid();
+
+    $results = elgg_get_entities(array(
+        'type_subtype_pair'	=>	array('object' => 'news'),
+        'guid' => $id,
+        'limit' => $limit,
+        'offset' => $offset
+    ));
+    $result = $results[0];
+
+    $user = get_user($result->owner_guid);
+
+    $likes = $result->getAnnotations('likes');
+    $i_liked = false;
+    $comments = array();
+
+    foreach($likes as $like) {
+        if($like->owner_guid == $user_guid) {
+            $i_liked = true;
+        }
+    }
+
+    $ignore = elgg_set_ignore_access(true);
+    $result_comments = $result->getAnnotations('group_topic_post', 3, 0, 'desc');
+
+    $file_thumbnail = elgg_get_entities_from_relationship(array(
+        'relationship' => 'thumbnail_file',
+        'relationship_guid' => $result->guid,
+        'inverse_relationship' => true
+    ));
+
+    if($file_thumbnail) {
+        $thumbnail_filepath = elgg_get_site_url().'file/download/'.$file_thumbnail[0]->guid.'/'.$file_thumbnail[0]->getFilename();
+    }
+    else {
+        $thumbnail_filepath = "";
+    }
+
+    // large file
+    $file_large = elgg_get_entities_from_relationship(array(
+        'relationship' => 'large_file',
+        'relationship_guid' => $result->guid,
+        'inverse_relationship' => true
+    ));
+
+    if($file_large) {
+        $large_filepath = elgg_get_site_url().'file/download/'.$file_large[0]->guid.'/'.$file_large[0]->getFilename();
+    }
+    else {
+        $large_filepath = "";
+    }
+
+    foreach($result_comments as $comment) {
+
+        $comment_user = get_user($comment->owner_guid);
+
+        $comments[] = array(
+            'description' => $comment->value,
+            'like_count' => 0,
+            'date' => elgg_get_friendly_time($comment->time_created),
+            'user' => array(
+                'id' => $comment_user->guid,
+                'displayname' => $comment_user->name,
+                'username' => $comment_user->username,
+                'image' => $comment_user->getIcon('small')
+            )
+        );
+    }
+
+    $news = array(
+        'id' => $result->guid,
+        'displayname' => $user->name,
+        'username' => $user->username,
+        'userIcon' => $user->getIcon('small'),
+        'title' => $result->title,
+        'description' => $result->description,
+        'excerpt' => $result->excerpt,
+        'date' => elgg_get_friendly_time($result->time_created),
+        'thumbnail_filepath' => $thumbnail_filepath,
+        'large_filepath' => $large_filepath,
+        'like_count' => count($likes),
+        'i_liked' => $i_liked,
+        'comments' => $comments,
+        'comment_count' => count($result->getAnnotations('group_topic_post')),
+        'video' => $result->video,
+        'type' => $result->getSubtype()
+    );
+
+    elgg_set_ignore_access($ignore);
+
+    return $news;
+}
+
+function create_article($title, $description, $excerpt, $tags){
+
+  if(!elgg_is_logged_in()) {
+      throw new Exception("Please login to perform this action");
+  }
+
+  // may need to deal with a file
+  $filename = 'article_file';
+  $file = $_FILES[$filename];
+
+  $title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+  //$status = get_input("status");
+  $access_id = ACCESS_PUBLIC;
+  //$container_guid = (int) get_input('container_guid');
+  //$guid = (int) get_input('topic_guid');
+  //$tags = get_input("tags");
+
+  $ignore = elgg_set_ignore_access(true);
+  $article = new ElggObject();
+  $article->subtype = 'news';
+  $article->title = urldecode($title);
+  $article->description = urldecode($description);
+  $article->excerpt = urldecode($excerpt);
+  //$topic->status = $status;
+  $article->access_id = $access_id;
+  $article->container_guid = $container_guid;
+  $article->owner_guid = elgg_get_logged_in_user_guid();
+  $article->video = $video;
+
+  $tags = explode(",", $tags);
+  $article->tags = $tags;
+
+  $result = $article->save();
+
+  if($file) {
+
+      // original
+      $fh_original = new ElggFile();
+      $fh_original->owner_guid = $article->owner_guid;
+      $fh_original->name = 'article_' . $article->guid . '_' . $file['name'];
+      $fh_original->setFilename('article_' . $article->guid . '_' . $file['name']);
+      $fh_original->set('file category', 'article_file');
+      $fh_original->open('write');
+      $fh_original->write(get_uploaded_file($filename));
+      $fh_original->close();
+      $fh_original->save();
+
+      $resized_large_file = get_resized_image_from_existing_file($fh_original->getFilenameOnFilestore(), 600, 400, 0, 0, 0, 0, false);
+      $resized_thumbnail_file = get_resized_image_from_existing_file($fh_original->getFilenameOnFilestore(), 250, 250, 0, 0, 0, 0, false);
+
+      $fh_large = new ElggFile();
+      $fh_large->owner_guid = $article->owner_guid;
+      $fh_large->name = 'article_' . $article->guid . '_large_' . $file['name'];
+      $fh_large->setFilename('article_' . $article->guid . '_large_' . $file['name']);
+      $fh_large->set('file category', 'discussion_file');
+      $fh_large->open('write');
+      $fh_large->write($resized_large_file);
+      $fh_large->close();
+      $fh_large->save();
+
+      // thumbnail
+      $fh_thumbnail = new ElggFile();
+      $fh_thumbnail->owner_guid = $article->owner_guid;
+      $fh_thumbnail->name = 'article_' . $article->guid . '_thumbnail_' . $file['name'];
+      $fh_thumbnail->setFilename('article_' . $article->guid . '_thumbnail_' . $file['name']);
+      $fh_thumbnail->set('file category', 'discussion_file');
+      $fh_thumbnail->open('write');
+      $fh_thumbnail->write($resized_thumbnail_file);
+      $fh_thumbnail->close();
+      $fh_thumbnail->save();
+
+      add_entity_relationship($fh_original->getGUID(), 'original_file', $article->guid);
+      add_entity_relationship($fh_large->getGUID(), 'large_file', $article->guid);
+      add_entity_relationship($fh_thumbnail->getGUID(), 'thumbnail_file', $article->guid);
+  }
+
+  elgg_set_ignore_access($ignore);
+
+  if (!$result) {
+      throw new Exception('Could not save this article');
+  }
+
+  add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $article->guid);
+
+  return array(
+      "guid" => $article->guid
+  );
+
+}
+
+function edit_article($guid, $title, $description, $excerpt, $tags){
+
+  $results = elgg_get_entities(array(
+      'type_subtype_pair'	=>	array('object' => 'news'),
+      'guid' => $guid
+  ));
+  $article = $results[0];
+
+  $logged_in_user = elgg_get_logged_in_user_entity();
+
+  // allow edit if you are and admin or this user
+  if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->guid != $article->owner_guid && !elgg_is_admin_logged_in())) {
+      throw new Exception('You need to be logged in either as an admin or as the article owner to edit this article.');
+  }
+
+  // may need to deal with a file
+  $filename = 'article_file';
+  $file = $_FILES[$filename];
+
+  $title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+
+  $ignore = elgg_set_ignore_access(true);
+  $article->title = urldecode($title);
+  $article->description = urldecode($description);
+  $article->excerpt = urldecode($excerpt);
+
+  $tags = explode(",", $tags);
+  $article->tags = $tags;
+
+  $result = $article->save();
+
+  if($file) {
+
+      // original
+      $fh_original = new ElggFile();
+      $fh_original->owner_guid = $article->owner_guid;
+      $fh_original->name = 'article_' . $article->guid . '_' . $file['name'];
+      $fh_original->setFilename('article_' . $article->guid . '_' . $file['name']);
+      $fh_original->set('file category', 'article_file');
+      $fh_original->open('write');
+      $fh_original->write(get_uploaded_file($filename));
+      $fh_original->close();
+      $fh_original->save();
+
+      $resized_large_file = get_resized_image_from_existing_file($fh_original->getFilenameOnFilestore(), 600, 400, 0, 0, 0, 0, false);
+      $resized_thumbnail_file = get_resized_image_from_existing_file($fh_original->getFilenameOnFilestore(), 250, 250, 0, 0, 0, 0, false);
+
+      $fh_large = new ElggFile();
+      $fh_large->owner_guid = $article->owner_guid;
+      $fh_large->name = 'article_' . $article->guid . '_large_' . $file['name'];
+      $fh_large->setFilename('article_' . $article->guid . '_large_' . $file['name']);
+      $fh_large->set('file category', 'discussion_file');
+      $fh_large->open('write');
+      $fh_large->write($resized_large_file);
+      $fh_large->close();
+      $fh_large->save();
+
+      // thumbnail
+      $fh_thumbnail = new ElggFile();
+      $fh_thumbnail->owner_guid = $article->owner_guid;
+      $fh_thumbnail->name = 'article_' . $article->guid . '_thumbnail_' . $file['name'];
+      $fh_thumbnail->setFilename('article_' . $article->guid . '_thumbnail_' . $file['name']);
+      $fh_thumbnail->set('file category', 'discussion_file');
+      $fh_thumbnail->open('write');
+      $fh_thumbnail->write($resized_thumbnail_file);
+      $fh_thumbnail->close();
+      $fh_thumbnail->save();
+
+      add_entity_relationship($fh_original->getGUID(), 'original_file', $article->guid);
+      add_entity_relationship($fh_large->getGUID(), 'large_file', $article->guid);
+      add_entity_relationship($fh_thumbnail->getGUID(), 'thumbnail_file', $article->guid);
+  }
+
+  $article->save();
+
+  elgg_set_ignore_access($ignore);
+
+  if (!$result) {
+      throw new Exception('Could not save this article');
+  }
+
+  return array(
+      "guid" => $article->guid
+  );
+
+}
+
+function delete_article($id){
+
+  $article = get_entity($id);
+
+  $logged_in_user = elgg_get_logged_in_user_entity();
+
+  // allow deletion if you are and admin or this user
+  if(!elgg_is_logged_in() || elgg_is_logged_in() && ($logged_in_user->guid != $article->owner_guid && !elgg_is_admin_logged_in())) {
+      throw new Exception('You need to be logged in either as an admin or as the article owner to delete this article.');
+  }
+  else{
+    $article->delete();
+    return true;
+  }
+
+}
+
 
 function get_activities($limit, $offset) {
 
