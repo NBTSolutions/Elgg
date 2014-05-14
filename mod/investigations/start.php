@@ -646,7 +646,8 @@ function investigations_init() {
             'page' => array('type' => 'int', 'required' => false, 'default' => 0),
             'search' => array('type' => 'string', 'required' => false, 'default' => ""),
             'type_filter' => array('type' => 'int', 'required' => false, 'default' => 0),
-            'school_filter' => array('type' => 'string', 'required' => false, 'default' => "")
+						'school_filter' => array('type' => 'string', 'required' => false, 'default' => ""),
+						'search_by_display' => array('type' => 'int', 'required' => false, 'default' => 0)
         ),
         '',
         'GET',
@@ -4529,14 +4530,18 @@ function edit_user_info_by_username($username, $displayname, $profiletype, $desc
         );
 }
 
-function get_members($page, $search, $typeFilter, $schoolFilter) {
+function get_members($page, $search, $typeFilter, $schoolFilter, $searchByDisplay) {
 
     //$results = get_data("SELECT guid FROM elgg_users_entity WHERE name LIKE '%jo%';");
     $limit = 12;
     $offset = $page * $limit;
 
     $schoolWhere = ($schoolFilter !== "") ? array('name' => 'school', 'value' => $schoolFilter) : null;
-    $typeWhere = ($typeFilter !== 0) ? array('name' => 'custom_profile_type', 'value' => $typeFilter) : null;
+		$typeWhere = ($typeFilter !== 0) ? array('name' => 'custom_profile_type', 'value' => $typeFilter) : null;
+		$nameWhere = "(users.name LIKE '%".$search."%' OR users.username LIKE '%".$search."%')";
+		if ($searchByDisplay > 0) {
+			$nameWhere = "users.name LIKE '%" . $search . "%'";
+		}
 
     $results = elgg_get_entities_from_metadata(array(
         'types' => 'user',
@@ -4546,7 +4551,7 @@ function get_members($page, $search, $typeFilter, $schoolFilter) {
         'metadata_name_value_pairs' => array($typeWhere, $schoolWhere),
         'metadata_name_value_pairs_operator' => 'AND',
         'joins' => array("JOIN {$CONFIG->dbprefix}elgg_users_entity users ON (e.guid = users.guid)"),
-        'wheres' => array("(users.name LIKE '%".$search."%' OR users.username LIKE '%".$search."%')")
+        'wheres' => array($nameWhere)
     ));
 
     $members = array();
