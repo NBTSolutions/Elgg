@@ -280,6 +280,16 @@ function investigations_init() {
     );
 
     expose_function(
+        "wb.get_obs_measurement_types",
+        "get_obs_measurement_types",
+        array(),
+        'Get observation measurement types',
+        'GET',
+        false,
+        false
+    );
+
+    expose_function(
         "wb.get_obs_paged",
         "get_obs_paged",
         array(
@@ -296,8 +306,11 @@ function investigations_init() {
         "wb.get_obs_paged_from_elgg",
         "get_obs_paged_from_elgg",
         array(
-            'limit' => array('type' => 'int', 'required' => false),
-            'offset' => array('type' => 'int', 'required' => false)
+            'limit' => array('type' => 'int', 'required' => false, 'default' => 0),
+            'offset' => array('type' => 'int', 'required' => false, 'default' => 0),
+            'user_filter' => array('type' => 'int', 'required' => false, 'default' => 0),
+            'school_filter' => array('type' => 'string', 'required' => false, 'default' => ''),
+            'inv_filter' => array('type' => 'string', 'required' => false, 'default' => '')
         ),
         '',
         'GET',
@@ -3534,23 +3547,149 @@ function get_obs($offset, $limit) {
 
 }
 
-function get_obs_paged_from_elgg($offset, $limit) {
+function get_obs_measurement_types(){
+
+  $hostname = 'ec2-54-225-138-16.compute-1.amazonaws.com';
+  $port = '5972';
+  $dbName = 'd2br84lqj1ij30';
+  $dbUser = 'u3l9t7fso9lsat';
+  $dbPass = 'p7oqdm3h5jtre5180hhjsomls6f';
+
+  try{
+      $dbObject = new PDO('pgsql:host='.$hostname.";port=".$port.";dbname=".$dbName, $dbUser, $dbPass);
+      $dbObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  }
+  catch(PDOException $e){
+      throw new Exception('Connection failed... '.$e->getMessage());
+  }
+
+  $app_env = getenv("APP_ENV");
+  // $app_env = $app_env == "prod" ? $app_env : "unstable";
+  $app_env = "prod";
+  $server_env = "prod";
+
+    $query = "SELECT * FROM public.".$server_env."_phenomenon";
+
+    $prepared = $dbObject->prepare($query);
+
+    if(!$prepared){
+      print "<p>DATABASE CONNECTION ERROR:</p>";
+      print_r($dbObject->errorInfo());
+      die;
+    }
+
+    $prepared->execute();
+
+    $results = $prepared->fetchAll(PDO::FETCH_ASSOC);
+
+    $final = array();
+
+    foreach($results as $key => $value){
+
+      $new_key = $value['category_id'];
+
+      if($final[$new_key]){
+        $final[$new_key][] = $value['name'];
+      }
+      else{
+          $final[$new_key] = array($value['name']);
+      }
+    }
+
+    return $final;
+}
+
+function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, $inv_filter) {
 
     $limit = $_GET["limit"] ? $_GET["limit"] : "ALL";
     $offset = $_GET["offset"] ? $_GET["offset"] : "0";
 
-    $elgg_obs = elgg_get_entities_from_metadata(array(
+    $user_filter = ($user_filter == 0) ? null : $user_filter;
+    $school_filter = ($school_filter == '') ? null : $school_filter;
+    $inv_filter = ($inv_filter == '') ? null : $inv_filter;
+
+    $users = array();
+    $investigations = array();
+    $final_inv_names = array();
+
+    // Find users related to the chosen school
+    if($school_filter){
+      $school_results = elgg_get_entities_from_metadata(array(
+          'types' => 'user',
+          'limit' => 0,
+          'metadata_name_value_pairs' => array(array('name' => 'school', 'operand' => 'LIKE', 'value' => '%'.$school_filter.'%', 'case_sensitive' => false))
+      ));
+
+      foreach($school_results as $key => $user){
+        if(!in_array($user->guid, $users)){
+          $users[] = $user->guid;
+        }
+      }
+
+      // If there are no users here, then there shouldn't be any observations to return:
+      if(empty($users)){
+        return array(
+          'investigations' => array(),
+          'observations' => array()
+        );
+      }
+
+    }
+
+    if($user_filter){
+      $usertype_results = elgg_get_entities_from_metadata(array(
+          'types' => 'user',
+          'limit' => 0,
+          'metadata_name_value_pair' => array('name' => 'custom_profile_type', 'value' => $user_filter)
+      ));
+      foreach($usertype_results as $key => $user){
+        if(!in_array($user->guid, $users)){
+          $users[] = $user->guid;
+        }
+      }
+      // If there are no users here, then there shouldn't be any observations to return:
+      if(empty($users)){
+        return array(
+          'investigations' => array(),
+          'observations' => array()
+        );
+      }
+    }
+
+    if($inv_filter){
+
+      $invresult = elgg_get_entities(array(
+          'type_subtype_pair'	=>	array('group' => 'investigation')
+      ));
+
+      foreach($invresult as $key => $investigation){
+        if(stristr($investigation->name, $inv_filter)){
+          $investigations[] = $investigation->guid;
+          $final_inv_names[] = $investigation->name;
+        }
+      }
+    }
+
+    $investigations = (empty($investigations)) ? null : $investigations;
+
+    $elgg_obs = elgg_get_entities_from_relationship(array(
         "metadata_name" => "agg_id",
         "order_by" => "time_created desc",
         "limit" => $limit,
-        "offset" => $offset
+        "offset" => $offset,
+        "owner_guids" => $users,
+        "container_guids" => $investigations
     ));
 
     $final = array();
 
     // return empty array if no results
     if(!$elgg_obs){
-      return $final;
+      return array(
+        'users' => $users,
+        'investigations' => $final_inv_names,
+        'observations' => array()
+      );
     }
 
     $hostname = 'ec2-54-225-138-16.compute-1.amazonaws.com';
@@ -3609,6 +3748,8 @@ function get_obs_paged_from_elgg($offset, $limit) {
       $prepared->execute();
 
       $results = $prepared->fetchAll(PDO::FETCH_ASSOC);
+
+    // $final['info'] = array('inv_names' => $final_inv_names);
 
     foreach($elgg_obs as $key => $elgg_obj){
 
@@ -3710,7 +3851,13 @@ function get_obs_paged_from_elgg($offset, $limit) {
 
     $dbObject = null;
 
-    return $final;
+    $return = array(
+      'users' => $users,
+      'investigations' => $final_inv_names,
+      'observations' => $final
+    );
+
+    return $return;
     // return array($results);
 
 }
