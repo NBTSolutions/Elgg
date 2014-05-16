@@ -3613,12 +3613,15 @@ function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, 
     $investigations = array();
     $final_inv_names = array();
 
+    $school_filter_params = $school_filter !== null ? array('name' => 'school', 'operand' => 'LIKE', 'value' => '%'.$school_filter.'%', 'case_sensitive' => false) : null;
+    $user_filter_params = $user_filter !== null ? array('name' => 'custom_profile_type', 'value' => $user_filter) : null;
+
     // Find users related to the chosen school
-    if($school_filter){
+    if($school_filter || $user_filter){
       $school_results = elgg_get_entities_from_metadata(array(
           'types' => 'user',
           'limit' => 0,
-          'metadata_name_value_pairs' => array(array('name' => 'school', 'operand' => 'LIKE', 'value' => '%'.$school_filter.'%', 'case_sensitive' => false))
+          'metadata_name_value_pairs' => array($school_filter_params, $user_filter_params)
       ));
 
       foreach($school_results as $key => $user){
@@ -3630,6 +3633,7 @@ function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, 
       // If there are no users here, then there shouldn't be any observations to return:
       if(empty($users)){
         return array(
+          'users' => $users,
           'investigations' => array(),
           'observations' => array()
         );
@@ -3637,25 +3641,26 @@ function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, 
 
     }
 
-    if($user_filter){
-      $usertype_results = elgg_get_entities_from_metadata(array(
-          'types' => 'user',
-          'limit' => 0,
-          'metadata_name_value_pair' => array('name' => 'custom_profile_type', 'value' => $user_filter)
-      ));
-      foreach($usertype_results as $key => $user){
-        if(!in_array($user->guid, $users)){
-          $users[] = $user->guid;
-        }
-      }
-      // If there are no users here, then there shouldn't be any observations to return:
-      if(empty($users)){
-        return array(
-          'investigations' => array(),
-          'observations' => array()
-        );
-      }
-    }
+    // if($user_filter){
+    //   $usertype_results = elgg_get_entities_from_metadata(array(
+    //       'types' => 'user',
+    //       'limit' => 0,
+    //       'metadata_name_value_pair' => array('name' => 'custom_profile_type', 'value' => $user_filter)
+    //   ));
+    //   foreach($usertype_results as $key => $user){
+    //     if(!in_array($user->guid, $users)){
+    //       $users[] = $user->guid;
+    //     }
+    //   }
+    //   // If there are no users here, then there shouldn't be any observations to return:
+    //   if(empty($users)){
+    //     return array(
+    //       'users' => $users,
+    //       'investigations' => array(),
+    //       'observations' => array()
+    //     );
+    //   }
+    // }
 
     if($inv_filter){
 
@@ -3708,9 +3713,9 @@ function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, 
     }
 
     $app_env = getenv("APP_ENV");
-    // $app_env = $app_env == "prod" ? $app_env : "unstable";
-    $app_env = "prod";
-    $server_env = "prod";
+    $server_env = $app_env == "prod" ? $app_env : "unstable";
+    // $app_env = "prod";
+    // $server_env = "prod";
 
     $elgg_agg_ids = "";
 
