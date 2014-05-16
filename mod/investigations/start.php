@@ -3716,7 +3716,7 @@ function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, 
     $app_env = getenv("APP_ENV");
     $server_env = $app_env == "prod" ? $app_env : "unstable";
     // $app_env = "prod";
-    $server_env = "prod";
+    // $server_env = "prod";
 
     $elgg_agg_ids = "";
 
