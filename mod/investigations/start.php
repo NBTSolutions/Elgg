@@ -3670,7 +3670,7 @@ function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, 
 
       foreach($invresult as $key => $investigation){
         if(stristr($investigation->name, $inv_filter)){
-          $investigations[] = $investigation->guid;
+          $investigations[] = array('name' => 'parent_guid', 'operand' => 'LIKE', 'value' => $investigation->guid);
           $final_inv_names[] = $investigation->name;
         }
       }
@@ -3678,13 +3678,14 @@ function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, 
 
     $investigations = (empty($investigations)) ? null : $investigations;
 
-    $elgg_obs = elgg_get_entities_from_relationship(array(
+    $elgg_obs = elgg_get_entities_from_metadata(array(
         "metadata_name" => "agg_id",
         "order_by" => "time_created desc",
         "limit" => $limit,
         "offset" => $offset,
         "owner_guids" => $users,
-        "container_guids" => $investigations
+        'metadata_name_value_pairs' => $investigations,
+        'metadata_name_value_pairs_operator' => "OR"
     ));
 
     $final = array();
@@ -3715,7 +3716,7 @@ function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, 
     $app_env = getenv("APP_ENV");
     $server_env = $app_env == "prod" ? $app_env : "unstable";
     // $app_env = "prod";
-    // $server_env = "prod";
+    $server_env = "prod";
 
     $elgg_agg_ids = "";
 
@@ -3852,6 +3853,9 @@ function get_obs_paged_from_elgg($offset, $limit, $user_filter, $school_filter, 
       $final[$key]['like_count'] = $like_count;
       $final[$key]['i_liked'] = $i_liked;
       $final[$key]['comment_count'] = count(get_comments_on_obs($elgg_obj->guid));
+
+      $inv_name = get_entity($elgg_obj->parent_guid);
+      $final[$key]['investigation'] = $inv_name->name;
 
     }
 
